@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "gimbal_behaviour.h": "c",
+        "chassis_behaviour.h": "c",
+        "chassis_task.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "enabled"
+}

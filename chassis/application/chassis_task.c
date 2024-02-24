@@ -29,7 +29,7 @@
 #include "gimbal_task.h"
 fp32 chassis_yaw;
 fp32 sin_yaw;
-fp32 gaibian = -0.01125f;
+fp32 gaibian = -0.0125f;
  extern  float firstyaw;
       extern  float yaw;
 			float Xy=0.0f; 
@@ -168,7 +168,6 @@ void chassis_task(void const *pvParameters)
 		if(linkState_1>50||linkState_2>50)  //若双板通信没接收到数据，则舵和轮都不动
 		{
 			CAN_cmd_chassis(0,0,0,0);
-//			CAN_cmd_rudder(0,0,0,0);
 		}		
        //     {
                 
@@ -390,8 +389,8 @@ void chassis_rc_to_control_vector(fp32 *vx_set, fp32 *vy_set, chassis_move_t *ch
 //    first_order_filter_cali(&chassis_move_rc_to_vector->chassis_cmd_slow_set_vx, vx_set_channel_RC);
 //    first_order_filter_cali(&chassis_move_rc_to_vector->chassis_cmd_slow_set_vy, vy_set_channel_RC);
 
-   *vy_set += chassis_move_rc_to_vector->vy_set_CANsend/1000;
-    *vx_set += -chassis_move_rc_to_vector->vx_set_CANsend/1000;
+   *vy_set += -chassis_move_rc_to_vector->vy_set_CANsend/1000;
+    *vx_set += +chassis_move_rc_to_vector->vx_set_CANsend/1000;
    
 }
 
@@ -499,15 +498,7 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
 
         // 设置控制相对云台角度
       chassis_move_control->chassis_relative_angle_set =firstyaw;
-        // 小陀螺停止，就近对位
-         if (chassis_move_control->mode_flag == 1)
-        {  
-					 relative_angle =chassis_move_control->gimbal_data.relative_angle;
-        if (relative_angle > PI/2)
-            relative_angle = -2 * PI + relative_angle;
-					
-        } 
-        
+   
         relative_angle1=rad_format(yaw-firstyaw);
         // 旋转控制底盘速度方向，保证前进方向是云台方向，有利于运动平稳
         if (relative_angle1 > PI)
@@ -532,14 +523,13 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
     else if (chassis_move_control->chassis_mode == CHASSIS_WORLD_SPIN)
     {
         fp32 sin_yaw = 0.0f, cos_yaw = 0.0f;
-        fp32 relative_angle = 0.0f;
+        fp32 ab_angle = 0.0f;
     
         // 旋转控制底盘速度方向，保证前进方向是云台方向，有利于运动平稳
-        relative_angle =rad_format(yaw-firstyaw);
-        if (relative_angle > PI)
-            relative_angle = -2 * PI + relative_angle;
-    sin_yaw = arm_sin_f32(relative_angle);
-        cos_yaw = arm_cos_f32(relative_angle);
+        ab_angle =rad_format(yaw-firstyaw);
+       
+    sin_yaw = arm_sin_f32(ab_angle);
+        cos_yaw = arm_cos_f32(ab_angle);
         // 设置控制相对云台角度
         chassis_move_control->chassis_relative_angle_set = rad_format(firstyaw);  
         chassis_move_control->vx_set = cos_yaw * vx_set + sin_yaw * vy_set;

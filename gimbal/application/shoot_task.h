@@ -37,7 +37,7 @@
 #define SHOOT_TASK_MAX_INIT_TIME 10
 
 //摩擦轮电机转速
-#define FRIC_MOTOR_RUN_SPEED -2.9
+#define FRIC_MOTOR_RUN_SPEED -3.08
 //摩擦轮电机停止转速
 #define FRIC_MOTOR_STOP_SPEED 0
 

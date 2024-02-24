@@ -25,7 +25,7 @@
 //允许发弹距离 m 
 #define ALLOW_ATTACK_DISTANCE 10.0f
 //允许发弹概率
-#define ALLOE_ATTACK_P 3.0f
+#define ALLOE_ATTACK_P 10.0f
 
 
 //延时等待
@@ -50,7 +50,7 @@
 //最大设定弹速
 #define MAX_SET_BULLET_SPEED 30.0f
 //初始设定弹速
-#define BEGIN_SET_BULLET_SPEED 25.0f
+#define BEGIN_SET_BULLET_SPEED 23.0f
 
 //空气阻力系数
 #define AIR_K1 0.01f
@@ -73,7 +73,7 @@
 //固有时间偏移即上位机计算时间单位ms
 #define TIME_BIAS 6
 //机器人自身固有时间偏差
-#define ROBOT_TIMR_BIAS 20
+#define ROBOT_TIMR_BIAS 103
 //偏差时间队列大小
 #define TIME_BIAS_QUEUE_CAPACITY 10 
 
@@ -99,7 +99,7 @@
 #define MAX_NOT_RECEIVE_DATA_TIME 0.05f
 
 //红方蓝方角度误差
-#define RED_AND_BLUE_ANGLE_ERROR 180
+#define RED_AND_BLUE_ANGLE_ERROR 200
 
 //距离转速度参数P 
 #define DISTANCE_TO_SPEED_P 0.7f

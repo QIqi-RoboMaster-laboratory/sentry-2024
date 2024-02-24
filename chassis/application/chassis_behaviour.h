@@ -102,6 +102,7 @@ typedef enum
                                          //  遥控器的值乘以比例成电流值 直接发送到can总线上
 	CHASSIS_GOBACK,
     CHASSIS_SPIN,
+	CHASSIS_WSPIN,
     CHASSIS_RC,   // 底盘遥控器控制模式，默认为底盘跟随云台
     CHASSIS_AUTO_FOLLOW_TARGET, // 底盘自动模式
     CHASSIS_AUTO_MOVE,           //底盘自动移动

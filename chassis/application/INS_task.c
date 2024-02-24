@@ -14,6 +14,18 @@
 #include "controller.h"
 #include "QuaternionEKF.h"
 #include "bsp_PWM.h"
+#define ins_deadband_limit(input, output, dealine)        \
+    {                                                    \
+        if ((input) > (dealine) || (input) < -(dealine)) \
+        {                                                \
+            (output) = (input);                          \
+        }                                                \
+        else                                             \
+        {                                                \
+            (output) = 0;                                \
+        }                                                \
+    }
+
 int i=0;
 INS_t INS;
 IMU_Param_t IMU_Param;
@@ -106,6 +118,7 @@ void INS_Task(void)
 				
               // 获取最终数据
         INS.Yaw = QEKF_INS.Yaw * ANGLE_TO_RADIAN;
+				ins_deadband_limit(INS.Yaw,INS.Yaw,0.01);
         yaw=INS.Yaw;
 				if(i<2)
         {

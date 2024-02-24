@@ -505,19 +505,11 @@ int i=1;
     }
     if (gimbal_motor == &gimbal_control.gimbal_yaw_motor)
     {
-			
-			
 	
-		
-		//	vision_rx->ang_z=0.3;
         angle_set_yaw = gimbal_motor->absolute_angle_set;
         gimbal_motor->absolute_angle_set = rad_format(angle_set_yaw + add);
 
-//if(vision_rx->ang_z!=0)
-//{
-//HAL_Delay(200);
-//	gimbal_motor->absolute_angle_set +=vision_rx->ang_z;
-//}
+
 		}
     else
     {

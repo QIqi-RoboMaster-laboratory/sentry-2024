@@ -22,6 +22,7 @@
 #include "detect_task.h"
 #include "pid.h"
 #include "stm32.h"
+#include "vision_task.h"
 /*----------------------------------宏定义---------------------------*/
 #define shoot_laser_on() laser_on()                                              // 激光开启宏定义
 #define shoot_laser_off() laser_off()                                            // 激光关闭宏定义
@@ -111,11 +112,11 @@ void shoot_task(void const *pvParameters)
         //射击控制循环
         shoot_control_loop();
         //发送控制电流
-//        if (!(toe_is_error(TRIGGER_MOTOR_TOE) && !toe_is_error(FRIC_LEFT_MOTOR_TOE) && !toe_is_error(FRIC_RIGHT_MOTOR_TOE)))
-//        {
+        if (!(toe_is_error(TRIGGER_MOTOR_TOE) && !toe_is_error(FRIC_LEFT_MOTOR_TOE) && !toe_is_error(FRIC_RIGHT_MOTOR_TOE)))
+        {
             // 发送控制指令
             CAN_cmd_shoot(fric_move.fric_CAN_Set_Current[0], fric_move.fric_CAN_Set_Current[1], trigger_motor.given_current);
-//        }
+        }
         vTaskDelay(SHOOT_TASK_DELAY_TIME);
     }
 }
@@ -392,14 +393,27 @@ if (shoot_control_mode == SHOOT_RC_CONTROL)
             {
                 shoot_mode = SHOOT_READY;
                 // 控制发射
-							if (fric_move.shoot_rc->rc.ch[4] >= 100)
-                {
+						
+
+								 if (fric_move.shoot_rc->rc.ch[4] > 100)
+										{
+                // 设置发射模式，开摩擦轮，拨弹盘
+											if (fric_move.shoot_vision_control->shoot_command == SHOOT_ATTACK)
+											{
+											shoot_mode = SHOOT_BULLET;
+											}
+										}
+							else if (fric_move.shoot_rc->rc.ch[4] < -100)
+										{
                     shoot_mode = SHOOT_BULLET;
-                }
-								if (fric_move.shoot_rc->rc.ch[4] < -100)
-                {
-                    shoot_mode = SHOOT_FREADY;
-                }
+										}
+										else
+										{
+                // 其他状态摩擦轮一直开启
+                // 设置准备发射模式，开摩擦轮
+											shoot_mode = SHOOT_READY;
+										}
+
 
             }
             else

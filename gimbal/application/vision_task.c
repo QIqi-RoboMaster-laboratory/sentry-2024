@@ -44,7 +44,7 @@ static void calc_current_bullet_speed(vision_control_t* calc_cur_bullet_speed, b
 //获取当前机器人位置
 static void get_robot_cur_pos(vision_control_t* robot_pos);
 //获取目标机器人位置
-// static void get_robot_target_pos(vision_control_t* robot_pos);
+ static void get_robot_target_pos(vision_control_t* robot_pos);
 
 
 // 初始化弹道解算的参数

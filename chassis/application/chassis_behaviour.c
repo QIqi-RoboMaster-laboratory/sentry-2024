@@ -205,7 +205,7 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
       
    if (chassis_move_mode->chassis_mode_CANsend==20000)
     {
-        chassis_behaviour_mode =CHASSIS_ZERO_FORCE;
+        chassis_behaviour_mode =CHASSIS_NO_MOVE;
     }	
     else if (chassis_move_mode->chassis_mode_CANsend==10000)
     {
@@ -213,7 +213,7 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     }
 		else if (chassis_move_mode->chassis_mode_CANsend==30000)
     {
-        chassis_behaviour_mode =   CHASSIS_SPIN;
+        chassis_behaviour_mode = CHASSIS_SPIN;
     }
 		else
 		{
@@ -315,6 +315,10 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     else if (chassis_behaviour_mode ==  CHASSIS_FOLLOW_WORLD)
     {
         chassis_move_mode->chassis_mode = CHASSIS_WORLD_FOLLOW_CHASSIS_YAW;
+    }
+		  else if (chassis_behaviour_mode ==  CHASSIS_WSPIN)
+    {
+        chassis_move_mode->chassis_mode = CHASSIS_WORLD_SPIN;
     }
 		else if (chassis_behaviour_mode == CHASSIS_FOLLOW_GIMBAL_YAW)
     {
@@ -459,6 +463,10 @@ void chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, fp3
         chassis_infantry_follow_gimbal_yaw_control(vx_set, vy_set, wz_set,   angle_set, chassis_move_rc_to_vector);
     }
     else if (chassis_behaviour_mode == CHASSIS_SPIN) // Ð¡ÍÓÂÝ
+    {
+        chassis_infantry_follow_gimbal_yaw_control(vx_set, vy_set, wz_set,  angle_set,  chassis_move_rc_to_vector);
+    }
+		else if (chassis_behaviour_mode == CHASSIS_WSPIN) // Ð¡ÍÓÂÝ
     {
         chassis_infantry_follow_gimbal_yaw_control(vx_set, vy_set, wz_set,  angle_set,  chassis_move_rc_to_vector);
     }

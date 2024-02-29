@@ -213,7 +213,7 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     }
 		else if (chassis_move_mode->chassis_mode_CANsend==30000)
     {
-        chassis_behaviour_mode = CHASSIS_SPIN;
+        chassis_behaviour_mode = CHASSIS_WSPIN;
     }
 		else
 		{

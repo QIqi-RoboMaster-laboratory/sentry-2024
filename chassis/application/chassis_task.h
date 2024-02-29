@@ -144,7 +144,7 @@
 #define CHASSIS_FOLLOW_GIMBAL_DEADLINE 0.01f
 
 //底盘小陀螺速度值
-#define SPIN_SPEED 		  -2.5f
+#define SPIN_SPEED 		  -5.5f
 //底盘自动移动距离项差值系数
 #define AUTO_MOVE_K_DISTANCE_ERROR 1.0f
 //底盘自动移动最大输出速度 m/s

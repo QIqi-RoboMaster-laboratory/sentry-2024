@@ -53,10 +53,6 @@ void chassis_power_control(chassis_move_t *chassis_power_control)
     {
         total_current_limit = NO_JUDGE_TOTAL_CURRENT_LIMIT;
     }
-    else if(robot_id == RED_ENGINEER || robot_id == BLUE_ENGINEER || robot_id == 0)
-    {
-        total_current_limit = NO_JUDGE_TOTAL_CURRENT_LIMIT;
-    }
     else
     {
         get_chassis_power_and_buffer(&chassis_power, &chassis_power_buffer);

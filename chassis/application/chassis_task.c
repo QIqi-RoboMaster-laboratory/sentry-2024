@@ -29,7 +29,7 @@
 #include "gimbal_task.h"
 fp32 chassis_yaw;
 fp32 sin_yaw;
-fp32 gaibian = -0.0125f;
+fp32 gaibian = 0.0f;
  extern  float firstyaw;
       extern  float yaw;
 			float Xy=0.0f; 

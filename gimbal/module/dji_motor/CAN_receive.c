@@ -23,7 +23,8 @@
 #include "main.h"
 #include "bsp_rng.h"
 #include "detect_task.h"
-
+#include "shoot_task.h"
+extern Shoot_Motor_t trigger_motor;  
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
 //motor data read
@@ -85,6 +86,14 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
         {
             get_motor_measure(&motor_chassis[5], rx_data);
             detect_hook(PITCH_GIMBAL_MOTOR_TOE);
+            break;
+        }
+				case CAN_REF_ID:
+        {
+         trigger_motor.heat=((uint16_t)(rx_data[0] << 8 | rx_data[1]));  
+				  trigger_motor.bulletspeed=(uint16_t)(rx_data[2] << 8 | rx_data[3]);       
+//					trigger_motor.vy_set_CANsend=(int16_t)(rx_data[4] << 8 | rx_data[5]);	
+//          trigger_motor.chassis_mode_CANsend=(int16_t)(rx_data[6] << 8 | rx_data[7]);   //µ×ÅÌÄ£Ê½
             break;
         }
         default:

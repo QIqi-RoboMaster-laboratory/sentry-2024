@@ -178,6 +178,8 @@ void can_comm_shoot(int16_t fric1, int16_t fric2, int16_t trigger)
     add_can_comm_queue(&can_comm, &shoot_can_comm_data); 
 }
 
+
+
 bool can_comm_task_init_finish(void)
 {
     return init_finish;

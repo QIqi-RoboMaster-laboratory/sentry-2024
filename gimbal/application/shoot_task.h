@@ -183,6 +183,10 @@ typedef struct
     fp32 stuck_time;           // 卡弹时间
     fp32 reverse_time;         // 卡弹回拨时间
 
+
+uint16_t heat;
+uint16_t bulletspeed;
+
 } Shoot_Motor_t;
 
 typedef struct

@@ -36,6 +36,7 @@ typedef enum
     CAN_COMM_GIMBAL,
     CAN_COMM_CHASSIS,
     CAN_COMM_SHOOT,
+	CAN_COMM_REF,
 } can_comm_target_e;
 
 //can通信数据结构体

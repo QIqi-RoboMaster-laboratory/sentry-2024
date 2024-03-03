@@ -35,9 +35,12 @@ typedef enum
     CAN_YAW_MOTOR_ID = 0x205,
     CAN_PIT_MOTOR_ID = 0x206,
     CAN_TRIGGER_MOTOR_ID = 0x207,
+		CAN_REF_ID =0x212,
     CAN_GIMBAL_ALL_ID = 0x1FF,
 
     CAN_SHOOT_ALL_ID = 0x1FF,
+	
+	
     CAN_3508_S1_ID = 0x205,
     CAN_3508_S2_ID = 0x206,
 } can_msg_id_e;
@@ -83,7 +86,7 @@ void can_comm_board(int16_t relative_angle, int16_t chassis_vx, int16_t chassis_
  * @param trigger 拨弹盘电机电流值
  */
 void can_comm_shoot(int16_t fric1, int16_t fric2, int16_t trigger);
-
+void can_comm_ref(uint16_t hurt, uint16_t speed, int16_t chassis_vy, int16_t chassis_behaviour);
 bool can_comm_task_init_finish(void);
 
 #endif // !CAN_COMM_TASK_H

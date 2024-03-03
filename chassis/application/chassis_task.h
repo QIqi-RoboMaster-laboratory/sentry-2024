@@ -314,7 +314,9 @@ Gimbal_data gimbal_data;
 		int16_t chassis_level;
 		int16_t chassis_power_buffer;
 		int16_t key_C;
-
+		
+		uint16_t heat;
+		uint16_t speed;
 } chassis_move_t;
 
 /*

@@ -363,12 +363,12 @@ static void Shoot_Set_Mode(void)
 
     //更新当前射击模式
     
-    
+    power_heat_data_t.shooter_id1_17mm_cooling_heat= trigger_motor.heat;
     //判断当前枪口热量是否即将到达最大值
-//    if (/*GUARD_MAX_MUZZLE_HEAT - power_heat_data_t.shooter_id1_17mm_cooling_heat >= GUARD_MAX_ALLOW_MUZZLE_HEAT_ERR0R &&
-//        GUARD_MAX_MUZZLE_HEAT - power_heat_data_t.shooter_id2_17mm_cooling_heat >= GUARD_MAX_ALLOW_MUZZLE_HEAT_ERR0R*/1==1)
-//    {
-//        // 未即将达到最大值，发射任务正常进行
+    if (GUARD_MAX_MUZZLE_HEAT - power_heat_data_t.shooter_id1_17mm_cooling_heat >= GUARD_MAX_ALLOW_MUZZLE_HEAT_ERR0R &&
+        GUARD_MAX_MUZZLE_HEAT - power_heat_data_t.shooter_id2_17mm_cooling_heat >= GUARD_MAX_ALLOW_MUZZLE_HEAT_ERR0R==1)
+    {
+        // 未即将达到最大值，发射任务正常进行
 
 //        // 根据控制模式设置发射模式
         if (shoot_control_mode == SHOOT_AUTO_CONTROL)
@@ -398,15 +398,15 @@ if (shoot_control_mode == SHOOT_RC_CONTROL)
 								 if (fric_move.shoot_rc->rc.ch[4] > 100)
 										{
                 // 设置发射模式，开摩擦轮，拨弹盘
-											if (fric_move.shoot_vision_control->shoot_command == SHOOT_ATTACK)
-											{
-											shoot_mode = SHOOT_BULLET;
-											}
+//											if (fric_move.shoot_vision_control->shoot_command == SHOOT_ATTACK)
+//											{
+								shoot_mode = SHOOT_BULLET;
+//											}
 										}
-							else if (fric_move.shoot_rc->rc.ch[4] < -100)
-										{
-                    shoot_mode = SHOOT_BULLET;
-										}
+//							else if (fric_move.shoot_rc->rc.ch[4] < -100)
+//										{
+//                    shoot_mode = SHOOT_BULLET;
+//										}
 										else
 										{
                 // 其他状态摩擦轮一直开启
@@ -455,6 +455,7 @@ if (shoot_control_mode == SHOOT_RC_CONTROL)
 //    }
     
 }
+		}
 /**
  * @brief          拨弹轮循环
  * @param[in]      void

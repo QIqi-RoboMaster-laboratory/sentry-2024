@@ -54,6 +54,7 @@ static CAN_TxHeaderTypeDef  gimbal_tx_message;
 static uint8_t              gimbal_can_send_data[8];
 static CAN_TxHeaderTypeDef  chassis_tx_message;
 static uint8_t              chassis_can_send_data[8];
+		static uint8_t           ref_can_send_data[8];	
 static CAN_TxHeaderTypeDef  shoot_tx_message;
 static uint8_t              shoot_can_send_data[8];
 		
@@ -112,6 +113,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 					linkState_2=0;
 				  break;
 				}
+			
 			
 		 default:
         {
@@ -269,6 +271,24 @@ void CAN_cmd_chassis(int16_t motor1, int16_t motor2, int16_t motor3, int16_t mot
     HAL_CAN_AddTxMessage(&CHASSIS_CAN, &chassis_tx_message, chassis_can_send_data, &send_mail_box);
 }
 
+
+void CAN_cmd_ref(uint16_t heat, uint16_t speed, int16_t motor3, int16_t motor4)
+{
+   uint32_t send_mail_box;
+    chassis_tx_message.StdId = CAN_REFEREE_ID ;
+    chassis_tx_message.IDE = CAN_ID_STD;
+    chassis_tx_message.RTR = CAN_RTR_DATA;
+    chassis_tx_message.DLC = 0x08;
+    chassis_can_send_data[0] = heat >> 8;
+    chassis_can_send_data[1] = heat ;
+    chassis_can_send_data[2] = speed >> 8;
+    chassis_can_send_data[3] = speed;
+    chassis_can_send_data[4] = 0 ;
+    chassis_can_send_data[5] = 0;
+    chassis_can_send_data[6] = 0 ;
+    chassis_can_send_data[7] = 0; 
+	  HAL_CAN_AddTxMessage(&hcan1, &chassis_tx_message, chassis_can_send_data, &send_mail_box);
+}
 /**
   * @brief          return the yaw 6020 motor data point
   * @param[in]      none

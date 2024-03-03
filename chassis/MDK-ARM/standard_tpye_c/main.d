@@ -65,13 +65,14 @@ standard_tpye_c/main.o: ..\Src\main.c ..\Inc\main.h \
   ..\Inc\usbd_conf.h D:\keil\ARM\ARMCLANG\Bin\..\include\stdio.h \
   D:\keil\ARM\ARMCLANG\Bin\..\include\stdlib.h \
   D:\keil\ARM\ARMCLANG\Bin\..\include\string.h ..\Inc\gpio.h \
-  ..\bsp\boards\bsp_can.h ..\application\struct_typedef.h \
-  ..\bsp\boards\bsp_delay.h ..\bsp\boards\bsp_usart.h \
-  ..\application\remote_control.h ..\bsp\boards\bsp_rc.h \
-  ..\application\chassis_task.h ..\application\CAN_receive.h \
-  ..\application\gimbal_task.h ..\components\controller\pid.h \
-  ..\components\algorithm\user_lib.h ..\application\vision_task.h \
-  ..\application\INS_task.h ..\components\devices\BMI088driver.h \
+  D:\keil\ARM\ARMCLANG\Bin\..\include\stdbool.h ..\bsp\boards\bsp_can.h \
+  ..\application\struct_typedef.h ..\bsp\boards\bsp_delay.h \
+  ..\bsp\boards\bsp_usart.h ..\application\remote_control.h \
+  ..\bsp\boards\bsp_rc.h ..\application\chassis_task.h \
+  ..\application\CAN_receive.h ..\application\gimbal_task.h \
+  ..\components\controller\pid.h ..\components\algorithm\user_lib.h \
+  ..\application\vision_task.h ..\application\INS_task.h \
+  ..\components\devices\BMI088driver.h \
   ..\components\algorithm\QuaternionEKF.h \
   ..\components\algorithm\kalman_filter.h \
   ..\components\algorithm\Include\arm_math.h \
@@ -81,4 +82,7 @@ standard_tpye_c/main.o: ..\Src\main.c ..\Inc\main.h \
   ..\application\referee_usart_task.h ..\application\voltage_task.h \
   ..\stm32\stm32.h ..\stm32\STM32_Config.h ..\stm32\rtwtypes.h \
   ..\stm32\stm32_External_Functions.h ..\stm32\stm32_types.h \
-  ..\stm32\stm32_private.h ..\bsp\boards\bsp_dwt.h
+  ..\stm32\stm32_private.h ..\bsp\boards\bsp_dwt.h \
+  ..\Src\SEGGER_RTT_V766b\RTT\SEGGER_RTT.h \
+  ..\Src\SEGGER_RTT_V766b\RTT\..\Config\SEGGER_RTT_Conf.h \
+  D:\keil\ARM\ARMCLANG\Bin\..\include\stdarg.h

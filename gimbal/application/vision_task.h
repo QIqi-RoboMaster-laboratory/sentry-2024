@@ -88,9 +88,9 @@
 
 // 击打敌方机器人0.1
 //imu到枪口的竖直距离
-#define Z_STATIC 0.1f
+#define Z_STATIC -0.06f
 //枪口前推距离
-#define DISTANCE_STATIC 0.21085f
+#define DISTANCE_STATIC 0.23f
 //初始飞行时间
 #define INIT_FILIGHT_TIME 0.5f
 

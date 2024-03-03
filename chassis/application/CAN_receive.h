@@ -48,7 +48,7 @@ typedef enum
 	  CAN_POWERID=0x212,
 	  CAN_GIMBAL_CALL_BACK_ID=0x218,
 		CAN_GIMBAL_CALL_BACK_KEY_ID=0x219,
-	  CAN_REFEREE_ID = 0x220,
+	  CAN_REFEREE_ID = 0x212,
 
     CAN_SHOOT_ALL_ID = 0x1FF,
     CAN_3508_S1_ID = 0x205,
@@ -114,6 +114,7 @@ extern void CAN_cmd_chassis_reset_ID(void);
   * @retval         none
   */
 extern void CAN_cmd_chassis(int16_t motor1, int16_t motor2, int16_t motor3, int16_t motor4);
+extern void CAN_cmd_ref(uint16_t heat, uint16_t speed, int16_t motor3, int16_t motor4);
 
 extern void CAN_cmd_shoot(int16_t fric1,int16_t fric2 ,int16_t shoot, int16_t rev);
 /**

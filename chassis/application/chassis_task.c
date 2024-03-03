@@ -30,6 +30,8 @@
 fp32 chassis_yaw;
 fp32 sin_yaw;
 fp32 gaibian = 0.0f;
+extern ext_power_heat_data_t power_heat_data_t;
+extern ext_shoot_data_t shoot_data_t;
  extern  float firstyaw;
       extern  float yaw;
 			float Xy=0.0f; 
@@ -167,13 +169,23 @@ void chassis_task(void const *pvParameters)
 					linkState_2++;
 		if(linkState_1>50||linkState_2>50)  //若双板通信没接收到数据，则舵和轮都不动
 		{
+				chassis_move.heat=power_heat_data_t.shooter_id1_17mm_cooling_heat;
+		chassis_move.speed= shoot_data_t.bullet_speed*1000;
+			
+		         CAN_cmd_ref(chassis_move.heat, chassis_move.speed, 0, 0);
 			CAN_cmd_chassis(0,0,0,0);
 		}		
        //     {
                 
 //             //发送控制电流
-                CAN_cmd_chassis(chassis_move.motor_chassis[0].give_current, chassis_move.motor_chassis[1].give_current,
+		chassis_move.heat=power_heat_data_t.shooter_id1_17mm_cooling_heat;
+		chassis_move.speed= shoot_data_t.bullet_speed*1000;
+           CAN_cmd_chassis(chassis_move.motor_chassis[0].give_current, chassis_move.motor_chassis[1].give_current,
                                 chassis_move.motor_chassis[2].give_current, chassis_move.motor_chassis[3].give_current);
+		
+		         CAN_cmd_ref(chassis_move.heat, chassis_move.speed, 0, 0);
+
+		
 //            }
 //            else
 //            {

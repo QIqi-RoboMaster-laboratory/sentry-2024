@@ -18,7 +18,7 @@
 #include "CRC8_CRC16.h"
 #include "usbd_cdc_if.h"
 #include "arm_math.h"
-
+extern Shoot_Motor_t trigger_motor; 
 
 // 视觉任务初始化
 static void vision_task_init(vision_control_t* init);
@@ -517,18 +517,18 @@ static void set_vision_send_packet(vision_control_t* set_send_packet)
 static void calc_current_bullet_speed(vision_control_t* calc_cur_bullet_speed, bullet_type_e bullet_type, shooter_id_e shooter_id)
 {
     //判断子弹类型
-    if (calc_cur_bullet_speed->shoot_data_point->bullet_type == bullet_type)
-    {
-        if (calc_cur_bullet_speed->shoot_data_point->shooter_id == shooter_id)
-        {
-            //筛选不合理的数据
-            if (calc_cur_bullet_speed->shoot_data_point->bullet_speed >= MIN_SET_BULLET_SPEED && calc_cur_bullet_speed->shoot_data_point->bullet_speed <= MAX_SET_BULLET_SPEED)
-            {
+//    if (calc_cur_bullet_speed->shoot_data_point->bullet_type == bullet_type)
+//    {
+//        if (calc_cur_bullet_speed->shoot_data_point->shooter_id == shooter_id)
+//        {
+//            //筛选不合理的数据
+//            if (calc_cur_bullet_speed->shoot_data_point->bullet_speed >= MIN_SET_BULLET_SPEED && calc_cur_bullet_speed->shoot_data_point->bullet_speed <= MAX_SET_BULLET_SPEED)
+//            {
                 //修正弹速 -- 修正精度到整数
-                calc_cur_bullet_speed->bullet_speed = (int16_t)calc_cur_bullet_speed->shoot_data_point->bullet_speed;
-            }
-        }
-    }
+                calc_cur_bullet_speed->bullet_speed = trigger_motor.bulletspeed/1000;
+//            }
+//        }
+//    }
 }
 
 
@@ -815,7 +815,7 @@ static float calc_target_position_pitch_angle(solve_trajectory_t* solve_trajecto
         // 对瞄准高度进行补偿
         aim_z += calc_and_actual_error * ITERATE_SCALE_FACTOR;
         // 判断误差是否符合精度要求
-        if (fabs(calc_and_actual_error) < PRECISION)
+      if (fabs(calc_and_actual_error) < PRECISION)
         {
             break;
         }

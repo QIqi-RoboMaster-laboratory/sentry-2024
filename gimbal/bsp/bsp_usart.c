@@ -191,3 +191,20 @@ void usart6_tx_dma_enable(uint8_t *data, uint16_t len)
 }
 
 
+
+
+
+
+uint8_t data_len = 49;
+char cmd_vel_topic[50];
+radar_txfifo_t radar_txfifo;
+
+
+void send_data_to_upper_computer(uint8_t *send_buffer, radar_txfifo_t *radar_txfifo) 
+{
+	radar_txfifo->header = 0x5A;
+	send_buffer[0] = radar_txfifo->header; // 设置header为结构体中的值
+    memcpy(send_buffer + 1, radar_txfifo, sizeof(radar_txfifo_t) - 1); // 复制结构体数据到发送缓冲区
+    HAL_UART_Transmit(&huart6, send_buffer, sizeof(radar_txfifo_t), HAL_MAX_DELAY);
+   
+}

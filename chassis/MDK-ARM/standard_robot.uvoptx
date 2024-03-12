@@ -298,57 +298,22 @@
         <Ww>
           <count>28</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\standard_tpye_c\../components/devices/BMI088driver.c\BMI088.GyroOffset[2]</ItemText>
+          <ItemText>game_state</ItemText>
         </Ww>
         <Ww>
           <count>29</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ax1</ItemText>
+          <ItemText>robot_state</ItemText>
         </Ww>
         <Ww>
           <count>30</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ax2</ItemText>
+          <ItemText>shoot_data_t</ItemText>
         </Ww>
         <Ww>
           <count>31</count>
           <WinNumber>1</WinNumber>
-          <ItemText>adis</ItemText>
-        </Ww>
-        <Ww>
-          <count>32</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>motor_speed_pid[3]</ItemText>
-        </Ww>
-        <Ww>
-          <count>33</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>game_state</ItemText>
-        </Ww>
-        <Ww>
-          <count>34</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>robot_state</ItemText>
-        </Ww>
-        <Ww>
-          <count>35</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>shoot_data_t</ItemText>
-        </Ww>
-        <Ww>
-          <count>36</count>
-          <WinNumber>1</WinNumber>
           <ItemText>power_heat_data_t</ItemText>
-        </Ww>
-        <Ww>
-          <count>37</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>chassis_move.heat</ItemText>
-        </Ww>
-        <Ww>
-          <count>38</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>chassis_move.speed</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>

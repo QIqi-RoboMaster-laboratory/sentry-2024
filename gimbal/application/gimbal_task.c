@@ -170,6 +170,7 @@ gimbal_control_t gimbal_control;
 
 vision_rxfifo_t *vision_rx;
 
+
 /**
  * @brief          云台任务，间隔 GIMBAL_CONTROL_TIME 1ms
  * @param[in]      pvParameters: 空
@@ -316,6 +317,8 @@ static void gimbal_init(gimbal_control_t *init)
     init->gimbal_pitch_motor.min_relative_angle = motor_ecd_to_angle_change(GIMBAL_PITCH_MIN_ENCODE, init->gimbal_pitch_motor.offset_ecd);
 
 			vision_rx=get_vision_fifo();
+		uint8_t send_buffer[25]; // 假设有一个长度为25的发送缓冲区
+		send_data_to_upper_computer(send_buffer, &radar_txfifo);
 }
 
 /**

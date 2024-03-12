@@ -34,6 +34,7 @@
   * @param[in]      chassis_power_control: µ×ÅÌÊý¾Ý
   * @retval         none
   */
-extern void chassis_power_control(chassis_move_t *chassis_power_control);
-
+//extern void chassis_power_control(chassis_move_t *chassis_power_control);
+extern void CHASSIC_MOTOR_POWER_CONTROL(chassis_move_t *chassis_motor);
+static void CHASSIC_MOTOR_PID_CONTROL(chassis_move_t *chassis_motor);
 #endif

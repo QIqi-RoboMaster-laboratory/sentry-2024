@@ -17,6 +17,18 @@ typedef struct {
 	
 } vision_rxfifo_t;
 
+typedef struct __attribute__((packed))
+{
+    uint8_t header;
+    float distance;
+    float x;
+    float y;
+    float angle;
+    float n;
+    float m;
+} radar_txfifo_t;
+
+
 
 
 
@@ -26,10 +38,10 @@ extern void usart1_tx_dma_init(void);
 extern void usart1_tx_dma_enable(uint8_t *data, uint16_t len);
 
 
-
 extern vision_rxfifo_t vision_rxfifo;
 extern uint8_t vision_rx_buf[2][VISION_RX_LEN_2];
-
+extern radar_txfifo_t  radar_txfifo;
+void send_data_to_upper_computer(uint8_t *send_buffer, radar_txfifo_t *radar_txfifo);
 
 extern void vision_init(void);
 extern void vision_rx_decode(uint8_t *test_code);

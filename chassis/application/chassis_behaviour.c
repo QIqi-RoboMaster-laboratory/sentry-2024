@@ -213,7 +213,7 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     }
 		else if (chassis_move_mode->chassis_mode_CANsend==30000)
     {
-        chassis_behaviour_mode = CHASSIS_WSPIN;
+        chassis_behaviour_mode = CHASSIS_SPIN;
     }
 		else
 		{
@@ -357,9 +357,9 @@ void judge_chassis_auto_mode(chassis_move_t* chassis_judge_auto_mode)
     //未被击打的时间
     static uint16_t not_hit_time = 0;
     //读取血量
-    chassis_judge_auto_mode->chassis_auto.auto_HP.max_HP = chassis_judge_auto_mode->chassis_auto.ext_game_robot_state_point->max_HP;
+    chassis_judge_auto_mode->chassis_auto.auto_HP.max_HP = chassis_judge_auto_mode->chassis_auto.ext_game_robot_state_point->maximum_HP;
     chassis_judge_auto_mode->chassis_auto.auto_HP.last_HP = chassis_judge_auto_mode->chassis_auto.auto_HP.cur_HP; 
-    chassis_judge_auto_mode->chassis_auto.auto_HP.cur_HP = chassis_judge_auto_mode->chassis_auto.ext_game_robot_state_point->remain_HP;
+    chassis_judge_auto_mode->chassis_auto.auto_HP.cur_HP = chassis_judge_auto_mode->chassis_auto.ext_game_robot_state_point->current_HP;
 
     //判断血量是否减少
     if ((chassis_judge_auto_mode->chassis_auto.auto_HP.cur_HP - chassis_judge_auto_mode->chassis_auto.auto_HP.last_HP) < 0)

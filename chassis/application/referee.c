@@ -14,7 +14,7 @@ ext_game_robot_HP_t game_robot_HP_t;
 
 ext_event_data_t field_event;
 ext_supply_projectile_action_t supply_projectile_action_t;
-ext_supply_projectile_booking_t supply_projectile_booking_t;
+ext_projectile_allowance_t projectile_allowance_t;
 ext_referee_warning_t referee_warning_t;
 
 
@@ -43,7 +43,7 @@ void init_referee_struct_data(void)
 
     memset(&field_event, 0, sizeof(ext_event_data_t));
     memset(&supply_projectile_action_t, 0, sizeof(ext_supply_projectile_action_t));
-    memset(&supply_projectile_booking_t, 0, sizeof(ext_supply_projectile_booking_t));
+    memset(&projectile_allowance_t, 0, sizeof(ext_projectile_allowance_t));
     memset(&referee_warning_t, 0, sizeof(ext_referee_warning_t));
 
     memset(&robot_state, 0, sizeof(ext_game_robot_state_t));
@@ -106,7 +106,7 @@ void referee_data_solve(uint8_t *frame)
         break;
         case SUPPLY_PROJECTILE_BOOKING_CMD_ID:
         {
-            memcpy(&supply_projectile_booking_t, frame + index, sizeof(supply_projectile_booking_t));
+            memcpy(&projectile_allowance_t, frame + index, sizeof(projectile_allowance_t));
         }
         break;
         case REFEREE_WARNING_CMD_ID:
@@ -185,7 +185,7 @@ uint8_t get_robot_id(void)
 
 void get_shoot_heat_limit_and_heat(uint16_t *heat_limit, uint16_t *heat)
 {
-    *heat_limit = robot_state.shooter_id1_42mm_cooling_limit;
+    *heat_limit = robot_state.shooter_barrel_cooling_value;
     *heat = power_heat_data_t.shooter_id1_42mm_cooling_heat;
 }
 

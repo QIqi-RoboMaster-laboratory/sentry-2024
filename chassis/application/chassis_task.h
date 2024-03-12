@@ -140,11 +140,17 @@
 #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 6.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 0.2f
 
+// 底盘电机功率环PID
+#define M3505_MOTOR_POWER_PID_KP 1.0f
+#define M3505_MOTOR_POWER_PID_KI 0.1f
+#define M3505_MOTOR_POWER_PID_KD 0.f
+#define M3505_MOTOR_POWER_PID_MAX_OUT 15.0f
+#define M3505_MOTOR_POWER_PID_MAX_IOUT 10.0f
 //底盘跟随云台死区 rad
 #define CHASSIS_FOLLOW_GIMBAL_DEADLINE 0.01f
 
 //底盘小陀螺速度值
-#define SPIN_SPEED 		  -5.5f
+#define SPIN_SPEED 		  -8.0f
 //底盘自动移动距离项差值系数
 #define AUTO_MOVE_K_DISTANCE_ERROR 1.0f
 //底盘自动移动最大输出速度 m/s
@@ -194,8 +200,28 @@ typedef struct
   fp32 speed;
   fp32 speed_set;
   int16_t give_current;
+  PidTypeDef chassis_pid;
 } chassis_motor_t;
+typedef struct
+{
+	fp32 kp;
+	fp32 ki;
+	fp32 kd;
 
+	fp32 set;
+	fp32 get;
+	fp32 err;
+
+	fp32 max_out;
+	fp32 max_iout;
+
+	fp32 Pout;
+	fp32 Iout;
+	fp32 Dout;
+
+	fp32 out;
+
+} chassis_PID_t;
 typedef struct
 {
 	fp32 totalCurrentTemp;
@@ -205,6 +231,11 @@ typedef struct
 	fp32 POWER_MAX;
 	fp32 MAX_current[4];
   fp32  SPEED_MIN;	
+
+
+	fp32 power_charge; //超电充电
+	fp32 forecast_motor_power[4]; // 预测单个电机功率
+	fp32 forecast_total_power; // 预测总功率 
 } Power_Control;
 
 //自动控制血量
@@ -312,11 +343,16 @@ Gimbal_data gimbal_data;
 	  int16_t chassis_mode_CANsend;		 //模式
 		int16_t energe_chassis;
 		int16_t chassis_level;
-		int16_t chassis_power_buffer;
 		int16_t key_C;
 		
 		uint16_t heat;
 		uint16_t speed;
+
+    pid_type_def buffer_pid;     //功率环PID
+		int16_t chassis_power_MAX;    //裁判系统最大功率，双板通信数据
+		int16_t chassis_power_buffer; //缓冲能量，双板通信数据
+		
+		fp32 chassis_power;
 } chassis_move_t;
 
 /*

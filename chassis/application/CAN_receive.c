@@ -104,24 +104,14 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 					linkState_1=0;
 					break;
 				}
-				case CAN_GIMBAL_CALL_BACK_KEY_ID:
-				{
-					chassis_move.chassis_level = ((int16_t)(rx_data[0] << 8 | rx_data[1])); //机器人等级
-					chassis_move.energe_chassis = ((int16_t)(rx_data[6] << 8 | rx_data[7])); //底盘供电
-					chassis_move.chassis_power_buffer = ((int16_t)(rx_data[2] << 8 | rx_data[3])); //机器人功率buff
-					chassis_move.key_C = ((int16_t)(rx_data[4] << 8 | rx_data[5])); //机器人超电释放按键
-					linkState_2=0;
-				  break;
-				}
-			
-			
 		 default:
         {
             break;
         }
      }
   }
-    else if (hcan == &hcan2)
+
+  else if (hcan == &hcan2)
     {
         switch (rx_header.StdId)
         {

@@ -106,9 +106,9 @@
 //卡弹电流
 #define STUCK_CURRENT 7000
 //卡弹时间
-#define STUCK_TIME 800
+#define STUCK_TIME 600
 //回拨时间
-#define REVERSE_TIME 110
+#define REVERSE_TIME 220
 
 typedef enum
 {

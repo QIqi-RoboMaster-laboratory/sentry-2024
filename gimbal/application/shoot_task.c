@@ -280,14 +280,14 @@ static void shoot_set_control_mode(fric_move_t *fric_set_control)
 ////                else
 ////                {
 ////                    // 判断微动开关是否打开
-////                  if (BUTTEN_TRIG_PIN ==0/*PRESS*/)
-////                    {
-////                       // 按下
-////                        // 设置初始化完成
-////                        shoot_init_state = SHOOT_INIT_FINISH;
-////                        init_time = 0;
-////                        // 进入其他模式
-////                    }
+                  if (BUTTEN_TRIG_PIN ==0/*PRESS*/)
+                    {
+                       // 按下
+                        // 设置初始化完成
+                        shoot_init_state = SHOOT_INIT_FINISH;
+                        init_time = 0;
+                        // 进入其他模式
+                    }
 ////                    else
 ////                    {
 ////                        // 初始化模式保持原状，初始化时间增加
@@ -330,10 +330,10 @@ static void shoot_set_control_mode(fric_move_t *fric_set_control)
     }
 
     // 云台在某些模式下发射停止
-//    if (gimbal_cmd_to_shoot_stop())
-//    {
-//        shoot_control_mode = SHOOT_STOP_CONTROL;
-//    }
+    if (gimbal_cmd_to_shoot_stop())
+    {
+        shoot_control_mode = SHOOT_STOP_CONTROL;
+    }
 
     // 判断进入初始化模式
     static shoot_control_mode_e last_shoot_control_mode = SHOOT_STOP_CONTROL;
@@ -366,7 +366,7 @@ static void Shoot_Set_Mode(void)
     power_heat_data_t.shooter_id1_17mm_cooling_heat= trigger_motor.heat;
     //判断当前枪口热量是否即将到达最大值
     if (GUARD_MAX_MUZZLE_HEAT - power_heat_data_t.shooter_id1_17mm_cooling_heat >= GUARD_MAX_ALLOW_MUZZLE_HEAT_ERR0R &&
-        GUARD_MAX_MUZZLE_HEAT - power_heat_data_t.shooter_id2_17mm_cooling_heat >= GUARD_MAX_ALLOW_MUZZLE_HEAT_ERR0R==1)
+        GUARD_MAX_MUZZLE_HEAT - power_heat_data_t.shooter_id2_17mm_cooling_heat >= GUARD_MAX_ALLOW_MUZZLE_HEAT_ERR0R)
     {
         // 未即将达到最大值，发射任务正常进行
 
@@ -426,14 +426,14 @@ if (shoot_control_mode == SHOOT_RC_CONTROL)
             // 此时哨兵初始化控制模式
             shoot_mode = SHOOT_INIT;
         }
-//        else if (shoot_control_mode == SHOOT_STOP_CONTROL)
-//        {
-//            shoot_mode = SHOOT_STOP;
-//        }
-//        else
-//        {
-//            shoot_mode = SHOOT_STOP;
-//        }
+        else if (shoot_control_mode == SHOOT_STOP_CONTROL)
+        {
+            shoot_mode = SHOOT_STOP;
+        }
+        else
+        {
+            shoot_mode = SHOOT_STOP;
+        }
 //    }
 //    else
 //    {
@@ -489,38 +489,38 @@ void shoot_control_loop(void)
         trigger_motor_mode = SHOOT_MOTOR_FRUN;
     }
 		
-//    else if (shoot_mode == SHOOT_INIT)
-//    {
-//       
-////        //判断是否初始化完成
-////        if(shoot_init_state == SHOOT_INIT_UNFINISH)
-////        {
-//            //初始化未完成
-//            //微动开关是否命中
-////            if (BUTTEN_TRIG_PIN == RELEASE)
-////            {
-////                shoot_init_state = SHOOT_INIT_UNFINISH;
-////                //未按下,配置拨弹盘转动,摩擦轮停转
-////                fric_motor_mode = SHOOT_MOTOR_STOP;
-////                trigger_motor_mode = SHOOT_MOTOR_RUN;
-//////            }
-////            else
-//////            {
-////                //按下
-////                shoot_init_state = SHOOT_INIT_FINISH;
-////                //电机停转
-////                fric_motor_mode = SHOOT_MOTOR_STOP;
-//////                trigger_motor_mode = SHOOT_MOTOR_STOP;
-////            }
-////        }
-////        else
-//        {
-//            shoot_init_state = SHOOT_INIT_FINISH;
-//            // 电机停转
-//            fric_motor_mode = SHOOT_MOTOR_STOP;
-//            trigger_motor_mode = SHOOT_MOTOR_STOP;
-//        }
-  //  }
+    else if (shoot_mode == SHOOT_INIT)
+    {
+       
+        //判断是否初始化完成
+        if(shoot_init_state == SHOOT_INIT_UNFINISH)
+        {
+            //初始化未完成
+            //微动开关是否命中
+            if (BUTTEN_TRIG_PIN == RELEASE)
+            {
+                shoot_init_state = SHOOT_INIT_UNFINISH;
+                //未按下,配置拨弹盘转动,摩擦轮停转
+                fric_motor_mode = SHOOT_MOTOR_STOP;
+                trigger_motor_mode = SHOOT_MOTOR_RUN;
+            }
+            else
+            {
+                //按下
+                shoot_init_state = SHOOT_INIT_FINISH;
+                //电机停转
+                fric_motor_mode = SHOOT_MOTOR_STOP;
+                trigger_motor_mode = SHOOT_MOTOR_STOP;
+            }
+        }
+        else
+        {
+            shoot_init_state = SHOOT_INIT_FINISH;
+            // 电机停转
+            fric_motor_mode = SHOOT_MOTOR_STOP;
+            trigger_motor_mode = SHOOT_MOTOR_STOP;
+        }
+    }
 
 
     //根据电机模式配置电机转动速度

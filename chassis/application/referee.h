@@ -79,7 +79,7 @@ typedef __PACKED_STRUCT// 0x0101
 
 typedef __PACKED_STRUCT // 0x0102
 {
-    uint8_t supply_projectile_id;
+    uint8_t reserved;
     uint8_t supply_robot_id;
     uint8_t supply_projectile_step;
     uint8_t supply_projectile_num;
@@ -87,36 +87,30 @@ typedef __PACKED_STRUCT // 0x0102
 
 typedef __PACKED_STRUCT // 0x0103
 {
-    uint8_t supply_projectile_id;
-    uint8_t supply_robot_id;
-    uint8_t supply_num;
-} ext_supply_projectile_booking_t;
+    uint16_t projectile_allowance_17mm;
+ uint16_t projectile_allowance_42mm;
+ uint16_t remaining_gold_coin;
+} ext_projectile_allowance_t;
 
 typedef __PACKED_STRUCT // 0x0104
 {
-    uint8_t level;
-    uint8_t foul_robot_id;
+     uint8_t level;
+     uint8_t offending_robot_id;
+    uint8_t count;
 } ext_referee_warning_t;
 
 typedef __PACKED_STRUCT // 0x0201
 {
-    uint8_t robot_id;
-    uint8_t robot_level;
-    uint16_t remain_HP;
-    uint16_t max_HP;
-    uint16_t shooter_id1_17mm_cooling_rate;
-    uint16_t shooter_id1_17mm_cooling_limit;
-    uint16_t shooter_id1_17mm_speed_limit;
-    uint16_t shooter_id2_17mm_cooling_rate;
-    uint16_t shooter_id2_17mm_cooling_limit;
-    uint16_t shooter_id2_17mm_speed_limit;
-    uint16_t shooter_id1_42mm_cooling_rate;
-    uint16_t shooter_id1_42mm_cooling_limit;
-    uint16_t shooter_id1_42mm_speed_limit;
-    uint16_t chassis_power_limit;
-    uint8_t mains_power_gimbal_output : 1;
-    uint8_t mains_power_chassis_output : 1;
-    uint8_t mains_power_shooter_output : 1;
+uint8_t robot_id;
+uint8_t robot_level;
+uint16_t current_HP; 
+uint16_t maximum_HP;
+uint16_t shooter_barrel_cooling_value;
+uint16_t shooter_barrel_heat_limit;
+uint16_t chassis_power_limit;
+uint8_t power_management_gimbal_output : 1;
+uint8_t power_management_chassis_output : 1; 
+uint8_t power_management_shooter_output : 1;
 } ext_game_robot_state_t;
 
 typedef __PACKED_STRUCT // 0x0202
@@ -135,13 +129,16 @@ typedef __PACKED_STRUCT // 0x0203
 {
     float x;
     float y;
-    float z;
-    float yaw;
+    float angle;
 } ext_game_robot_pos_t;
 
 typedef __PACKED_STRUCT // 0x0204
 {
-    uint8_t power_rune_buff;
+	uint8_t recovery_buff;
+ uint8_t cooling_buff;
+ uint8_t defence_buff;
+ uint8_t vulnerability_buff;
+ uint16_t attack_buff;
 } ext_buff_musk_t;
 
 typedef __PACKED_STRUCT // 0x0205
@@ -219,7 +216,7 @@ extern ext_game_robot_HP_t game_robot_HP_t;
 
 extern ext_event_data_t field_event;
 extern ext_supply_projectile_action_t supply_projectile_action_t;
-extern ext_supply_projectile_booking_t supply_projectile_booking_t;
+extern ext_projectile_allowance_t projectile_allowance_t;
 extern ext_referee_warning_t referee_warning_t;
 
 extern ext_game_robot_state_t robot_state;

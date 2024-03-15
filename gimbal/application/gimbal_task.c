@@ -42,6 +42,7 @@
 #include "can_comm_task.h"
 #include "chassis_task.h"
 #include "bsp_usart.h"
+#include "vision_task.h"
 // motor enconde value format, range[0-8191]
 // 电机编码值规整 0—8191
 #define ecd_format(ecd)         \
@@ -186,13 +187,10 @@ void gimbal_task(void const *pvParameters)
         // gimbal init
         // 云台初始化
         gimbal_init(&gimbal_control);
+				vision_init();
         // 判断电机是否都上线
-//        while (toe_is_error(YAW_GIMBAL_MOTOR_TOE) || toe_is_error(PITCH_GIMBAL_MOTOR_TOE))
-//        {
-//            // 等待电机上线，防止电机不工作
-//            vTaskDelay(GIMBAL_CONTROL_TIME);
+
          gimbal_feedback_update(&gimbal_control); // 云台数据反馈
-//        }
         while (1)
         {
             gimbal_set_mode(&gimbal_control);                    // 设置云台控制模式
@@ -201,8 +199,8 @@ void gimbal_task(void const *pvParameters)
             gimbal_set_control(&gimbal_control);                 // 设置云台控制量
             gimbal_control_loop(&gimbal_control);                // 云台控制计算
 
-//            if (!(toe_is_error(YAW_GIMBAL_MOTOR_TOE) && toe_is_error(PITCH_GIMBAL_MOTOR_TOE)))
-//            {
+            if (!(toe_is_error(YAW_GIMBAL_MOTOR_TOE) && toe_is_error(PITCH_GIMBAL_MOTOR_TOE)))
+            {
                 if (toe_is_error(DBUS_TOE))
                 {
                     // 判断遥控器是否掉线
@@ -212,7 +210,7 @@ void gimbal_task(void const *pvParameters)
                 {
                     CAN_cmd_gimbal(gimbal_control.gimbal_yaw_motor.given_current, gimbal_control.gimbal_pitch_motor.given_current);
                 }
-//            }
+            }
 
             vTaskDelay(GIMBAL_CONTROL_TIME);
 #if INCLUDE_uxTaskGetStackHighWaterMark
@@ -317,8 +315,10 @@ static void gimbal_init(gimbal_control_t *init)
     init->gimbal_pitch_motor.min_relative_angle = motor_ecd_to_angle_change(GIMBAL_PITCH_MIN_ENCODE, init->gimbal_pitch_motor.offset_ecd);
 
 			vision_rx=get_vision_fifo();
-		uint8_t send_buffer[25]; // 假设有一个长度为25的发送缓冲区
-		send_data_to_upper_computer(send_buffer, &radar_txfifo);
+//		
+//			uint8_t send_buffer[1 + 1 + sizeof(double)]; // 假设有一个长度为25的发送缓冲区
+//		send_data_to_upper_computer(send_buffer, &radar_txfifo);
+		
 }
 
 /**
@@ -355,6 +355,9 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update)
     feedback_update->gimbal_yaw_motor.absolute_angle = feedback_update->gimbal_INS_point->Yaw;
     feedback_update->gimbal_yaw_motor.relative_angle = motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.gimbal_motor_measure->ecd, feedback_update->gimbal_yaw_motor.frist_ecd);
     feedback_update->gimbal_yaw_motor.motor_gyro = arm_cos_f32(feedback_update->gimbal_pitch_motor.relative_angle) * (feedback_update->gimbal_INS_point->Gyro[Z]) - arm_sin_f32(feedback_update->gimbal_pitch_motor.relative_angle) * (feedback_update->gimbal_INS_point->Gyro[X]);
+		
+//		uint8_t send_buffer[25]; // 假设有一个长度为25的发送缓冲区
+//		send_data_to_upper_computer(send_buffer, &radar_txfifo);
 }
 
 /**

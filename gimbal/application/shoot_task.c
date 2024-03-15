@@ -255,54 +255,54 @@ static void shoot_set_control_mode(fric_move_t *fric_set_control)
     // 运行模式
 
     // 判断初始化是否完成
-   if (shoot_control_mode == SHOOT_INIT_CONTROL)
-  {
-       static uint32_t init_time = 0;
-       // 判断拨杆是否拨到下档
-//       if (switch_is_down(fric_set_control->shoot_rc->rc.s[SHOOT_CONTROL_CHANNEL]))
-//        {
-//           // 拨到下档停止初始化
-//           init_time = 0;
-//        }
-//       else
-//       {
-//            // 判断是否初始化完成
-////				 if (shoot_init_state == SHOOT_INIT_UNFINISH)
-////            {
-//////                // 初始化未完成
-
-//////                // 判断初始化时间是否过长
-////               if (init_time >= SHOOT_TASK_S_TO_MS(SHOOT_TASK_MAX_INIT_TIME))
-////                {
-////                    // 初始化时间过长不进行初始化，进入其他模式
-////                    init_time = 0;
-////                }
-////                else
-////                {
-////                    // 判断微动开关是否打开
-                  if (BUTTEN_TRIG_PIN ==0/*PRESS*/)
-                    {
-                       // 按下
-                        // 设置初始化完成
-                        shoot_init_state = SHOOT_INIT_FINISH;
-                        init_time = 0;
-                        // 进入其他模式
-                    }
-////                    else
-////                    {
-////                        // 初始化模式保持原状，初始化时间增加
-////                        init_time++;
-////                        return;
-////                    }
-////                }
-////            }
-////            else
-////            {
-////                // 进入其他模式
-////                init_time = 0;
-////            }
+//   if (shoot_control_mode == SHOOT_INIT_CONTROL)
+//  {
+//       static uint32_t init_time = 0;
+//       // 判断拨杆是否拨到下档
+////       if (switch_is_down(fric_set_control->shoot_rc->rc.s[SHOOT_CONTROL_CHANNEL]))
+////        {
+////           // 拨到下档停止初始化
+////           init_time = 0;
 ////        }
-   }
+////       else
+////       {
+////            // 判断是否初始化完成
+//////				 if (shoot_init_state == SHOOT_INIT_UNFINISH)
+//////            {
+////////                // 初始化未完成
+
+////////                // 判断初始化时间是否过长
+//////               if (init_time >= SHOOT_TASK_S_TO_MS(SHOOT_TASK_MAX_INIT_TIME))
+//////                {
+//////                    // 初始化时间过长不进行初始化，进入其他模式
+//////                    init_time = 0;
+//////                }
+//////                else
+//////                {
+//////                    // 判断微动开关是否打开
+//                  if (BUTTEN_TRIG_PIN ==0/*PRESS*/)
+//                    {
+//                       // 按下
+//                        // 设置初始化完成
+//                        shoot_init_state = SHOOT_INIT_FINISH;
+//                        init_time = 0;
+//                        // 进入其他模式
+//                    }
+//////                    else
+//////                    {
+//////                        // 初始化模式保持原状，初始化时间增加
+//////                        init_time++;
+//////                        return;
+//////                    }
+//////                }
+//////            }
+//////            else
+//////            {
+//////                // 进入其他模式
+//////                init_time = 0;
+//////            }
+//////        }
+//   }
     // 根据遥控器开关设置发射控制模式
     if (switch_is_up(fric_set_control->shoot_rc->rc.s[SHOOT_CONTROL_CHANNEL]))
     {

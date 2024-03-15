@@ -315,6 +315,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>power_heat_data_t</ItemText>
         </Ww>
+        <Ww>
+          <count>32</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>robot_state.chassis_power_limit</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>

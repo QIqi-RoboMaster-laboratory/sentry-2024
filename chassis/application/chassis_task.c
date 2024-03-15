@@ -700,33 +700,43 @@ static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
         }
 				CHASSIC_MOTOR_POWER_CONTROL(&chassis_move);
     }
+		
+	for (i = 0; i < 4; i++)
+	{
+		chassis_move.motor_chassis[i].give_current = PID_calc(&chassis_move_control_loop->motor_speed_pid[i], chassis_move_control_loop->motor_chassis[i].speed, 
+																															chassis_move_control_loop->motor_chassis[i].speed_set);
+		if (abs(chassis_move.power_control.speed[i]) < chassis_move.power_control.SPEED_MIN)
+		{
+			chassis_move.power_control.speed[i] = chassis_move.power_control.SPEED_MIN;
+		}
+	}
 
-    for (i = 0; i < 4; i++)
-    {
-        chassis_move_control_loop->power_control.current[i] = chassis_move_control_loop->motor_chassis[i].give_current = (fp32)(chassis_move_control_loop->motor_speed_pid[i].out);
-        chassis_move_control_loop->power_control.totalCurrentTemp += abs(chassis_move_control_loop->power_control.current[i]);
-    }
+//    for (i = 0; i < 4; i++)
+//    {
+//        chassis_move_control_loop->power_control.current[i] = chassis_move_control_loop->motor_chassis[i].give_current = (fp32)(chassis_move_control_loop->motor_speed_pid[i].out);
+//        chassis_move_control_loop->power_control.totalCurrentTemp += abs(chassis_move_control_loop->power_control.current[i]);
+//    }
 
-    // 功率控制
-    for (i = 0; i < 4; i++)
-    {
-        chassis_move_control_loop->power_control.MAX_current[i] = (K * chassis_move_control_loop->power_control.current[i] / chassis_move_control_loop->power_control.totalCurrentTemp) * (chassis_move_control_loop->power_control.POWER_MAX) / abs(chassis_move_control_loop->motor_chassis[i].speed);
-    }
-    chassis_move_control_loop->power_control.totalCurrentTemp = 0;
+//    // 功率控制
+////    for (i = 0; i < 4; i++)
+////    {
+////        chassis_move_control_loop->power_control.MAX_current[i] = (K * chassis_move_control_loop->power_control.current[i] / chassis_move_control_loop->power_control.totalCurrentTemp) * (chassis_move_control_loop->power_control.POWER_MAX) / abs(chassis_move_control_loop->motor_chassis[i].speed);
+////    }
+//    chassis_move_control_loop->power_control.totalCurrentTemp = 0;
 
-    // 赋值电流值
-    for (i = 0; i < 4; i++)
-    {
-        if (abs(chassis_move_control_loop->motor_chassis[i].give_current) >= abs(chassis_move_control_loop->power_control.MAX_current[i]))
-        {
-            chassis_move_control_loop->motor_chassis[i].give_current = chassis_move_control_loop->power_control.MAX_current[i];
-        }
-        else
-        {
-            chassis_move_control_loop->motor_chassis[i].give_current = (int16_t)(chassis_move_control_loop->motor_speed_pid[i].out);
-        }
-    }
-    chassis_move_control_loop->mode_flag = 0;
+//    // 赋值电流值
+//    for (i = 0; i < 4; i++)
+//    {
+//        if (abs(chassis_move_control_loop->motor_chassis[i].give_current) >= abs(chassis_move_control_loop->power_control.MAX_current[i]))
+//        {
+//            chassis_move_control_loop->motor_chassis[i].give_current = chassis_move_control_loop->power_control.MAX_current[i];
+//        }
+//        else
+//        {
+//            chassis_move_control_loop->motor_chassis[i].give_current = (int16_t)(chassis_move_control_loop->motor_speed_pid[i].out);
+//        }
+//    }
+//    chassis_move_control_loop->mode_flag = 0;
 }
 
 

@@ -20,12 +20,13 @@ typedef struct {
 typedef struct __attribute__((packed))
 {
     uint8_t header;
-    float distance;
-    float x;
-    float y;
-    float angle;
-    float n;
-    float m;
+    uint8_t pose;
+	double distance;
+//    float x;
+//    float y;
+//    float angle;
+//    float n;
+//    float m;
 } radar_txfifo_t;
 
 

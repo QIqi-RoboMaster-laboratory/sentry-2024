@@ -107,13 +107,13 @@
 
 //single chassis motor max speed
 //单个底盘电机最大速度
-#define MAX_WHEEL_SPEED 4.0f
+#define MAX_WHEEL_SPEED 20.0f
 //chassis forward or back max speed
 //底盘运动过程最大前进速度
-#define NORMAL_MAX_CHASSIS_SPEED_X 2.0f
+#define NORMAL_MAX_CHASSIS_SPEED_X 10.0f
 //chassis left or right max speed
 //底盘运动过程最大平移速度
-#define NORMAL_MAX_CHASSIS_SPEED_Y 1.5f
+#define NORMAL_MAX_CHASSIS_SPEED_Y 15.0f
 
 #define CHASSIS_WZ_SET_SCALE 0.1375f
 
@@ -150,7 +150,7 @@
 #define CHASSIS_FOLLOW_GIMBAL_DEADLINE 0.01f
 
 //底盘小陀螺速度值
-#define SPIN_SPEED 		  -8.0f
+#define SPIN_SPEED 		  -15.0f
 //底盘自动移动距离项差值系数
 #define AUTO_MOVE_K_DISTANCE_ERROR 1.0f
 //底盘自动移动最大输出速度 m/s

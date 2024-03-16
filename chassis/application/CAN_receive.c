@@ -279,6 +279,16 @@ void CAN_cmd_ref(uint16_t heat, uint16_t speed, int16_t motor3, int16_t motor4)
     chassis_can_send_data[7] = 0; 
 	  HAL_CAN_AddTxMessage(&hcan1, &chassis_tx_message, chassis_can_send_data, &send_mail_box);
 }
+void send_game_robot_HP_data(CAN_HandleTypeDef *hcan, ext_game_robot_HP_t *game_robot_HP_t)
+	{
+    CAN_TxHeaderTypeDef TxHeader;
+    uint32_t TxMailbox;  
+    TxHeader.StdId = CAN_ROBOT_HP; 
+    TxHeader.IDE = CAN_ID_STD;
+    TxHeader.RTR = CAN_RTR_DATA;
+    TxHeader.DLC = sizeof(ext_game_robot_HP_t);
+    HAL_CAN_AddTxMessage(hcan, &TxHeader, (uint8_t*)game_robot_HP_t, &TxMailbox);
+}
 /**
   * @brief          return the yaw 6020 motor data point
   * @param[in]      none

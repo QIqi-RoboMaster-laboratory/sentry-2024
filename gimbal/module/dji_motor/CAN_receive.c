@@ -24,7 +24,36 @@
 #include "bsp_rng.h"
 #include "detect_task.h"
 #include "shoot_task.h"
-extern Shoot_Motor_t trigger_motor;  
+#include "referee.h"
+
+extern frame_header_struct_t referee_receive_header;
+extern frame_header_struct_t referee_send_header;
+
+extern ext_game_state_t game_state;
+extern ext_game_result_t game_result;
+extern ext_game_robot_HP_t game_robot_HP_t;
+
+extern ext_event_data_t field_event;
+extern ext_supply_projectile_action_t supply_projectile_action_t;
+extern ext_supply_projectile_booking_t supply_projectile_booking_t;
+extern ext_referee_warning_t referee_warning_t;
+
+
+extern ext_game_robot_state_t robot_state;
+extern ext_power_heat_data_t power_heat_data_t;
+extern ext_game_robot_pos_t game_robot_pos_t;
+extern ext_buff_musk_t buff_musk_t;
+extern aerial_robot_energy_t robot_energy_t;
+extern ext_robot_hurt_t robot_hurt_t;
+extern ext_shoot_data_t shoot_data_t;
+extern ext_bullet_remaining_t bullet_remaining_t;
+extern ext_student_interactive_data_t student_interactive_data_t;
+
+extern ext_rfid_status_t  rfid_status_t;
+extern ext_robot_command_t robot_command_t;
+
+extern Shoot_Motor_t trigger_motor; 
+
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
 //motor data read
@@ -95,7 +124,20 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 //					trigger_motor.vy_set_CANsend=(int16_t)(rx_data[4] << 8 | rx_data[5]);	
 //          trigger_motor.chassis_mode_CANsend=(int16_t)(rx_data[6] << 8 | rx_data[7]);   //底盘模式
             break;
-        }
+				}
+	case CAN_GAME_ROBOT_HP_ID:
+{
+    CAN_RxHeaderTypeDef RxHeader;
+    uint8_t rx_data[sizeof(ext_game_robot_HP_t)]; 
+    HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &RxHeader, rx_data);  
+    if (RxHeader.StdId == CAN_GAME_ROBOT_HP_ID && RxHeader.IDE == CAN_ID_STD && RxHeader.DLC == sizeof(ext_game_robot_HP_t)) 
+    {
+        memcpy(&game_robot_HP_t, rx_data, sizeof(ext_game_robot_HP_t));
+        // 解析数据完成，可以在这里处理接收到的game_robot_HP_data数据
+    }
+    // 在接收到数据后进行处理
+    break;
+}
         default:
         {
             break;

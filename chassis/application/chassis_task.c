@@ -27,11 +27,41 @@
 #include "INS_task.h"
 #include "chassis_power_control.h"
 #include "gimbal_task.h"
+#include "referee.h"
 fp32 chassis_yaw;
 fp32 sin_yaw;
 fp32 gaibian = 0.0f;
 extern ext_power_heat_data_t power_heat_data_t;
 extern ext_shoot_data_t shoot_data_t;
+
+
+
+extern frame_header_struct_t referee_receive_header;
+extern frame_header_struct_t referee_send_header;
+
+extern ext_game_state_t game_state;
+extern ext_game_result_t game_result;
+extern ext_game_robot_HP_t game_robot_HP_t;
+
+extern ext_event_data_t field_event;
+extern ext_supply_projectile_action_t supply_projectile_action_t;
+//extern ext_supply_projectile_booking_t supply_projectile_booking_t;
+extern ext_referee_warning_t referee_warning_t;
+
+
+extern ext_game_robot_state_t robot_state;
+extern ext_power_heat_data_t power_heat_data_t;
+extern ext_game_robot_pos_t game_robot_pos_t;
+extern ext_buff_musk_t buff_musk_t;
+extern aerial_robot_energy_t robot_energy_t;
+extern ext_robot_hurt_t robot_hurt_t;
+extern ext_shoot_data_t shoot_data_t;
+extern ext_bullet_remaining_t bullet_remaining_t;
+extern ext_student_interactive_data_t student_interactive_data_t;
+
+extern ext_rfid_status_t  rfid_status_t;
+extern ext_robot_command_t robot_command_t;
+extern CAN_HandleTypeDef hcan1;
  extern  float firstyaw;
       extern  float yaw;
 			float Xy=0.0f; 
@@ -173,6 +203,7 @@ void chassis_task(void const *pvParameters)
 		chassis_move.speed= shoot_data_t.bullet_speed*1000;
 			
 		         CAN_cmd_ref(chassis_move.heat, chassis_move.speed, 0, 0);
+				send_game_robot_HP_data(&hcan1, &game_robot_HP_t);
 			CAN_cmd_chassis(0,0,0,0);
 		}		
        //     {
@@ -184,8 +215,7 @@ void chassis_task(void const *pvParameters)
                                 chassis_move.motor_chassis[2].give_current, chassis_move.motor_chassis[3].give_current);
 		
 		         CAN_cmd_ref(chassis_move.heat, chassis_move.speed, 0, 0);
-
-		
+					send_game_robot_HP_data(&hcan1, &game_robot_HP_t);
 //            }
 //            else
 //            {
@@ -689,18 +719,18 @@ static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
     }
 
     //calculate pid
-    //º∆À„pid
-    for (i = 0; i < 4; i++)
-    {
-        PID_calc(&chassis_move_control_loop->motor_speed_pid[i], chassis_move_control_loop->motor_chassis[i].speed, chassis_move_control_loop->motor_chassis[i].speed_set);
-        chassis_move_control_loop->power_control.speed[i] = chassis_move_control_loop->motor_chassis[i].speed;
-        if (abs(chassis_move_control_loop->power_control.speed[i]) < chassis_move_control_loop->power_control.SPEED_MIN)
-        {
-            chassis_move_control_loop->power_control.speed[i] = chassis_move_control_loop->power_control.SPEED_MIN;
-        }
-				CHASSIC_MOTOR_POWER_CONTROL(&chassis_move);
-    }
-		
+//    //º∆À„pid
+//    for (i = 0; i < 4; i++)
+//    {
+//        PID_calc(&chassis_move_control_loop->motor_speed_pid[i], chassis_move_control_loop->motor_chassis[i].speed, chassis_move_control_loop->motor_chassis[i].speed_set);
+//        chassis_move_control_loop->power_control.speed[i] = chassis_move_control_loop->motor_chassis[i].speed;
+//        if (abs(chassis_move_control_loop->power_control.speed[i]) < chassis_move_control_loop->power_control.SPEED_MIN)
+//        {
+//            chassis_move_control_loop->power_control.speed[i] = chassis_move_control_loop->power_control.SPEED_MIN;
+//        }
+//				CHASSIC_MOTOR_POWER_CONTROL(&chassis_move);
+//    }
+//		
 	for (i = 0; i < 4; i++)
 	{
 		chassis_move.motor_chassis[i].give_current = PID_calc(&chassis_move_control_loop->motor_speed_pid[i], chassis_move_control_loop->motor_chassis[i].speed, 
@@ -709,6 +739,7 @@ static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
 		{
 			chassis_move.power_control.speed[i] = chassis_move.power_control.SPEED_MIN;
 		}
+			CHASSIC_MOTOR_POWER_CONTROL(&chassis_move);
 	}
 
 //    for (i = 0; i < 4; i++)

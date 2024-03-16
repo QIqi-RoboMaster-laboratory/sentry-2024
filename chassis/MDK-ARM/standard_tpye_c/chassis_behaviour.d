@@ -1,25 +1,21 @@
 standard_tpye_c/chassis_behaviour.o: ..\application\chassis_behaviour.c \
   ..\application\chassis_behaviour.h ..\application\struct_typedef.h \
   ..\application\chassis_task.h ..\application\CAN_receive.h \
-  ..\application\gimbal_task.h ..\components\controller\pid.h \
-  ..\application\remote_control.h ..\bsp\boards\bsp_rc.h \
+  ..\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h \
+  ..\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h \
+  ..\Drivers\CMSIS\Include\core_cm4.h \
+  D:\keil\ARM\ARMCLANG\Bin\..\include\stdint.h \
+  ..\Drivers\CMSIS\Include\cmsis_version.h \
+  ..\Drivers\CMSIS\Include\cmsis_compiler.h \
   ..\Drivers\CMSIS\Include\cmsis_armclang.h \
   D:\keil\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
   D:\keil\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
-  D:\keil\ARM\ARMCLANG\Bin\..\include\stdint.h \
-  ..\components\algorithm\user_lib.h ..\application\vision_task.h \
-  ..\Inc\usart.h ..\Inc\main.h \
+  ..\Drivers\CMSIS\Include\mpu_armv7.h \
+  ..\Drivers\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h \
   ..\Inc\stm32f4xx_hal_conf.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_rcc.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_def.h \
-  ..\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h \
-  ..\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h \
-  ..\Drivers\CMSIS\Include\core_cm4.h \
-  ..\Drivers\CMSIS\Include\cmsis_version.h \
-  ..\Drivers\CMSIS\Include\cmsis_compiler.h \
-  ..\Drivers\CMSIS\Include\mpu_armv7.h \
-  ..\Drivers\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h \
   D:\keil\ARM\ARMCLANG\Bin\..\include\stddef.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_rcc_ex.h \
@@ -50,15 +46,19 @@ standard_tpye_c/chassis_behaviour.o: ..\application\chassis_behaviour.c \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pcd.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_usb.h \
   ..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pcd_ex.h \
-  ..\Inc\dma.h ..\application\INS_task.h \
-  ..\components\devices\BMI088driver.h \
+  ..\application\referee.h ..\Inc\main.h \
+  ..\application\protocol\protocol.h ..\application\gimbal_task.h \
+  ..\components\controller\pid.h ..\application\remote_control.h \
+  ..\bsp\boards\bsp_rc.h ..\components\algorithm\user_lib.h \
+  ..\application\vision_task.h ..\Inc\usart.h ..\Inc\dma.h \
+  ..\application\INS_task.h ..\components\devices\BMI088driver.h \
   ..\components\algorithm\QuaternionEKF.h \
   ..\components\algorithm\kalman_filter.h \
   ..\components\algorithm\Include\arm_math.h \
   D:\keil\ARM\ARMCLANG\Bin\..\include\string.h \
   D:\keil\ARM\ARMCLANG\Bin\..\include\math.h \
-  D:\keil\ARM\ARMCLANG\Bin\..\include\stdlib.h ..\application\referee.h \
-  ..\application\protocol\protocol.h ..\application\detect_task.h \
+  D:\keil\ARM\ARMCLANG\Bin\..\include\stdlib.h \
+  ..\application\detect_task.h \
   ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.h \
   ..\Middlewares\Third_Party\FreeRTOS\Source\include\FreeRTOS.h \
   ..\Inc\FreeRTOSConfig.h \

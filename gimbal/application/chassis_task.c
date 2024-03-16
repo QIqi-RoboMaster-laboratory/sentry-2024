@@ -198,10 +198,10 @@ static void chassis_set_mode(chassis_move_t *chassis_move_mode)
     }
     //when gimbal in some mode, such as init mode, chassis must's move
     //当云台在某些模式下，像初始化， 底盘不动
-   if (gimbal_cmd_to_chassis_stop())
-   {
-       chassis_move_mode->chassis_behaviour = CHASSIS_NO_MOVE;
-   }
+//    if (gimbal_cmd_to_chassis_stop())
+//    {
+//        chassis_move_mode->chassis_behaviour = CHASSIS_NO_MOVE;
+//    }
 }
 
 /**

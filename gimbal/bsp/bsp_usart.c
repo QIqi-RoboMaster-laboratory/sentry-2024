@@ -2,7 +2,7 @@
 #include "main.h"
 #include "bsp_usart.h"
 #include "string.h"
-//#include "vision_task.h"
+
 extern UART_HandleTypeDef huart1;
 extern DMA_HandleTypeDef hdma_usart1_tx;
 extern DMA_HandleTypeDef hdma_usart1_rx;
@@ -59,8 +59,8 @@ void vision_rx_decode(uint8_t *test_code)
 		memcpy(&vision_rxfifo, test_code,sizeof(vision_rxfifo));
 	
 	}
-	 memset(test_code, 0, sizeof(vision_rxfifo)); // 每次清零test_code数据
-
+	memset(test_code, 0, sizeof(vision_rxfifo)); 
+	
 }
 
 vision_rxfifo_t *get_vision_fifo(void)
@@ -192,28 +192,15 @@ void usart6_tx_dma_enable(uint8_t *data, uint16_t len)
     __HAL_DMA_ENABLE(&hdma_usart6_tx);
 }
 
-
-
-
-
-
-uint8_t data_len = 49;
-char cmd_vel_topic[50];
+//uint8_t data_len = 49;
+//char cmd_vel_topic[50];
 radar_txfifo_t radar_txfifo;
 
-//const chassis_vision_control_t chassis_vision_control; 
+
 void send_data_to_upper_computer(uint8_t *send_buffer, radar_txfifo_t *radar_txfifo) 
 {
-	
-	
-	radar_txfifo->header = 0x5A;
-		radar_txfifo->pose  = 0x5C;
-//radar_txfifo->distance   = chassis_vision_control.distance;
-
-	
-
-	memset(send_buffer,0,sizeof(radar_txfifo_t));
-	memcpy(send_buffer,radar_txfifo,sizeof(radar_txfifo_t));		//复制结构体数据到发送缓冲区
+	radar_txfifo->header = 0x5A;// 设置header为结构体中的值
+  memset(send_buffer,0,sizeof(radar_txfifo_t)); // 复制结构体数据到发送缓冲区
     HAL_UART_Transmit(&huart6, send_buffer, sizeof(radar_txfifo_t), HAL_MAX_DELAY);
    
 }

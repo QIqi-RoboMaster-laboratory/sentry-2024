@@ -42,7 +42,7 @@
 #define FRIC_MOTOR_STOP_SPEED 0
 
 //拨弹盘电机转速
-#define TRIGGER_MOTOR_RUN_SPEED -10.0
+#define TRIGGER_MOTOR_RUN_SPEED -12.0
 #define TRIGGER_MOTOR_FRUN_SPEED 10.0
 //拨弹盘电机停转
 #define TRIGGER_MOTOR_STOP_SPEED 0
@@ -106,9 +106,9 @@
 //卡弹电流
 #define STUCK_CURRENT 7000
 //卡弹时间
-#define STUCK_TIME 600
+#define STUCK_TIME 800
 //回拨时间
-#define REVERSE_TIME 220
+#define REVERSE_TIME 110
 
 typedef enum
 {
@@ -184,8 +184,10 @@ typedef struct
     fp32 reverse_time;         // 卡弹回拨时间
 
 
+
 uint16_t heat;
 uint16_t bulletspeed;
+
 
 } Shoot_Motor_t;
 

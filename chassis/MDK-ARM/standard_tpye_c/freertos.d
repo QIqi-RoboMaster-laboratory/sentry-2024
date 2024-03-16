@@ -58,7 +58,8 @@ standard_tpye_c/freertos.o: ..\Src\freertos.c \
   ..\Middlewares\Third_Party\FreeRTOS\Source\include\semphr.h \
   ..\Middlewares\Third_Party\FreeRTOS\Source\include\event_groups.h \
   ..\application\chassis_task.h ..\application\struct_typedef.h \
-  ..\application\CAN_receive.h ..\application\gimbal_task.h \
+  ..\application\CAN_receive.h ..\application\referee.h \
+  ..\application\protocol\protocol.h ..\application\gimbal_task.h \
   ..\components\controller\pid.h ..\application\remote_control.h \
   ..\bsp\boards\bsp_rc.h ..\components\algorithm\user_lib.h \
   ..\application\vision_task.h ..\Inc\usart.h ..\Inc\dma.h \
@@ -68,8 +69,7 @@ standard_tpye_c/freertos.o: ..\Src\freertos.c \
   ..\components\algorithm\Include\arm_math.h \
   D:\keil\ARM\ARMCLANG\Bin\..\include\string.h \
   D:\keil\ARM\ARMCLANG\Bin\..\include\math.h \
-  D:\keil\ARM\ARMCLANG\Bin\..\include\stdlib.h ..\application\referee.h \
-  ..\application\protocol\protocol.h ..\application\detect_task.h \
-  ..\application\shoot_task.h ..\application\led_flow_task.h \
-  ..\application\oled_task.h ..\application\referee_usart_task.h \
-  ..\application\voltage_task.h
+  D:\keil\ARM\ARMCLANG\Bin\..\include\stdlib.h \
+  ..\application\detect_task.h ..\application\shoot_task.h \
+  ..\application\led_flow_task.h ..\application\oled_task.h \
+  ..\application\referee_usart_task.h ..\application\voltage_task.h

@@ -73,7 +73,7 @@
 //固有时间偏移即上位机计算时间单位ms
 #define TIME_BIAS 6
 //机器人自身固有时间偏差
-#define ROBOT_TIMR_BIAS 20
+#define ROBOT_TIMR_BIAS 103
 //偏差时间队列大小
 #define TIME_BIAS_QUEUE_CAPACITY 10 
 
@@ -88,7 +88,7 @@
 
 // 击打敌方机器人0.1
 //imu到枪口的竖直距离
-#define Z_STATIC  0.05829f*0.5
+#define Z_STATIC -0.05829f*0.25
 //枪口前推距离
 #define DISTANCE_STATIC 0.25939f
 //初始飞行时间

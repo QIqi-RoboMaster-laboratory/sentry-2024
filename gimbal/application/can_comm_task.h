@@ -41,7 +41,10 @@ typedef enum
     CAN_3508_S1_ID = 0x205,
     CAN_3508_S2_ID = 0x206,
 	CAN_REF_ID=0x212,
-	CAN_GAME_ROBOT_HP_ID=0x208
+	CAN_blue_ROBOT_HP_ID=0x208,
+		CAN_red_ROBOT_HP_ID=0x209,
+	CAN_game_state=0x210,
+	CAN_sentry_outpot=0x211,
 } can_msg_id_e;
 
 //can通信任务结构体

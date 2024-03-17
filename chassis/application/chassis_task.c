@@ -197,14 +197,18 @@ void chassis_task(void const *pvParameters)
             // 确保至少一个电机在线
             linkState_1++;
 					linkState_2++;
-		if(linkState_1>50||linkState_2>50)  //若双板通信没接收到数据，则舵和轮都不动
+		if(linkState_1>50||linkState_2>50)  
 		{
 				chassis_move.heat=power_heat_data_t.shooter_id1_17mm_cooling_heat;
 		chassis_move.speed= shoot_data_t.bullet_speed*1000;
 			
-		         CAN_cmd_ref(chassis_move.heat, chassis_move.speed, 0, 0);
-				send_game_robot_HP_data(&hcan1, &game_robot_HP_t);
-			CAN_cmd_chassis(0,0,0,0);
+		     CAN_cmd_ref(chassis_move.heat, chassis_move.speed, 0, 0);
+//				 CAN_blue_robot_hp(game_robot_HP_t.blue_1_robot_HP, game_robot_HP_t.blue_3_robot_HP, game_robot_HP_t.blue_4_robot_HP, game_robot_HP_t.blue_base_HP);
+//			 CAN_red_robot_hp(game_robot_HP_t.red_1_robot_HP, game_robot_HP_t.red_3_robot_HP, game_robot_HP_t.red_4_robot_HP, game_robot_HP_t.red_base_HP);
+//			CAN_game_state(game_state.game_progress,0,0,0,game_state.stage_remain_time);
+//					CAN_sentry_outpot_state(game_robot_HP_t.red_7_robot_HP,game_robot_HP_t.red_outpost_HP,game_robot_HP_t.blue_7_robot_HP,game_robot_HP_t.blue_outpost_HP);
+
+				CAN_cmd_chassis(0,0,0,0);
 		}		
        //     {
                 
@@ -215,7 +219,10 @@ void chassis_task(void const *pvParameters)
                                 chassis_move.motor_chassis[2].give_current, chassis_move.motor_chassis[3].give_current);
 		
 		         CAN_cmd_ref(chassis_move.heat, chassis_move.speed, 0, 0);
-					send_game_robot_HP_data(&hcan1, &game_robot_HP_t);
+//			 CAN_blue_robot_hp(game_robot_HP_t.blue_1_robot_HP, game_robot_HP_t.blue_3_robot_HP, game_robot_HP_t.blue_4_robot_HP, game_robot_HP_t.blue_base_HP);
+//			 CAN_red_robot_hp(game_robot_HP_t.red_1_robot_HP, game_robot_HP_t.red_3_robot_HP, game_robot_HP_t.red_4_robot_HP, game_robot_HP_t.red_base_HP);
+//		CAN_game_state(game_state.game_progress,0,0,0,game_state.stage_remain_time);
+//		CAN_sentry_outpot_state(game_robot_HP_t.red_7_robot_HP,game_robot_HP_t.red_outpost_HP,game_robot_HP_t.blue_7_robot_HP,game_robot_HP_t.blue_outpost_HP);
 //            }
 //            else
 //            {

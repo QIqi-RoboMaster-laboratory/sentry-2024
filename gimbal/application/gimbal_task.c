@@ -42,6 +42,7 @@
 #include "can_comm_task.h"
 #include "chassis_task.h"
 #include "bsp_usart.h"
+#include "vision_task.h"
 // motor enconde value format, range[0-8191]
 // 电机编码值规整 0—8191
 #define ecd_format(ecd)         \
@@ -156,6 +157,7 @@ static void gimbal_motor_second_order_linear_controller_init(gimbal_motor_second
 /**
  * @brief 云台二阶线性控制器计算 
  * 
+ 
  * @param controller 云台二阶线性控制器结构体
  * @param set_angle 角度设置值
  * @param cur_angle 当前角度
@@ -199,6 +201,8 @@ void gimbal_task(void const *pvParameters)
             gimbal_feedback_update(&gimbal_control);             // 云台数据反馈
             gimbal_set_control(&gimbal_control);                 // 设置云台控制量
             gimbal_control_loop(&gimbal_control);                // 云台控制计算
+						uint8_t send_buffer[21]; // 假设有一个长度为200的发送缓冲区
+				send_data_to_upper_computer(send_buffer, &radar_txfifo);
 
 //            if (!(toe_is_error(YAW_GIMBAL_MOTOR_TOE) && toe_is_error(PITCH_GIMBAL_MOTOR_TOE)))
 //            {
@@ -317,8 +321,7 @@ static void gimbal_init(gimbal_control_t *init)
 
 			vision_rx=get_vision_fifo();
 			
-		uint8_t send_buffer[200]; // 假设有一个长度为200的发送缓冲区
-		send_data_to_upper_computer(send_buffer, &radar_txfifo);
+		
 }
 
 /**
@@ -355,6 +358,9 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update)
     feedback_update->gimbal_yaw_motor.absolute_angle = feedback_update->gimbal_INS_point->Yaw;
     feedback_update->gimbal_yaw_motor.relative_angle = motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.gimbal_motor_measure->ecd, feedback_update->gimbal_yaw_motor.frist_ecd);
     feedback_update->gimbal_yaw_motor.motor_gyro = arm_cos_f32(feedback_update->gimbal_pitch_motor.relative_angle) * (feedback_update->gimbal_INS_point->Gyro[Z]) - arm_sin_f32(feedback_update->gimbal_pitch_motor.relative_angle) * (feedback_update->gimbal_INS_point->Gyro[X]);
+
+
+		
 }
 
 /**
@@ -453,6 +459,7 @@ static void gimbal_set_control(gimbal_control_t *set_control)
     fp32 add_pitch_angle = 0.0f;
 
     gimbal_behaviour_control_set(&add_yaw_angle, &add_pitch_angle, set_control);
+			
     // yaw电机模式控制
     if (set_control->gimbal_yaw_motor.gimbal_motor_mode == GIMBAL_MOTOR_RAW)
     {
@@ -593,6 +600,7 @@ static void gimbal_relative_angle_limit(gimbal_motor_t *gimbal_motor, fp32 add)
  */
 static void gimbal_control_loop(gimbal_control_t *control_loop)
 {
+	
     if (control_loop == NULL)
     {
         return;

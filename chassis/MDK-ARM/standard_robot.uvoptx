@@ -350,6 +350,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>game_robot_HP_t</ItemText>
         </Ww>
+        <Ww>
+          <count>39</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>field_event,0x10</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>

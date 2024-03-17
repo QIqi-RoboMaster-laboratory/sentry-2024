@@ -65,7 +65,21 @@ extern CAN_HandleTypeDef hcan2;
         (ptr)->given_current = (uint16_t)((data)[4] << 8 | (data)[5]);  \
         (ptr)->temperate = (data)[6];                                   \
     }
+		
+		
+		
+		void receive_game_robot_HP_data(CAN_HandleTypeDef *hcan, ext_game_robot_HP_t *game_robot_HP_t)
+{
+    CAN_RxHeaderTypeDef RxHeader;
+    uint8_t rx_data[sizeof(ext_game_robot_HP_t)]; 
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, rx_data);  
+
+    // 将接收到的数据复制到game_robot_HP_t结构体中
+    memcpy(game_robot_HP_t, rx_data, sizeof(ext_game_robot_HP_t));
+}
 /*
+		
+		
 
 电机数据, CAN1 0:底盘电机1 3508电机,  1:底盘电机2 3508电机,2:底盘电机3 3508电机,3:底盘电机4 3508电机;
 4:yaw云台电机 6020电机; 5:pitch云台电机 6020电机; 
@@ -125,19 +139,38 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 //          trigger_motor.chassis_mode_CANsend=(int16_t)(rx_data[6] << 8 | rx_data[7]);   //底盘模式
             break;
 				}
-	case CAN_GAME_ROBOT_HP_ID:
+	case 	CAN_blue_ROBOT_HP_ID:
 {
-    CAN_RxHeaderTypeDef RxHeader;
-    uint8_t rx_data[sizeof(ext_game_robot_HP_t)]; 
-    HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &RxHeader, rx_data);  
-    if (RxHeader.StdId == CAN_GAME_ROBOT_HP_ID && RxHeader.IDE == CAN_ID_STD && RxHeader.DLC == sizeof(ext_game_robot_HP_t)) 
-    {
-        memcpy(&game_robot_HP_t, rx_data, sizeof(ext_game_robot_HP_t));
-        // 解析数据完成，可以在这里处理接收到的game_robot_HP_data数据
-    }
-    // 在接收到数据后进行处理
+	game_robot_HP_t.blue_1_robot_HP=((uint16_t)(rx_data[0] << 8 | rx_data[1])); 
+game_robot_HP_t.blue_3_robot_HP=((uint16_t)(rx_data[2] << 8 | rx_data[3])); 
+	game_robot_HP_t.blue_4_robot_HP=((uint16_t)(rx_data[4] << 8 | rx_data[5])); 
+	game_robot_HP_t.blue_base_HP=((uint16_t)(rx_data[6] << 8 | rx_data[7])); 
     break;
 }
+case 	CAN_red_ROBOT_HP_ID:
+{
+		game_robot_HP_t.red_1_robot_HP=((uint16_t)(rx_data[0] << 8 | rx_data[1])); 
+		game_robot_HP_t.red_3_robot_HP=((uint16_t)(rx_data[2] << 8 | rx_data[3])); 
+		game_robot_HP_t.red_4_robot_HP=((uint16_t)(rx_data[4] << 8 | rx_data[5])); 
+		game_robot_HP_t.red_base_HP=((uint16_t)(rx_data[6] << 8 | rx_data[7])); 
+    break;
+}
+case CAN_game_state	:
+{
+		game_state.game_progress=((uint8_t)(rx_data[0])); 
+		 
+		game_state.stage_remain_time=((uint16_t)(rx_data[4] << 8 | rx_data[5])); 
+    break;
+}
+case 	CAN_sentry_outpot:
+{
+		game_robot_HP_t.red_7_robot_HP=((uint16_t)(rx_data[0] << 8 | rx_data[1])); 
+		game_robot_HP_t.red_outpost_HP=((uint16_t)(rx_data[2] << 8 | rx_data[3])); 
+		game_robot_HP_t.blue_7_robot_HP=((uint16_t)(rx_data[4] << 8 | rx_data[5])); 
+		game_robot_HP_t.blue_outpost_HP=((uint16_t)(rx_data[6] << 8 | rx_data[7])); 
+    break;
+}
+
         default:
         {
             break;

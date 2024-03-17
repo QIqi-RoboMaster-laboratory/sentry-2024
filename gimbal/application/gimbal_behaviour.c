@@ -357,11 +357,13 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
     {
         // 切换到遥控器控制模式
         gimbal_behaviour = GIMBAL_RC;
+				
     }
     else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
 
         gimbal_behaviour = GIMBAL_AUTO_ATTACK;
+			
 			
         // // 切换到云台自动模式
         // // 判断当前模式是否为自动移动模式

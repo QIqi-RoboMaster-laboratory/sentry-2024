@@ -41,22 +41,22 @@ typedef enum
     CAN_PIT_MOTOR_ID = 0x206,
     CAN_TRIGGER_MOTOR_ID = 0x207,
     CAN_GIMBAL_ALL_ID = 0x1FF,
-//	
-//	 CAN_Forward_L_ID = 0x205,
-//    CAN_Forward_R_ID = 0x206,
-//    CAN_BACK_L_ID=0x207,
-//	  CAN_BACK_R_ID=0x208,
+
     CAN_CAPID=0x211,
 	  CAN_POWERID=0x212,
 	  CAN_GIMBAL_CALL_BACK_ID=0x218,
 		CAN_GIMBAL_CALL_BACK_KEY_ID=0x219,
-	  CAN_REFEREE_ID = 0x212,
-		CAN_ROBOT_HP=0x208,
+
 
     CAN_SHOOT_ALL_ID = 0x1FF,
     CAN_3508_S1_ID = 0x205,
     CAN_3508_S2_ID = 0x206,
 	
+		  CAN_REFEREE_ID = 0x212,
+		CAN_ROBOT_HPb1=0x208,
+		CAN_ROBOT_HPr1=0x209,
+		CAN_ROBOT_state=0x210,
+		CAN_sentry_outpot=0x211,
 } can_msg_id_e;
 
 //rm motor data
@@ -118,6 +118,11 @@ extern void CAN_cmd_chassis_reset_ID(void);
   */
 extern void CAN_cmd_chassis(int16_t motor1, int16_t motor2, int16_t motor3, int16_t motor4);
 extern void CAN_cmd_ref(uint16_t heat, uint16_t speed, int16_t motor3, int16_t motor4);
+extern void CAN_blue_robot_hp(uint16_t b1, uint16_t b3, int16_t b4, int16_t bb);
+extern void CAN_red_robot_hp(uint16_t r1, uint16_t r3, int16_t r4, int16_t rb);
+extern void CAN_game_state(uint8_t game_progress, uint8_t game_progress1,uint8_t game_progress2,uint8_t game_progress3,uint16_t time);
+extern void CAN_sentry_outpot_state(uint16_t rs, uint16_t ro, uint16_t bs, uint16_t bo);
+
 extern void send_game_robot_HP_data(CAN_HandleTypeDef *hcan, ext_game_robot_HP_t *game_robot_HP_t);
 		
 extern void CAN_cmd_shoot(int16_t fric1,int16_t fric2 ,int16_t shoot, int16_t rev);

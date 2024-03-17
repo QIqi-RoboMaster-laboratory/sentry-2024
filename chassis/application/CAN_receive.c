@@ -279,15 +279,75 @@ void CAN_cmd_ref(uint16_t heat, uint16_t speed, int16_t motor3, int16_t motor4)
     chassis_can_send_data[7] = 0; 
 	  HAL_CAN_AddTxMessage(&hcan1, &chassis_tx_message, chassis_can_send_data, &send_mail_box);
 }
-void send_game_robot_HP_data(CAN_HandleTypeDef *hcan, ext_game_robot_HP_t *game_robot_HP_t)
-	{
-    CAN_TxHeaderTypeDef TxHeader;
-    uint32_t TxMailbox;  
-    TxHeader.StdId = CAN_ROBOT_HP; 
-    TxHeader.IDE = CAN_ID_STD;
-    TxHeader.RTR = CAN_RTR_DATA;
-    TxHeader.DLC = sizeof(ext_game_robot_HP_t);
-    HAL_CAN_AddTxMessage(hcan, &TxHeader, (uint8_t*)game_robot_HP_t, &TxMailbox);
+void CAN_blue_robot_hp(uint16_t b1, uint16_t b3, int16_t b4, int16_t bb)
+{
+   uint32_t send_mail_box;
+    chassis_tx_message.StdId = CAN_ROBOT_HPb1 ;
+    chassis_tx_message.IDE = CAN_ID_STD;
+    chassis_tx_message.RTR = CAN_RTR_DATA;
+    chassis_tx_message.DLC = 0x08;
+    chassis_can_send_data[0] = b1 >> 8;
+    chassis_can_send_data[1] = b1 ;
+    chassis_can_send_data[2] = b3 >> 8;
+    chassis_can_send_data[3] = b3;
+    chassis_can_send_data[4] = b4>>8 ;
+    chassis_can_send_data[5] = b4;
+    chassis_can_send_data[6] = bb>>8;
+    chassis_can_send_data[7] = bb; 
+	  HAL_CAN_AddTxMessage(&hcan1, &chassis_tx_message, chassis_can_send_data, &send_mail_box);
+}
+
+void CAN_red_robot_hp(uint16_t r1, uint16_t r3, int16_t r4, int16_t rb)
+{
+   uint32_t send_mail_box;
+    chassis_tx_message.StdId = CAN_ROBOT_HPr1 ;
+    chassis_tx_message.IDE = CAN_ID_STD;
+    chassis_tx_message.RTR = CAN_RTR_DATA;
+    chassis_tx_message.DLC = 0x08;
+    chassis_can_send_data[0] = r1 >> 8;
+    chassis_can_send_data[1] = r1 ;
+    chassis_can_send_data[2] = r3 >> 8;
+    chassis_can_send_data[3] = r3;
+    chassis_can_send_data[4] = r4>>8 ;
+    chassis_can_send_data[5] = r4;
+    chassis_can_send_data[6] = rb>>8;
+    chassis_can_send_data[7] = rb; 
+	  HAL_CAN_AddTxMessage(&hcan1, &chassis_tx_message, chassis_can_send_data, &send_mail_box);
+}
+
+void CAN_game_state(uint8_t game_progress, uint8_t game_progress1,uint8_t game_progress2,uint8_t game_progress3,uint16_t time)
+{
+   uint32_t send_mail_box;
+    chassis_tx_message.StdId = CAN_ROBOT_state ;
+    chassis_tx_message.IDE = CAN_ID_STD;
+    chassis_tx_message.RTR = CAN_RTR_DATA;
+    chassis_tx_message.DLC = 0x08;
+    chassis_can_send_data[0] = game_progress;
+    chassis_can_send_data[1] = game_progress1 ;
+    chassis_can_send_data[2] = game_progress2;
+    chassis_can_send_data[3] = game_progress3;
+    chassis_can_send_data[4] = time>>8 ;
+    chassis_can_send_data[5] = time;
+    chassis_can_send_data[6] =0;
+    chassis_can_send_data[7] = 0; 
+	  HAL_CAN_AddTxMessage(&hcan1, &chassis_tx_message, chassis_can_send_data, &send_mail_box);
+}
+void CAN_sentry_outpot_state(uint16_t rs, uint16_t ro, uint16_t bs, uint16_t bo)
+{
+   uint32_t send_mail_box;
+    chassis_tx_message.StdId = CAN_sentry_outpot ;
+    chassis_tx_message.IDE = CAN_ID_STD;
+    chassis_tx_message.RTR = CAN_RTR_DATA;
+    chassis_tx_message.DLC = 0x08;
+    chassis_can_send_data[0] = rs>>8;
+    chassis_can_send_data[1] = rs ;
+    chassis_can_send_data[2] = ro>>8;
+    chassis_can_send_data[3] = ro;
+    chassis_can_send_data[4] = bs>>8 ;
+    chassis_can_send_data[5] = bs;
+    chassis_can_send_data[6] =bo>>8;
+    chassis_can_send_data[7] = bo; 
+	  HAL_CAN_AddTxMessage(&hcan1, &chassis_tx_message, chassis_can_send_data, &send_mail_box);
 }
 /**
   * @brief          return the yaw 6020 motor data point

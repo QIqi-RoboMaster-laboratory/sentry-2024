@@ -36,6 +36,7 @@
 #include "referee_usart_task.h"
 #include "vision_task.h"
 #include "can_comm_task.h"
+#include "radar_usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,6 +50,7 @@ osThreadId shoot_task_handle;
 osThreadId vision_task_handle;
 osThreadId INSTaskHandle;
 osThreadId can_comm_task_handle;
+osThreadId radar_usart_handle;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -165,6 +167,9 @@ void MX_FREERTOS_Init(void)
 
     osThreadDef(CanComm, can_comm_task, osPriorityHigh, 0, 512);
     can_comm_task_handle = osThreadCreate(osThread(CanComm), NULL);
+	
+		osThreadDef(RADAR, radar_usart_task, osPriorityNormal, 0, 512);
+		radar_usart_handle = osThreadCreate(osThread(RADAR), NULL);
 
     /* USER CODE END RTOS_THREADS */
 }

@@ -192,44 +192,40 @@ void chassis_task(void const *pvParameters)
         //底盘控制PID计算
         chassis_control_loop(&chassis_move);
         
-//        if (!(toe_is_error(CHASSIS_MOTOR1_TOE) && toe_is_error(CHASSIS_MOTOR2_TOE) && toe_is_error(CHASSIS_MOTOR3_TOE) && toe_is_error(CHASSIS_MOTOR4_TOE)))
-//        {
+       if (!(toe_is_error(CHASSIS_MOTOR1_TOE) && toe_is_error(CHASSIS_MOTOR2_TOE) && toe_is_error(CHASSIS_MOTOR3_TOE) && toe_is_error(CHASSIS_MOTOR4_TOE)))
+      {
             // 确保至少一个电机在线
             linkState_1++;
-					linkState_2++;
+						linkState_2++;
 		if(linkState_1>50||linkState_2>50)  
 		{
-				chassis_move.heat=power_heat_data_t.shooter_id1_17mm_cooling_heat;
-		chassis_move.speed= shoot_data_t.bullet_speed*1000;
 			
-		     CAN_cmd_ref(chassis_move.heat, chassis_move.speed, 0, 0);
-//				 CAN_blue_robot_hp(game_robot_HP_t.blue_1_robot_HP, game_robot_HP_t.blue_3_robot_HP, game_robot_HP_t.blue_4_robot_HP, game_robot_HP_t.blue_base_HP);
-//			 CAN_red_robot_hp(game_robot_HP_t.red_1_robot_HP, game_robot_HP_t.red_3_robot_HP, game_robot_HP_t.red_4_robot_HP, game_robot_HP_t.red_base_HP);
-//			CAN_game_state(game_state.game_progress,0,0,0,game_state.stage_remain_time);
+			
+//					CAN_shoot_data(power_heat_data_t.shooter_id1_17mm_cooling_heat, shoot_data_t.bullet_speed*1000., 0, 0);
+//					CAN_blue_robot_hp(game_robot_HP_t.blue_1_robot_HP, game_robot_HP_t.blue_3_robot_HP, game_robot_HP_t.blue_4_robot_HP, game_robot_HP_t.blue_base_HP);
+//					CAN_red_robot_hp(game_robot_HP_t.red_1_robot_HP, game_robot_HP_t.red_3_robot_HP, game_robot_HP_t.red_4_robot_HP, game_robot_HP_t.red_base_HP);
+//					CAN_game_state(game_state.game_progress,0,0,0,game_state.stage_remain_time);
 //					CAN_sentry_outpot_state(game_robot_HP_t.red_7_robot_HP,game_robot_HP_t.red_outpost_HP,game_robot_HP_t.blue_7_robot_HP,game_robot_HP_t.blue_outpost_HP);
 
 				CAN_cmd_chassis(0,0,0,0);
 		}		
-       //     {
+      
                 
-//             //发送控制电流
+           
 		chassis_move.heat=power_heat_data_t.shooter_id1_17mm_cooling_heat;
 		chassis_move.speed= shoot_data_t.bullet_speed*1000;
-           CAN_cmd_chassis(chassis_move.motor_chassis[0].give_current, chassis_move.motor_chassis[1].give_current,
-                                chassis_move.motor_chassis[2].give_current, chassis_move.motor_chassis[3].give_current);
 		
-		         CAN_cmd_ref(chassis_move.heat, chassis_move.speed, 0, 0);
+		//发送控制电流
+       CAN_cmd_chassis(chassis_move.motor_chassis[0].give_current, chassis_move.motor_chassis[1].give_current,
+                       chassis_move.motor_chassis[2].give_current, chassis_move.motor_chassis[3].give_current);
+		
+//		   CAN_shoot_data(chassis_move.heat, chassis_move.speed, 0, 0);
 //			 CAN_blue_robot_hp(game_robot_HP_t.blue_1_robot_HP, game_robot_HP_t.blue_3_robot_HP, game_robot_HP_t.blue_4_robot_HP, game_robot_HP_t.blue_base_HP);
 //			 CAN_red_robot_hp(game_robot_HP_t.red_1_robot_HP, game_robot_HP_t.red_3_robot_HP, game_robot_HP_t.red_4_robot_HP, game_robot_HP_t.red_base_HP);
-//		CAN_game_state(game_state.game_progress,0,0,0,game_state.stage_remain_time);
-//		CAN_sentry_outpot_state(game_robot_HP_t.red_7_robot_HP,game_robot_HP_t.red_outpost_HP,game_robot_HP_t.blue_7_robot_HP,game_robot_HP_t.blue_outpost_HP);
-//            }
-//            else
-//            {
-//							// 当遥控器掉线的时候，发送给底盘电机零电流.
-//                CAN_cmd_chassis(0, 0, 0, 0);
-//            }
-//        }
+//			 CAN_game_state(game_state.game_progress,0,0,0,game_state.stage_remain_time);
+//			 CAN_sentry_outpot_state(game_robot_HP_t.red_7_robot_HP,game_robot_HP_t.red_outpost_HP,game_robot_HP_t.blue_7_robot_HP,game_robot_HP_t.blue_outpost_HP);
+
+     }
         //os delay
         //系统延时
         vTaskDelay(CHASSIS_CONTROL_TIME_MS);
@@ -285,7 +281,7 @@ static void chassis_init(chassis_move_t *chassis_move_init)
     {
        chassis_move_init->motor_chassis[i].chassis_motor_measure = get_chassis_motor_measure_point(i);
        PID_init(&chassis_move_init->motor_speed_pid[i], PID_POSITION, motor_speed_pid, M3505_MOTOR_SPEED_PID_MAX_OUT, M3505_MOTOR_SPEED_PID_MAX_IOUT);
-			//PID_Init(&chassis_move_init->motor_chassis[i].chassis_pid, PID_POSITION, motor_speed_pid, CHASSIS_MAX_OUT, CHASSIS_MAX_IOUT);
+			
     }
     //initialize angle PID
     //初始化角度PID

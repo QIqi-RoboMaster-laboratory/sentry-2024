@@ -49,6 +49,8 @@
 #include "detect_task.h"
 #include "user_lib.h"
 #include "bsp_usart.h"
+
+extern radar_txfifo_t radar_txfifo;
 #define int_abs(x) ((x) > 0 ? (x) : (-x))
 
 /**
@@ -351,42 +353,58 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
     {
         // 遥控器控制模式
         gimbal_behaviour = GIMBAL_ZERO_FORCE;
+	
     }
 
     if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
         // 切换到遥控器控制模式
-        gimbal_behaviour = GIMBAL_RC;
+			gimbal_behaviour =GIMBAL_RC;
+//         if (switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[1]))
+//				{   // 切换到遥控器控制模式
+//						gimbal_behaviour =GIMBAL_RC;
+//						radar_txfifo.pose=1;
+//				}
+//				   if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[1]))
+//				{   // 切换到遥控器控制模式
+//						gimbal_behaviour = GIMBAL_RC;
+//						radar_txfifo.pose=1;
+//					
+//				}
+//				   if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[1]))
+//				{   // 切换到遥控器控制模式
+//						gimbal_behaviour = GIMBAL_RC;
+//					radar_txfifo.pose=2;
+//				}
 				
     }
     else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
 
-        gimbal_behaviour = GIMBAL_AUTO_ATTACK;
-			
-			
-        // // 切换到云台自动模式
+        gimbal_behaviour = GIMBAL_RC;    //比赛模式
+					radar_txfifo.pose=3;
+																								// 切换到云台自动模式
         // // 判断当前模式是否为自动移动模式
-        // if (judge_cur_mode_is_auto_move_mode())
-        // {
-        //     //是自动移动模式
-        //     gimbal_behaviour = GIMBAL_AUTO_MOVE;  //云台自动移动模式
-        // }
-        // else
-        // {
-        //     // 不是自动移动模式
-        //     // 根据视觉是否识别，自动控制模式
-        //     if (judge_vision_appear_target())
-        //     {
-        //         // 识别到目标
-        //         gimbal_behaviour = GIMBAL_AUTO_ATTACK; // 云台自动袭击模式
-        //     }
-        //     else
-        //     {
-        //         // 未识别到目标
-        //         gimbal_behaviour = GIMBAL_AUTO_SCAN; // 云台自动扫描模式
-        //     }
-        // }
+         if (judge_cur_mode_is_auto_move_mode())
+         {
+             //是自动移动模式
+             gimbal_behaviour = GIMBAL_AUTO_MOVE;  //云台自动移动模式
+         }
+        else
+         {
+																									// 不是自动移动模式
+																									// 根据视觉是否识别，自动控制模式
+            if (judge_vision_appear_target())
+             {
+																											// 识别到目标
+                gimbal_behaviour = GIMBAL_AUTO_ATTACK; // 云台自动袭击模式
+             }
+            else
+             {
+																											// 未识别到目标
+               gimbal_behaviour = GIMBAL_AUTO_SCAN; // 云台自动扫描模式
+             }
+         }
 
     }
     // 遥控器报错处理

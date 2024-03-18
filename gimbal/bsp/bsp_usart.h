@@ -21,18 +21,19 @@ typedef struct __attribute__((packed))
 {
 			uint8_t header;
 			uint8_t pose;
-//			double distance;
+
 uint8_t game_progress;
-uint8_t stage_remain_time;
-//uint8_t red_1_robot_HP;
-//uint8_t red_3_robot_HP;
-//uint8_t red_4_robot_HP;
-//uint8_t red_7_robot_HP;
-//uint8_t blue_1_robot_HP;
-//uint8_t blue_3_robot_HP;
-//uint8_t blue_4_robot_HP;
-//uint32_t event_data;
-//uint8_t blue_7_robot_HP;
+//	double distance;
+uint16_t stage_remain_time;
+//uint16_t red_1_robot_HP;
+//uint16_t red_3_robot_HP;
+//uint16_t red_4_robot_HP;
+//uint16_t red_7_robot_HP;
+//uint16_t blue_1_robot_HP;
+//uint16_t blue_3_robot_HP;
+//uint16_t blue_4_robot_HP;
+////uint32_t event_data;
+//uint16_t blue_7_robot_HP;
 
 } radar_txfifo_t;
 

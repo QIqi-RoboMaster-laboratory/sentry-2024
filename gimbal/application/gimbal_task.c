@@ -201,11 +201,11 @@ void gimbal_task(void const *pvParameters)
             gimbal_feedback_update(&gimbal_control);             // 云台数据反馈
             gimbal_set_control(&gimbal_control);                 // 设置云台控制量
             gimbal_control_loop(&gimbal_control);                // 云台控制计算
-						uint8_t send_buffer[21]; // 假设有一个长度为200的发送缓冲区
-				send_data_to_upper_computer(send_buffer, &radar_txfifo);
+//						uint8_t send_buffer[21]; // 假设有一个长度为200的发送缓冲区
+//				send_data_to_upper_computer(send_buffer, &radar_txfifo);
 
 //            if (!(toe_is_error(YAW_GIMBAL_MOTOR_TOE) && toe_is_error(PITCH_GIMBAL_MOTOR_TOE)))
-//            {
+//            { 
                 if (toe_is_error(DBUS_TOE))
                 {
                     // 判断遥控器是否掉线

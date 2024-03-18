@@ -117,7 +117,7 @@ extern void CAN_cmd_chassis_reset_ID(void);
   * @retval         none
   */
 extern void CAN_cmd_chassis(int16_t motor1, int16_t motor2, int16_t motor3, int16_t motor4);
-extern void CAN_cmd_ref(uint16_t heat, uint16_t speed, int16_t motor3, int16_t motor4);
+extern void CAN_shoot_data(uint16_t heat, uint16_t speed, int16_t motor3, int16_t motor4);
 extern void CAN_blue_robot_hp(uint16_t b1, uint16_t b3, int16_t b4, int16_t bb);
 extern void CAN_red_robot_hp(uint16_t r1, uint16_t r3, int16_t r4, int16_t rb);
 extern void CAN_game_state(uint8_t game_progress, uint8_t game_progress1,uint8_t game_progress2,uint8_t game_progress3,uint16_t time);

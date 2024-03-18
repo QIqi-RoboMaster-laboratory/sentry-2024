@@ -605,11 +605,6 @@
               <FilePath>..\application\chassis_behaviour.c</FilePath>
             </File>
             <File>
-              <FileName>chassis_power_control.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\application\chassis_power_control.c</FilePath>
-            </File>
-            <File>
               <FileName>chassis_task.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\application\chassis_task.c</FilePath>

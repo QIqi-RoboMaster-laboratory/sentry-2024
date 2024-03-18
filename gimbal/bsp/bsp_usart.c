@@ -1,6 +1,5 @@
 #include "bsp_usart.h"
 #include "main.h"
-#include "bsp_usart.h"
 #include "string.h"
 #include "referee.h"
 extern ext_game_robot_HP_t game_robot_HP_t;
@@ -199,22 +198,8 @@ void usart6_tx_dma_enable(uint8_t *data, uint16_t len)
 radar_txfifo_t radar_txfifo;
 
 void send_data_to_upper_computer(uint8_t *send_buffer, radar_txfifo_t *radar_txfifo) 
-
 {
-	
-	radar_txfifo->header = 0x5A;// 设置header为结构体中的值
-//	radar_txfifo->blue_1_robot_HP= game_robot_HP_t.blue_1_robot_HP;
-//	radar_txfifo->blue_3_robot_HP=game_robot_HP_t.blue_3_robot_HP;
-//	radar_txfifo->blue_4_robot_HP=game_robot_HP_t.blue_4_robot_HP;
-//	radar_txfifo->red_1_robot_HP=game_robot_HP_t.red_1_robot_HP;
-//	radar_txfifo->red_3_robot_HP=game_robot_HP_t.red_3_robot_HP;
-//	radar_txfifo->red_4_robot_HP=game_robot_HP_t.red_4_robot_HP;
-//	radar_txfifo->stage_remain_time=game_state.stage_remain_time;
-	radar_txfifo->game_progress=(game_state.game_progress) & 0x0F;
-//	radar_txfifo->red_7_robot_HP=game_robot_HP_t.red_7_robot_HP;
-//	radar_txfifo->blue_7_robot_HP=game_robot_HP_t.blue_7_robot_HP;
-
-	
+		
  memset(send_buffer,0,sizeof(radar_txfifo_t));
 	memcpy(send_buffer,radar_txfifo,sizeof(radar_txfifo_t));
     HAL_UART_Transmit(&huart6, send_buffer, sizeof(radar_txfifo_t), HAL_MAX_DELAY);

@@ -262,7 +262,7 @@ void CAN_cmd_chassis(int16_t motor1, int16_t motor2, int16_t motor3, int16_t mot
 }
 
 
-void CAN_cmd_ref(uint16_t heat, uint16_t speed, int16_t motor3, int16_t motor4)
+void CAN_shoot_data(uint16_t heat, uint16_t speed, int16_t motor3, int16_t motor4)
 {
    uint32_t send_mail_box;
     chassis_tx_message.StdId = CAN_REFEREE_ID ;

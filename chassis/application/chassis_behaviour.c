@@ -183,25 +183,7 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
         return;
     }
 
-    //remote control  set chassis behaviour mode
-//    //遥控器设置模式
-//    if (switch_is_down(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
-//    {
-//        // 遥控器拨到下侧挡位为底盘无力模式
-//        chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
-//    }
-//		  if (switch_is_mid(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
-//    {
-//        
-//        chassis_behaviour_mode =CHASSIS_FOLLOW_GIMBAL_YAW;
-//       
-//    }
-//		  if (switch_is_up(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
-//    {
-//        // chassis_behaviour_mode =CHASSIS_NO_FOLLOW_YAW;
-//      
-//       chassis_behaviour_mode = CHASSIS_SPIN;
-//    }
+ 
       
    if (chassis_move_mode->chassis_mode_CANsend==20000)
     {

@@ -560,6 +560,16 @@
               <FileType>1</FileType>
               <FilePath>..\application\can_comm_task.c</FilePath>
             </File>
+            <File>
+              <FileName>radar_usart.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\application\radar_usart.h</FilePath>
+            </File>
+            <File>
+              <FileName>radar_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\application\radar_usart.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

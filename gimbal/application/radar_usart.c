@@ -23,11 +23,17 @@
 extern UART_HandleTypeDef huart6;
 extern ext_game_robot_HP_t game_robot_HP_t;
 extern ext_game_state_t game_state;
+
+
+vision_rxfifo_t *vision_rx;
 // 在RTOS线程中发送自身数据给雷达上位机
 void radar_usart_task(void const *pvParameters)
 {
-    while (1)
+			vision_init();
+   
+	while (1)
     {
+			vision_rx=get_vision_fifo();
         // 创建一个radar_txfifo_t结构体变量
      extern   radar_txfifo_t radar_txfifo;
         

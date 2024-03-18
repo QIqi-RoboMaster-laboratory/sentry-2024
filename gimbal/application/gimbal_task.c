@@ -41,7 +41,6 @@
 #include "stm32_private.h"
 #include "can_comm_task.h"
 #include "chassis_task.h"
-#include "bsp_usart.h"
 #include "vision_task.h"
 // motor enconde value format, range[0-8191]
 // 电机编码值规整 0—8191
@@ -170,7 +169,7 @@ extern chassis_move_t chassis_move;
 //云台任务结构体
 gimbal_control_t gimbal_control;
 
-vision_rxfifo_t *vision_rx;
+
 
 /**
  * @brief          云台任务，间隔 GIMBAL_CONTROL_TIME 1ms
@@ -201,8 +200,7 @@ void gimbal_task(void const *pvParameters)
             gimbal_feedback_update(&gimbal_control);             // 云台数据反馈
             gimbal_set_control(&gimbal_control);                 // 设置云台控制量
             gimbal_control_loop(&gimbal_control);                // 云台控制计算
-//						uint8_t send_buffer[21]; // 假设有一个长度为200的发送缓冲区
-//				send_data_to_upper_computer(send_buffer, &radar_txfifo);
+
 
 //            if (!(toe_is_error(YAW_GIMBAL_MOTOR_TOE) && toe_is_error(PITCH_GIMBAL_MOTOR_TOE)))
 //            { 
@@ -319,7 +317,7 @@ static void gimbal_init(gimbal_control_t *init)
     init->gimbal_pitch_motor.max_relative_angle = motor_ecd_to_angle_change(GIMBAL_PITCH_MAX_ENCODE, init->gimbal_pitch_motor.offset_ecd);
     init->gimbal_pitch_motor.min_relative_angle = motor_ecd_to_angle_change(GIMBAL_PITCH_MIN_ENCODE, init->gimbal_pitch_motor.offset_ecd);
 
-			vision_rx=get_vision_fifo();
+			
 			
 		
 }

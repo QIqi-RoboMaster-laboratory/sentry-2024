@@ -225,7 +225,7 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
     chassis_move_control->vy_set = vy_set_channel_RC*10;
 	
 //    //ÉèÖÃËÙ¶È
-	if(vision_rx->vx!=0||vision_rx->vx!=0)
+	if(vision_rx->vx!=0||vision_rx->vy!=0)
 	{ chassis_move_control->vx_set = vision_rx->vx*1000;
     chassis_move_control->vy_set = -vision_rx->vy*1000;
 	}

@@ -172,13 +172,22 @@ void chassis_task(void const *pvParameters)
 //    }
     while (1)
     {
+			
+			
+			
+					CAN_shoot_data(power_heat_data_t.shooter_id1_17mm_cooling_heat, shoot_data_t.bullet_speed*1000., 0, 0);
+					
+				
         //set chassis control mode
         //设置底盘控制模式
         chassis_set_mode(&chassis_move);
-
+//CAN_blue_robot_hp(game_robot_HP_t.blue_1_robot_HP, game_robot_HP_t.blue_3_robot_HP, game_robot_HP_t.blue_4_robot_HP, game_robot_HP_t.blue_base_HP);
+//					CAN_red_robot_hp(game_robot_HP_t.red_1_robot_HP, game_robot_HP_t.red_3_robot_HP, game_robot_HP_t.red_4_robot_HP, game_robot_HP_t.red_base_HP);
         //whenmode changes, some data save
         //模式切换数据保存
         chassis_mode_change_control_transit(&chassis_move);
+	CAN_game_state(game_state.game_progress,0,0,0,game_state.stage_remain_time);
+//					CAN_sentry_outpot_state(game_robot_HP_t.red_7_robot_HP,game_robot_HP_t.red_outpost_HP,game_robot_HP_t.blue_7_robot_HP,game_robot_HP_t.blue_outpost_HP);
 
         //chassis data update
         //底盘数据更新
@@ -200,13 +209,7 @@ void chassis_task(void const *pvParameters)
 		if(linkState_1>50||linkState_2>50)  
 		{
 			
-			
-//					CAN_shoot_data(power_heat_data_t.shooter_id1_17mm_cooling_heat, shoot_data_t.bullet_speed*1000., 0, 0);
-//					CAN_blue_robot_hp(game_robot_HP_t.blue_1_robot_HP, game_robot_HP_t.blue_3_robot_HP, game_robot_HP_t.blue_4_robot_HP, game_robot_HP_t.blue_base_HP);
-//					CAN_red_robot_hp(game_robot_HP_t.red_1_robot_HP, game_robot_HP_t.red_3_robot_HP, game_robot_HP_t.red_4_robot_HP, game_robot_HP_t.red_base_HP);
-//					CAN_game_state(game_state.game_progress,0,0,0,game_state.stage_remain_time);
-//					CAN_sentry_outpot_state(game_robot_HP_t.red_7_robot_HP,game_robot_HP_t.red_outpost_HP,game_robot_HP_t.blue_7_robot_HP,game_robot_HP_t.blue_outpost_HP);
-
+//			
 				CAN_cmd_chassis(0,0,0,0);
 		}		
       

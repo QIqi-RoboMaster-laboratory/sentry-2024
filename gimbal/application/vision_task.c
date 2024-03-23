@@ -787,7 +787,7 @@ static float calc_bullet_drop_in_complete_air(solve_trajectory_t* solve_trajecto
 }
 
 /**
- * @brief 二维平面弹道模型，计算pitch轴的高度
+ * @brief 二维平面弹道模型，计算pitch轴6高度
  * 
  * @param solve_tragectory 弹道计算结构体
  * @param x 水平距离
@@ -800,7 +800,7 @@ static float calc_target_position_pitch_angle(solve_trajectory_t* solve_trajecto
     // 计算落点高度
     float bullet_drop_z = 0;
     // 瞄准高度
-    float aim_z = z;
+    float aim_z = z *0.3f;
 
     // 仰角
     float pitch = 0;

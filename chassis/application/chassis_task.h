@@ -76,7 +76,7 @@
 #define MOTOR_SPEED_TO_CHASSIS_SPEED_WZ 0.25f
 
 
-#define MOTOR_DISTANCE_TO_CENTER 0.15f
+#define MOTOR_DISTANCE_TO_CENTER 0.1f
 
 //chassis task control time  2ms
 //底盘任务控制间隔 2ms
@@ -107,15 +107,15 @@
 
 //single chassis motor max speed
 //单个底盘电机最大速度
-#define MAX_WHEEL_SPEED 45.0f
+#define MAX_WHEEL_SPEED 30.0f
 //chassis forward or back max speed
 //底盘运动过程最大前进速度
-#define NORMAL_MAX_CHASSIS_SPEED_X 25.0f
+#define NORMAL_MAX_CHASSIS_SPEED_X 20.0f
 //chassis left or right max speed
 //底盘运动过程最大平移速度
-#define NORMAL_MAX_CHASSIS_SPEED_Y 25.0f
+#define NORMAL_MAX_CHASSIS_SPEED_Y 15.0f
 
-#define CHASSIS_WZ_SET_SCALE 0.1375f
+#define CHASSIS_WZ_SET_SCALE 0.2375f//0.1375f
 
 //when chassis is not set to move, swing max angle
 //摇摆原地不动摇摆最大角度(rad)
@@ -134,10 +134,10 @@
 
 //chassis follow angle PID
 //底盘旋转跟随PID
-#define CHASSIS_FOLLOW_GIMBAL_PID_KP 25.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_KP 20.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_KI 0.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_KD 54.0f
-#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 6.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 24.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 0.2f
 
 // 底盘电机功率环PID

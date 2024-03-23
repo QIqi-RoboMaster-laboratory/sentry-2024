@@ -50,6 +50,11 @@
 #include "chassis_task.h"
 #include "arm_math.h"
 #include "gimbal_behaviour.h"
+extern ext_game_robot_state_t robot_state;
+fp32 curhp;
+fp32 lasthp;
+int hitflag=0;
+int htime=0;
 
 //ǰ��վ״̬
 #define PERSON_OUTPOST_STATE(event) (event & (1 << PERSON_OUTPOST_STATE_BIT))
@@ -195,7 +200,15 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     }
 		else if (chassis_move_mode->chassis_mode_CANsend==30000)
     {
-        chassis_behaviour_mode = CHASSIS_SPIN;
+		
+				
+					chassis_behaviour_mode = CHASSIS_SPIN;
+		
+	
+
+
+
+		
     }
 		else
 		{

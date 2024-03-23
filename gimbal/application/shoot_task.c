@@ -402,12 +402,12 @@ if (shoot_control_mode == SHOOT_RC_CONTROL)
 //								 if (fric_move.shoot_rc->rc.ch[4] > 100)
 //										{
                 // 设置发射模式，开摩擦轮，拨弹盘
-											if (fric_move.shoot_vision_control->shoot_command == SHOOT_ATTACK)
+										if (fric_move.shoot_vision_control->shoot_command == SHOOT_ATTACK)
 											{
-											shoot_mode = SHOOT_BULLET;
+										shoot_mode = SHOOT_BULLET;
 											}
 											
-							      if (fric_move.shoot_rc->rc.ch[4] >100)
+							     else if (fric_move.shoot_rc->rc.ch[4] >100)
 										{
                     shoot_mode = SHOOT_BULLET;
 										}
@@ -451,11 +451,11 @@ if (shoot_control_mode == SHOOT_RC_CONTROL)
         else if (shoot_control_mode == SHOOT_RC_CONTROL)
         {
             //如果为遥控器控制模式，则停止一切
-            shoot_mode = SHOOT_STOP;
+            shoot_mode = SHOOT_READY;
         }
         else
         {
-            shoot_mode = SHOOT_STOP;
+            shoot_mode = SHOOT_READY;
         }
     }
    

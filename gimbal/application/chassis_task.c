@@ -71,6 +71,7 @@ uint32_t chassis_high_water;
 #endif
 
 extern gimbal_control_t gimbal_control;
+extern vision_rxfifo_t *vision_rx;
 
 chassis_move_t chassis_move;       // 底盘运动数据
 /**
@@ -180,8 +181,22 @@ static void chassis_set_mode(chassis_move_t *chassis_move_mode)
         }
         else if (switch_is_up(chassis_move_mode->chassis_RC->rc.s[CHASSIS_RUN_MODE_CHANNEL]))
         {
-            // 陀螺
-            chassis_move_mode->chassis_behaviour = CHASSIS_SPIN;
+            // 
+					
+					if(vision_rx->header==0&&game_state.game_progress==4)
+					{
+						chassis_move_mode->chassis_behaviour = CHASSIS_SPIN;
+					
+					}
+//					if(game_state.game_progress!=4&&switch_is_up(chassis_move_mode->chassis_RC->rc.s[1])&&switch_is_mid(chassis_move_mode->chassis_RC->rc.s[0]))
+//					{
+//						chassis_move_mode->chassis_behaviour = CHASSIS_SPIN;
+//					}
+					else
+					{
+						 chassis_move_mode->chassis_behaviour = CHASSIS_FOLLOW_GIMBAL_YAW;
+					}
+           
         }
     }
     else if (toe_is_error(DBUS_TOE))

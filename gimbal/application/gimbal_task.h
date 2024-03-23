@@ -192,7 +192,7 @@
 //yaw轴扫描步长 rad/S
 #define YAW_SCAN_SPEED 1.2f
 //pitch轴扫描步长 rad/s
-#define PITCH_SCAN_SPEED 2.5f
+#define PITCH_SCAN_SPEED 1.2f
 
 //yaw轴扫描周期
 #define YAW_SCAN_PERIOD (2 * YAW_SCAN_RANGE / YAW_SCAN_SPEED)

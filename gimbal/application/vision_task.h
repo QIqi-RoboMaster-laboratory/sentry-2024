@@ -73,7 +73,7 @@
 //固有时间偏移即上位机计算时间单位ms
 #define TIME_BIAS 6
 //机器人自身固有时间偏差
-#define ROBOT_TIMR_BIAS 20 //103
+#define ROBOT_TIMR_BIAS 60 //103
 //偏差时间队列大小
 #define TIME_BIAS_QUEUE_CAPACITY 10 
 

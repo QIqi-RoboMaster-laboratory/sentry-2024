@@ -794,7 +794,7 @@ void CHASSIC_MOTOR_POWER_CONTROL(chassis_move_t *chassis_move)
     
 	chassis_move->power_control.POWER_MAX = 0; //最终底盘的最大功率
 	chassis_move->power_control.forecast_total_power = 0; // 预测总功率
-	PID_calc(&chassis_move->buffer_pid,power_heat_data_t.chassis_power_buffer,80); //使缓冲能量维持在一个稳定的范围,这里的PID没必要移植我的，用任意一个就行
+	PID_calc(&chassis_move->buffer_pid,power_heat_data_t.chassis_power_buffer,30); //使缓冲能量维持在一个稳定的范围,这里的PID没必要移植我的，用任意一个就行
   max_power_limit = robot_state.chassis_power_limit;  //获得裁判系统的功率限制数值
 	
 	input_power = max_power_limit - chassis_move->buffer_pid.out; //通过裁判系统的最大功率
@@ -846,7 +846,7 @@ void CHASSIC_MOTOR_POWER_CONTROL(chassis_move_t *chassis_move)
 					chassis_move->motor_chassis[i].give_current = chassis_move->power_control.MAX_current[i];
 			}
 			
-			chassis_move->motor_chassis[3].give_current *= 0.5f;
+			chassis_move->motor_chassis[3].give_current *= 0.6f;
 			
 		}
 	}

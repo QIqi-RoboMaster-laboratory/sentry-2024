@@ -166,6 +166,10 @@ static void shoot_mode_change_transit(void)
         //模式发生切换,pid清除
         stm32_step_shoot_pid_clear();
     }
+		if(toe_is_error(DBUS_TOE))
+		{
+					stm32_step_shoot_pid_clear();
+		}
 }
 
 static bool_t judge_bullet_is_stuck(Shoot_Motor_t* trigger_stuck)
@@ -255,9 +259,9 @@ static void shoot_set_control_mode(fric_move_t *fric_set_control)
     // 运行模式
 
     // 判断初始化是否完成
-   if (shoot_control_mode == SHOOT_INIT_CONTROL)
-  {
-       static uint32_t init_time = 0;
+//   if (shoot_control_mode == SHOOT_INIT_CONTROL)
+//  {
+//       static uint32_t init_time = 0;
        // 判断拨杆是否拨到下档
 //       if (switch_is_down(fric_set_control->shoot_rc->rc.s[SHOOT_CONTROL_CHANNEL]))
 //        {
@@ -302,7 +306,7 @@ static void shoot_set_control_mode(fric_move_t *fric_set_control)
 ////                init_time = 0;
 ////            }
 ////        }
-   }
+//   }
     // 根据遥控器开关设置发射控制模式
     if (switch_is_up(fric_set_control->shoot_rc->rc.s[SHOOT_CONTROL_CHANNEL]))
     {
@@ -336,13 +340,13 @@ static void shoot_set_control_mode(fric_move_t *fric_set_control)
 //    }
 
     // 判断进入初始化模式
-    static shoot_control_mode_e last_shoot_control_mode = SHOOT_STOP_CONTROL;
-    if (shoot_control_mode != SHOOT_STOP_CONTROL && last_shoot_control_mode == SHOOT_STOP_CONTROL)
-    {
-        // 进入初始化模式
-     shoot_control_mode = SHOOT_INIT_CONTROL;
-    }
-    last_shoot_control_mode = shoot_control_mode;
+//    static shoot_control_mode_e last_shoot_control_mode = SHOOT_STOP_CONTROL;
+//    if (shoot_control_mode != SHOOT_STOP_CONTROL && last_shoot_control_mode == SHOOT_STOP_CONTROL)
+//    {
+//        // 进入初始化模式
+//     shoot_control_mode = SHOOT_INIT_CONTROL;
+//    }
+//    last_shoot_control_mode = shoot_control_mode;
 }
 
 /**
@@ -365,12 +369,12 @@ static void Shoot_Set_Mode(void)
     
     
     //判断当前枪口热量是否即将到达最大值
-//    if (/*GUARD_MAX_MUZZLE_HEAT - power_heat_data_t.shooter_id1_17mm_cooling_heat >= GUARD_MAX_ALLOW_MUZZLE_HEAT_ERR0R &&
-//        GUARD_MAX_MUZZLE_HEAT - power_heat_data_t.shooter_id2_17mm_cooling_heat >= GUARD_MAX_ALLOW_MUZZLE_HEAT_ERR0R*/1==1)
-//    {
-//        // 未即将达到最大值，发射任务正常进行
+    if (GUARD_MAX_MUZZLE_HEAT - power_heat_data_t.shooter_id1_17mm_cooling_heat >= GUARD_MAX_ALLOW_MUZZLE_HEAT_ERR0R &&
+        GUARD_MAX_MUZZLE_HEAT - power_heat_data_t.shooter_id2_17mm_cooling_heat >= GUARD_MAX_ALLOW_MUZZLE_HEAT_ERR0R)
+    {
+        // 未即将达到最大值，发射任务正常进行
 
-//        // 根据控制模式设置发射模式
+        // 根据控制模式设置发射模式
         if (shoot_control_mode == SHOOT_AUTO_CONTROL)
         {
             if (fric_move.shoot_vision_control->shoot_command == SHOOT_ATTACK)
@@ -395,18 +399,19 @@ if (shoot_control_mode == SHOOT_RC_CONTROL)
                 // 控制发射
 						
 
-								 if (fric_move.shoot_rc->rc.ch[4] > 100)
-										{
-                // 设置发射模式，开摩擦轮，拨弹盘
-//											if (fric_move.shoot_vision_control->shoot_command == SHOOT_ATTACK)
-//											{
-											shoot_mode = SHOOT_BULLET;
-//											}
-										}
-//							else if (fric_move.shoot_rc->rc.ch[4] < -100)
+//								 if (fric_move.shoot_rc->rc.ch[4] > 100)
 //										{
-//                    shoot_mode = SHOOT_BULLET;
-//										}
+                // 设置发射模式，开摩擦轮，拨弹盘
+											if (fric_move.shoot_vision_control->shoot_command == SHOOT_ATTACK)
+											{
+											shoot_mode = SHOOT_BULLET;
+											}
+											
+							      if (fric_move.shoot_rc->rc.ch[4] >100)
+										{
+                    shoot_mode = SHOOT_BULLET;
+										}
+											
 										else
 										{
                 // 其他状态摩擦轮一直开启
@@ -421,39 +426,39 @@ if (shoot_control_mode == SHOOT_RC_CONTROL)
                 shoot_mode = SHOOT_STOP;
             }
         }
-        else if (shoot_control_mode == SHOOT_INIT_CONTROL)
+//        else if (shoot_control_mode == SHOOT_INIT_CONTROL)
+//        {
+//            // 此时哨兵初始化控制模式
+//            shoot_mode = SHOOT_INIT;
+//        }
+        else if (shoot_control_mode == SHOOT_STOP_CONTROL)
         {
-            // 此时哨兵初始化控制模式
-            shoot_mode = SHOOT_INIT;
+            shoot_mode = SHOOT_STOP;
         }
-//        else if (shoot_control_mode == SHOOT_STOP_CONTROL)
-//        {
-//            shoot_mode = SHOOT_STOP;
-//        }
-//        else
-//        {
-//            shoot_mode = SHOOT_STOP;
-//        }
-//    }
-//    else
-//    {
-//        //即将到达最大值，停止发射
-//        if (shoot_control_mode == SHOOT_AUTO_CONTROL)
-//        {
-//            //如果为自动控制模式则停止拨弹
-//            shoot_mode = SHOOT_READY;
-//        }
-//        else if (shoot_control_mode == SHOOT_RC_CONTROL)
-//        {
-//            //如果为遥控器控制模式，则停止一切
-//            shoot_mode = SHOOT_STOP;
-//        }
-//        else
-//        {
-//            shoot_mode = SHOOT_STOP;
-//        }
-//    }
-    
+        else
+        {
+            shoot_mode = SHOOT_STOP;
+        }
+  }
+    else
+    {
+        //即将到达最大值，停止发射
+        if (shoot_control_mode == SHOOT_AUTO_CONTROL)
+        {
+            //如果为自动控制模式则停止拨弹
+            shoot_mode = SHOOT_READY;
+        }
+        else if (shoot_control_mode == SHOOT_RC_CONTROL)
+        {
+            //如果为遥控器控制模式，则停止一切
+            shoot_mode = SHOOT_STOP;
+        }
+        else
+        {
+            shoot_mode = SHOOT_STOP;
+        }
+    }
+   
 }
 /**
  * @brief          拨弹轮循环

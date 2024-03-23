@@ -174,8 +174,9 @@ void chassis_task(void const *pvParameters)
     {
 			
 			
-			
-					CAN_shoot_data(power_heat_data_t.shooter_id1_17mm_cooling_heat, shoot_data_t.bullet_speed*1000., 0, 0);
+				CAN_shoot_data(power_heat_data_t.shooter_id1_17mm_cooling_heat, shoot_data_t.bullet_speed*1000.,game_state.game_progress, robot_state.robot_id*10,robot_state.current_HP);
+				CAN_game_state(game_state.stage_remain_time);
+					
 					
 				
         //set chassis control mode
@@ -186,20 +187,21 @@ void chassis_task(void const *pvParameters)
         //whenmode changes, some data save
         //模式切换数据保存
         chassis_mode_change_control_transit(&chassis_move);
-	CAN_game_state(game_state.game_progress,0,0,0,game_state.stage_remain_time);
+//
 //					CAN_sentry_outpot_state(game_robot_HP_t.red_7_robot_HP,game_robot_HP_t.red_outpost_HP,game_robot_HP_t.blue_7_robot_HP,game_robot_HP_t.blue_outpost_HP);
+//CAN_shoot_data(power_heat_data_t.shooter_id1_17mm_cooling_heat, shoot_data_t.bullet_speed*1000.,game_state.game_progress, 0,robot_state.current_HP);
+//CAN_shoot_data(power_heat_data_t.shooter_id1_17mm_cooling_heat, shoot_data_t.bullet_speed*1000.,game_state.game_progress, 0,robot_state.current_HP);
 
         //chassis data update
         //底盘数据更新
   			chassis_feedback_update(&chassis_move);
-
         //set chassis control set-point 
         //底盘控制量设置
         chassis_set_contorl(&chassis_move);
-
         //chassis control pid calculate
         //底盘控制PID计算
         chassis_control_loop(&chassis_move);
+		
         
        if (!(toe_is_error(CHASSIS_MOTOR1_TOE) && toe_is_error(CHASSIS_MOTOR2_TOE) && toe_is_error(CHASSIS_MOTOR3_TOE) && toe_is_error(CHASSIS_MOTOR4_TOE)))
       {
@@ -211,22 +213,18 @@ void chassis_task(void const *pvParameters)
 			
 //			
 				CAN_cmd_chassis(0,0,0,0);
+			
+		
 		}		
       
                 
-           
-		chassis_move.heat=power_heat_data_t.shooter_id1_17mm_cooling_heat;
-		chassis_move.speed= shoot_data_t.bullet_speed*1000;
-		
-		//发送控制电流
+   
+	//发送控制电流
        CAN_cmd_chassis(chassis_move.motor_chassis[0].give_current, chassis_move.motor_chassis[1].give_current,
                        chassis_move.motor_chassis[2].give_current, chassis_move.motor_chassis[3].give_current);
-		
-//		   CAN_shoot_data(chassis_move.heat, chassis_move.speed, 0, 0);
-//			 CAN_blue_robot_hp(game_robot_HP_t.blue_1_robot_HP, game_robot_HP_t.blue_3_robot_HP, game_robot_HP_t.blue_4_robot_HP, game_robot_HP_t.blue_base_HP);
-//			 CAN_red_robot_hp(game_robot_HP_t.red_1_robot_HP, game_robot_HP_t.red_3_robot_HP, game_robot_HP_t.red_4_robot_HP, game_robot_HP_t.red_base_HP);
-//			 CAN_game_state(game_state.game_progress,0,0,0,game_state.stage_remain_time);
-//			 CAN_sentry_outpot_state(game_robot_HP_t.red_7_robot_HP,game_robot_HP_t.red_outpost_HP,game_robot_HP_t.blue_7_robot_HP,game_robot_HP_t.blue_outpost_HP);
+
+
+
 
      }
         //os delay
@@ -601,7 +599,7 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
         cos_yaw = arm_cos_f32(relative_angle);
         // 设置控制相对云台角度
         chassis_move_control->chassis_relative_angle_set =  rad_format(angle_set);  
-        chassis_move_control->vx_set = cos_yaw * vx_set + -sin_yaw * vy_set;
+        chassis_move_control->vx_set = cos_yaw * vx_set - sin_yaw * vy_set;
         chassis_move_control->vy_set = sin_yaw * vx_set + cos_yaw * vy_set;
         chassis_move_control->wz_set = SPIN_SPEED;
         // 速度限幅
@@ -666,10 +664,10 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
 static void chassis_vector_to_mecanum_wheel_speed(const fp32 vx_set, const fp32 vy_set, const fp32 wz_set, fp32 wheel_speed[4])
 {
 	//CHASSIS_WZ_SET_SCALE
-    wheel_speed[0] = -vx_set - vy_set + (gaibian - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
-    wheel_speed[1] = vx_set - vy_set + (gaibian - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
-    wheel_speed[2] = vx_set + vy_set + (-gaibian  - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
-    wheel_speed[3] = -vx_set + vy_set + (-gaibian - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
+    wheel_speed[0] = -vx_set - vy_set + (CHASSIS_WZ_SET_SCALE - 1.180f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
+    wheel_speed[1] = vx_set - vy_set + (CHASSIS_WZ_SET_SCALE - 1.180f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
+    wheel_speed[2] = vx_set + vy_set + (-CHASSIS_WZ_SET_SCALE - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
+    wheel_speed[3] = -vx_set + vy_set + (-CHASSIS_WZ_SET_SCALE - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
 }
 
 
@@ -745,7 +743,7 @@ static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
 		{
 			chassis_move.power_control.speed[i] = chassis_move.power_control.SPEED_MIN;
 		}
-			CHASSIC_MOTOR_POWER_CONTROL(&chassis_move);
+		CHASSIC_MOTOR_POWER_CONTROL(&chassis_move);
 	}
 
 //    for (i = 0; i < 4; i++)
@@ -755,10 +753,10 @@ static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
 //    }
 
 //    // 功率控制
-////    for (i = 0; i < 4; i++)
-////    {
-////        chassis_move_control_loop->power_control.MAX_current[i] = (K * chassis_move_control_loop->power_control.current[i] / chassis_move_control_loop->power_control.totalCurrentTemp) * (chassis_move_control_loop->power_control.POWER_MAX) / abs(chassis_move_control_loop->motor_chassis[i].speed);
-////    }
+//    for (i = 0; i < 4; i++)
+//    {
+//        chassis_move_control_loop->power_control.MAX_current[i] = (K * chassis_move_control_loop->power_control.current[i] / chassis_move_control_loop->power_control.totalCurrentTemp) * (chassis_move_control_loop->power_control.POWER_MAX) / abs(chassis_move_control_loop->motor_chassis[i].speed);
+//    }
 //    chassis_move_control_loop->power_control.totalCurrentTemp = 0;
 
 //    // 赋值电流值
@@ -796,7 +794,7 @@ void CHASSIC_MOTOR_POWER_CONTROL(chassis_move_t *chassis_move)
     
 	chassis_move->power_control.POWER_MAX = 0; //最终底盘的最大功率
 	chassis_move->power_control.forecast_total_power = 0; // 预测总功率
-	PID_calc(&chassis_move->buffer_pid,power_heat_data_t.chassis_power_buffer,30); //使缓冲能量维持在一个稳定的范围,这里的PID没必要移植我的，用任意一个就行
+	PID_calc(&chassis_move->buffer_pid,power_heat_data_t.chassis_power_buffer,80); //使缓冲能量维持在一个稳定的范围,这里的PID没必要移植我的，用任意一个就行
   max_power_limit = robot_state.chassis_power_limit;  //获得裁判系统的功率限制数值
 	
 	input_power = max_power_limit - chassis_move->buffer_pid.out; //通过裁判系统的最大功率
@@ -847,6 +845,9 @@ void CHASSIC_MOTOR_POWER_CONTROL(chassis_move_t *chassis_move)
 				else
 					chassis_move->motor_chassis[i].give_current = chassis_move->power_control.MAX_current[i];
 			}
+			
+			chassis_move->motor_chassis[3].give_current *= 0.5f;
+			
 		}
 	}
 }

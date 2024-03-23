@@ -517,19 +517,21 @@ static void set_vision_send_packet(vision_control_t* set_send_packet)
  */
 static void calc_current_bullet_speed(vision_control_t* calc_cur_bullet_speed, bullet_type_e bullet_type, shooter_id_e shooter_id)
 {
+	
+
     //判断子弹类型
-//    if (calc_cur_bullet_speed->shoot_data_point->bullet_type == bullet_type)
+//    if (calc_cur_bullet_speed->shoot_data_point->bullet_type == 1)
 //    {
-//        if (calc_cur_bullet_speed->shoot_data_point->shooter_id == shooter_id)
+//        if (calc_cur_bullet_speed->shoot_data_point->shooter_id == 1)
 //        {
             //筛选不合理的数据
-            if (calc_cur_bullet_speed->shoot_data_point->bullet_speed >= MIN_SET_BULLET_SPEED && calc_cur_bullet_speed->shoot_data_point->bullet_speed <= MAX_SET_BULLET_SPEED)
+            if (shoot_data_t.bullet_speed/1000>= MIN_SET_BULLET_SPEED && shoot_data_t.bullet_speed/1000<= MAX_SET_BULLET_SPEED)
             {
                 //修正弹速 -- 修正精度到整数
-                calc_cur_bullet_speed->bullet_speed = trigger_motor.bulletspeed/1000;
+                calc_cur_bullet_speed->bullet_speed = (int16_t)shoot_data_t.bullet_speed/1000;
             }
-//        }
-//    }
+////			}
+////	}
 }
 
 

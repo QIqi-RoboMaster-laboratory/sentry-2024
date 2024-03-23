@@ -20,19 +20,27 @@
 #include "bsp_usart.h"
 #include "referee.h"
 #include "radar_usart.h"
+#include "string.h"
 extern UART_HandleTypeDef huart6;
 extern ext_game_robot_HP_t game_robot_HP_t;
 extern ext_game_state_t game_state;
-
+extern ext_game_robot_state_t robot_state;
+int error_usarttime=0;
 
 vision_rxfifo_t *vision_rx;
 // 在RTOS线程中发送自身数据给雷达上位机
 void radar_usart_task(void const *pvParameters)
 {
-			vision_init();
+			
    
 	while (1)
     {
+			error_usarttime++;
+			if(error_usarttime>3)
+			{
+		memset(&vision_rxfifo, 0, sizeof(vision_rxfifo));
+		
+			}
 			vision_rx=get_vision_fifo();
         // 创建一个radar_txfifo_t结构体变量
      extern   radar_txfifo_t radar_txfifo;
@@ -40,9 +48,11 @@ void radar_usart_task(void const *pvParameters)
         // 设置雷达数据的各个字段值
         radar_txfifo.header = 0x5A;
 		
-			radar_txfifo.stage_remain_time+=1;
-			
-			radar_txfifo.game_progress = 4;//(game_state.game_progress) & 0x0F;
+//			radar_txfifo.stage_remain_time+=1;
+
+			radar_txfifo.game_progress = (game_state.game_progress) & 0x0F;
+			radar_txfifo.cur_hp=(uint8_t)((robot_state.remain_HP/100)+1);
+			radar_txfifo .remain_time=(uint8_t)(game_state.stage_remain_time/2);
 //			radar_txfifo.stage_remain_time=135;
 //	radar_txfifo.stage_remain_time = game_state.stage_remain_time;
 //        radar_txfifo.blue_1_robot_HP = game_robot_HP_t.blue_1_robot_HP;
@@ -54,7 +64,7 @@ void radar_usart_task(void const *pvParameters)
 //        radar_txfifo.red_3_robot_HP = game_robot_HP_t.red_3_robot_HP;
 //        radar_txfifo.red_4_robot_HP = game_robot_HP_t.red_4_robot_HP;
 //        radar_txfifo.red_7_robot_HP = 600;// game_robot_HP_t.red_7_robot_HP;
-//      if(radar_txfifo.game_progress ==4)
+//      if(robot_state.remain_HP /)
 //			{
 //					radar_txfifo.pose=2;
 //			

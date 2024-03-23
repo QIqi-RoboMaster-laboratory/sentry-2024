@@ -14,31 +14,25 @@
 #include "controller.h"
 #include "QuaternionEKF.h"
 #include "bsp_PWM.h"
-#define ins_deadband_limit(input, output, dealine)        \
-    {                                                    \
-        if ((input) > (dealine) || (input) < -(dealine)) \
-        {                                                \
-            (output) = (input);                          \
-        }                                                \
-        else                                             \
-        {                                                \
-            (output) = 0;                                \
-        }                                                \
-    }
 
-int i=0;
-INS_t INS;
-IMU_Param_t IMU_Param;
-PID_t TempCtrl = {0};
-float firstyaw;
-float  yaw;
-const float xb[3] = {1, 0, 0};
-const float yb[3] = {0, 1, 0};
-const float zb[3] = {0, 0, 1};
 float  ax1;
 float  ax2;
 float  adis;
 float  xdis;
+int i=0;
+float firstyaw;
+float  yaw;
+
+
+
+INS_t INS;
+IMU_Param_t IMU_Param;
+PID_t TempCtrl = {0};
+
+const float xb[3] = {1, 0, 0};
+const float yb[3] = {0, 1, 0};
+const float zb[3] = {0, 0, 1};
+
 uint32_t INS_DWT_Count = 0;
 static float dt = 0, t = 0;
 uint8_t ins_debug_mode = 0;
@@ -77,37 +71,37 @@ void INS_Task(void)
         BMI088_Read(&BMI088);
 
         INS.Accel[X] = BMI088.Accel[X];
-        INS.Accel[Y] = BMI088.Accel[Y];
+        INS.Accel[Y] = -BMI088.Accel[Y];
         INS.Accel[Z] = BMI088.Accel[Z];
         INS.Gyro[X] = BMI088.Gyro[X];
-        INS.Gyro[Y] = BMI088.Gyro[Y];
+        INS.Gyro[Y] = -BMI088.Gyro[Y];
         INS.Gyro[Z] = BMI088.Gyro[Z];
 
-        // demo function,用于修正安装误差,可以不管,本demo暂时没用
+        // demo function,用于??正安装?????,??以不??,本demo暂时没用
         IMU_Param_Correction(&IMU_Param, INS.Gyro, INS.Accel);
 
-         // 计算重力加速度矢量和b系的XY两轴的夹角,可用作功能扩展,本demo暂时没用
+        // 计算重力加速度矢量和b系的XY两轴的夹??,??用作功能扩展,本demo暂时没用
         INS.atanxz = -atan2f(INS.Accel[X], INS.Accel[Z]) * 180 / PI;
         INS.atanyz = atan2f(INS.Accel[Y], INS.Accel[Z]) * 180 / PI;
 
-        // 核心函数,EKF更新四元数
+        // 核心函数,EKF更新四元??
         IMU_QuaternionEKF_Update(INS.Gyro[X], INS.Gyro[Y], INS.Gyro[Z], INS.Accel[X], INS.Accel[Y], INS.Accel[Z], dt);
 
         memcpy(INS.q, QEKF_INS.q, sizeof(QEKF_INS.q));
 
-        // 机体系基向量转换到导航坐标系，本例选取惯性系为导航系
+        // 机体系基向量??换到导航坐标系，??例选取??性系为???航??
         BodyFrameToEarthFrame(xb, INS.xn, INS.q);
         BodyFrameToEarthFrame(yb, INS.yn, INS.q);
         BodyFrameToEarthFrame(zb, INS.zn, INS.q);
 
-        // 将重力从导航坐标系n转换到机体系b,随后根据加速度计数据计算运动加速度
+        // 将重力从导航坐标系n??换到机体系b,随后根据加速度计数??计算运动加速度
         float gravity_b[3];
         EarthFrameToBodyFrame(gravity, gravity_b, INS.q);
-        for (uint8_t i = 0; i < 3; i++) // 同样过一个低通滤波
+        for (uint8_t i = 0; i < 3; i++) // 同样过一??低通滤??
         {
             INS.MotionAccel_b[i] = (INS.Accel[i] - gravity_b[i]) * dt / (INS.AccelLPF + dt) + INS.MotionAccel_b[i] * INS.AccelLPF / (INS.AccelLPF + dt);
         }
-        BodyFrameToEarthFrame(INS.MotionAccel_b, INS.MotionAccel_n, INS.q); //转换回导航系n
+        BodyFrameToEarthFrame(INS.MotionAccel_b, INS.MotionAccel_n, INS.q); // ??换回导航系n
 				ax1=ax2;
 				ax2=INS.MotionAccel_n[0];
 					adis =ax2-ax1;
@@ -118,7 +112,6 @@ void INS_Task(void)
 				
               // 获取最终数据
         INS.Yaw = QEKF_INS.Yaw * ANGLE_TO_RADIAN;
-				ins_deadband_limit(INS.Yaw,INS.Yaw,0.01);
         yaw=INS.Yaw;
 				if(i<2)
         {
@@ -126,6 +119,8 @@ void INS_Task(void)
 					firstyaw=INS.firstyaw;
         i++;
         }
+        // 获取最终数值
+        INS.Yaw = QEKF_INS.Yaw * ANGLE_TO_RADIAN;
         INS.Pitch = QEKF_INS.Pitch * ANGLE_TO_RADIAN;
         INS.Roll = QEKF_INS.Roll * ANGLE_TO_RADIAN;
         INS.YawTotalAngle = QEKF_INS.YawTotalAngle * ANGLE_TO_RADIAN;
@@ -188,8 +183,9 @@ void EarthFrameToBodyFrame(const float *vecEF, float *vecBF, float *q)
                        (q[2] * q[3] - q[0] * q[1]) * vecEF[1] +
                        (0.5f - q[1] * q[1] - q[2] * q[2]) * vecEF[2]);
 }
+
 /**
- * @brief reserved.用于修正IMU安装误差与标度因数误差,即陀螺仪轴和云台轴的安装偏移
+ * @brief reserved.用于????IMU安????????与标度因数?????,即陀螺仪轴和云台轴的安???偏??
  *
  *
  * @param param IMU参数
@@ -257,7 +253,6 @@ static void IMU_Param_Correction(IMU_Param_t *param, float gyro[3], float accel[
     lastPitchOffset = param->Pitch;
     lastRollOffset = param->Roll;
 }
-
 
 /**
  * @brief 温度控制

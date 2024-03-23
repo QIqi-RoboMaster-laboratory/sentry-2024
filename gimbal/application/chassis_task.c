@@ -170,7 +170,7 @@ static void chassis_set_mode(chassis_move_t *chassis_move_mode)
         // 遥控器中挡以及上档为底盘有力模式
         if (switch_is_down(chassis_move_mode->chassis_RC->rc.s[CHASSIS_RUN_MODE_CHANNEL]))
         {
-            //舵跟随云台
+            
             chassis_move_mode->chassis_behaviour = CHASSIS_RUDDER_FOLLOW_GIMBAL_YAW;
         }
         else if (switch_is_mid(chassis_move_mode->chassis_RC->rc.s[CHASSIS_RUN_MODE_CHANNEL]))
@@ -228,6 +228,7 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
 	if(vision_rx->vx!=0||vision_rx->vy!=0)
 	{ chassis_move_control->vx_set = vision_rx->vx*1000;
     chassis_move_control->vy_set = -vision_rx->vy*1000;
+	
 	}
 	
 }

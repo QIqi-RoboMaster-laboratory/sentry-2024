@@ -41,7 +41,7 @@
 #include "stm32_private.h"
 #include "can_comm_task.h"
 #include "chassis_task.h"
-#include "vision_task.h"
+
 // motor enconde value format, range[0-8191]
 // 电机编码值规整 0—8191
 #define ecd_format(ecd)         \

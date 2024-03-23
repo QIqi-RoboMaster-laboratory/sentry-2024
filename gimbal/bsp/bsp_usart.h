@@ -2,18 +2,20 @@
 #define BSP_USART_H
 #include "struct_typedef.h"
 
-#define VISION_RX_LEN_2 50u
-#define VISION_RX_LEN 25u
+#define VISION_RX_LEN_2 34u
+#define VISION_RX_LEN 17u
 typedef struct {
 	uint8_t header;
 	
 	fp32 vx;
 	fp32 vy;
-	fp32 vz;
-	
+//	fp32 vz;
+//	
+//	fp32 ang_x;
+//	fp32 ang_y;
 	fp32 ang_z;
-	fp32 ang_y;
-	fp32 ang_x;
+	//uint8_t goal_status;
+	fp32 rubbish;
 	
 } vision_rxfifo_t;
 
@@ -23,8 +25,10 @@ typedef struct __attribute__((packed))
 			uint8_t pose;
 
 uint8_t game_progress;
+	uint8_t cur_hp;
+	uint8_t remain_time;
 //	double distance;
-uint16_t stage_remain_time;
+//uint16_t stage_remain_time;
 //uint16_t red_1_robot_HP;
 //uint16_t red_3_robot_HP;
 //uint16_t red_4_robot_HP;

@@ -133,8 +133,11 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
         }
 				case CAN_REF_ID:
         {
-         trigger_motor.heat=((uint16_t)(rx_data[0] << 8 | rx_data[1]));  
-				  trigger_motor.bulletspeed=(uint16_t)(rx_data[2] << 8 | rx_data[3]);       
+         power_heat_data_t.shooter_id1_17mm_cooling_heat=((uint16_t)(rx_data[0] << 8 | rx_data[1]));  
+				  shoot_data_t.bullet_speed=(uint16_t)(rx_data[2] << 8 | rx_data[3]);  
+					game_state.game_progress=((uint8_t)(rx_data[4])); 
+				robot_state.robot_id=((uint8_t)(rx_data[5])); 
+					robot_state.remain_HP=((uint16_t)(rx_data[6] << 8 | rx_data[7]));					
 //					trigger_motor.vy_set_CANsend=(int16_t)(rx_data[4] << 8 | rx_data[5]);	
 //          trigger_motor.chassis_mode_CANsend=(int16_t)(rx_data[6] << 8 | rx_data[7]);   //µ×ÅÌÄ£Ê½
             break;
@@ -157,9 +160,9 @@ case 	CAN_red_ROBOT_HP_ID:
 }
 case CAN_game_state	:
 {
-		game_state.game_progress=((uint8_t)(rx_data[0])); 
-		 
-		game_state.stage_remain_time=((uint16_t)(rx_data[4] << 8 | rx_data[5])); 
+//		game_state.game_progress=((uint8_t)(rx_data[0])); 
+//		 robot_state.remain_HP=((uint16_t)(rx_data[2] << 8 | rx_data[3]));
+		game_state.stage_remain_time=((uint16_t)(rx_data[0] << 8 | rx_data[1])); 
     break;
 }
 case 	CAN_sentry_outpot:

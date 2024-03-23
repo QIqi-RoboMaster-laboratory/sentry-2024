@@ -13,7 +13,7 @@ extern DMA_HandleTypeDef hdma_usart6_rx;
 extern DMA_HandleTypeDef hdma_usart6_tx;
 uint8_t vision_rx_buf[2][VISION_RX_LEN_2];
 vision_rxfifo_t vision_rxfifo = {0};
-
+extern int error_usarttime;
 void vision_init(void)
 {
 	//enable the DMA transfer for the receiver request
@@ -58,10 +58,11 @@ void vision_rx_decode(uint8_t *test_code)
 		memset(&vision_rxfifo, 0, sizeof(vision_rxfifo));
 		
 		memcpy(&vision_rxfifo, test_code,sizeof(vision_rxfifo));
-	
+		
+		error_usarttime=0;
+		
 	}
-	memset(test_code, 0, sizeof(vision_rxfifo)); 
-	
+
 }
 
 vision_rxfifo_t *get_vision_fifo(void)

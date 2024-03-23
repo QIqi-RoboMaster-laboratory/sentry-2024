@@ -157,7 +157,7 @@ fp32 Pitch_Set[8]={0};
 /*----------------------------------外部变量---------------------------*/
 //云台初始化完毕标志位
 bool_t gimbal_init_finish_flag = 0;
-
+extern vision_rxfifo_t vision_rxfifo;
 
 
 /**
@@ -355,44 +355,29 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
         gimbal_behaviour = GIMBAL_ZERO_FORCE;
 	
     }
-
     if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
         // 切换到遥控器控制模式
 			gimbal_behaviour =GIMBAL_RC;
-//         if (switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[1]))
-//				{   // 切换到遥控器控制模式
-//						gimbal_behaviour =GIMBAL_RC;
-//						radar_txfifo.pose=1;
-//				}
-//				   if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[1]))
-//				{   // 切换到遥控器控制模式
-//						gimbal_behaviour = GIMBAL_RC;
-//						radar_txfifo.pose=1;
-//					
-//				}
-//				   if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[1]))
-//				{   // 切换到遥控器控制模式
-//						gimbal_behaviour = GIMBAL_RC;
-//					radar_txfifo.pose=2;
-//				}
-				
     }
     else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
 
-        gimbal_behaviour = GIMBAL_RC;    //比赛模式
-					radar_txfifo.pose=3;
-																								// 切换到云台自动模式
-        // // 判断当前模式是否为自动移动模式
-         if (judge_cur_mode_is_auto_move_mode())
-         {
-             //是自动移动模式
-             gimbal_behaviour = GIMBAL_AUTO_MOVE;  //云台自动移动模式
-         }
-        else
-         {
-																									// 不是自动移动模式
+        gimbal_behaviour =GIMBAL_RC;    //比赛模式
+			
+				if(game_state.game_progress==4)
+				{																					// 切换到云台自动模式
+//        // // 判断当前模式是否为自动移动模式
+//         if (judge_cur_mode_is_auto_move_mode())
+//         {
+//             //是自动移动模式
+//             gimbal_behaviour = GIMBAL_AUTO_MOVE;  //云台自动移动模式
+//         }
+				if(radar_txfifo.header==0x00)
+					{
+							gimbal_behaviour =GIMBAL_AUTO_SCAN;
+				
+																							// 不是自动移动模式
 																									// 根据视觉是否识别，自动控制模式
             if (judge_vision_appear_target())
              {
@@ -404,7 +389,20 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
 																											// 未识别到目标
                gimbal_behaviour = GIMBAL_AUTO_SCAN; // 云台自动扫描模式
              }
-         }
+         
+			}
+			
+			else
+			{
+					gimbal_behaviour =GIMBAL_RC;
+			}	
+		}
+        
+																									// 不是自动移动模式
+																									// 根据视觉是否识别，自动控制模式
+           
+         
+			 
 
     }
     // 遥控器报错处理
@@ -463,6 +461,7 @@ static void gimbal_RC_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_c
     rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[PITCH_CHANNEL], pitch_channel_RC, RC_DEADBAND);
 	
     *yaw = yaw_channel_RC * YAW_RC_SEN+rad_format(vision_rx->ang_z)*0.0015;
+	
     *pitch = -pitch_channel_RC * PITCH_RC_SEN;
 
 

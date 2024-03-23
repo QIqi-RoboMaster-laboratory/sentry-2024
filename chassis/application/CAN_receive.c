@@ -262,7 +262,7 @@ void CAN_cmd_chassis(int16_t motor1, int16_t motor2, int16_t motor3, int16_t mot
 }
 
 
-void CAN_shoot_data(uint16_t heat, uint16_t speed, int16_t motor3, int16_t motor4)
+void CAN_shoot_data(uint16_t heat, uint16_t speed, uint8_t game_progress, uint8_t game_progress1, int16_t hp)
 {
    uint32_t send_mail_box;
     chassis_tx_message.StdId = CAN_REFEREE_ID ;
@@ -273,10 +273,10 @@ void CAN_shoot_data(uint16_t heat, uint16_t speed, int16_t motor3, int16_t motor
     chassis_can_send_data[1] = heat ;
     chassis_can_send_data[2] = speed >> 8;
     chassis_can_send_data[3] = speed;
-    chassis_can_send_data[4] = 0 ;
-    chassis_can_send_data[5] = 0;
-    chassis_can_send_data[6] = 0 ;
-    chassis_can_send_data[7] = 0; 
+    chassis_can_send_data[4] = game_progress ;
+    chassis_can_send_data[5] = robot_state.robot_id;
+    chassis_can_send_data[6] = hp>>8;
+    chassis_can_send_data[7] = hp; 
 	  HAL_CAN_AddTxMessage(&hcan1, &chassis_tx_message, chassis_can_send_data, &send_mail_box);
 }
 void CAN_blue_robot_hp(uint16_t b1, uint16_t b3, int16_t b4, int16_t bb)
@@ -315,21 +315,16 @@ void CAN_red_robot_hp(uint16_t r1, uint16_t r3, int16_t r4, int16_t rb)
 	  HAL_CAN_AddTxMessage(&hcan1, &chassis_tx_message, chassis_can_send_data, &send_mail_box);
 }
 
-void CAN_game_state(uint8_t game_progress, uint8_t game_progress1,uint8_t game_progress2,uint8_t game_progress3,uint16_t time)
+void CAN_game_state(uint16_t time)
 {
    uint32_t send_mail_box;
     chassis_tx_message.StdId = CAN_ROBOT_state ;
     chassis_tx_message.IDE = CAN_ID_STD;
     chassis_tx_message.RTR = CAN_RTR_DATA;
     chassis_tx_message.DLC = 0x08;
-    chassis_can_send_data[0] = game_progress;
-    chassis_can_send_data[1] = game_progress1 ;
-    chassis_can_send_data[2] = game_progress2;
-    chassis_can_send_data[3] = game_progress3;
-    chassis_can_send_data[4] = time>>8 ;
-    chassis_can_send_data[5] = time;
-    chassis_can_send_data[6] =0;
-    chassis_can_send_data[7] = 0; 
+    chassis_can_send_data[0] =time>>8;
+    chassis_can_send_data[1] = time;
+    
 	  HAL_CAN_AddTxMessage(&hcan1, &chassis_tx_message, chassis_can_send_data, &send_mail_box);
 }
 void CAN_sentry_outpot_state(uint16_t rs, uint16_t ro, uint16_t bs, uint16_t bo)

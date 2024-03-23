@@ -23,6 +23,7 @@
 #include "stm32f4xx_it.h"
 #include "cmsis_os.h"
 #include "bsp_usart.h"
+#include "string.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -303,7 +304,14 @@ void USART1_IRQHandler(void)
 
 			if(this_time_rx_len == VISION_RX_LEN)
 			{
+			
 				vision_rx_decode(vision_rx_buf[0]);
+			
+			}
+			else
+			{
+			memset(&vision_rxfifo, 0, sizeof(vision_rxfifo));
+		
 			}
 		}else
 		{
@@ -332,8 +340,13 @@ void USART1_IRQHandler(void)
 			{
 				vision_rx_decode(vision_rx_buf[1]);
 			}
-		}
+			else
+			{
+			memset(&vision_rxfifo, 0, sizeof(vision_rxfifo));
+		
+			}
 	}
+}
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */

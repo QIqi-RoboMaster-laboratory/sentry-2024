@@ -76,7 +76,7 @@
 #define MOTOR_SPEED_TO_CHASSIS_SPEED_WZ 0.25f
 
 
-#define MOTOR_DISTANCE_TO_CENTER 0.2f
+#define MOTOR_DISTANCE_TO_CENTER 0.15f
 
 //chassis task control time  2ms
 //底盘任务控制间隔 2ms
@@ -107,13 +107,13 @@
 
 //single chassis motor max speed
 //单个底盘电机最大速度
-#define MAX_WHEEL_SPEED 20.0f
+#define MAX_WHEEL_SPEED 45.0f
 //chassis forward or back max speed
 //底盘运动过程最大前进速度
-#define NORMAL_MAX_CHASSIS_SPEED_X 10.0f
+#define NORMAL_MAX_CHASSIS_SPEED_X 25.0f
 //chassis left or right max speed
 //底盘运动过程最大平移速度
-#define NORMAL_MAX_CHASSIS_SPEED_Y 15.0f
+#define NORMAL_MAX_CHASSIS_SPEED_Y 25.0f
 
 #define CHASSIS_WZ_SET_SCALE 0.1375f
 
@@ -134,9 +134,9 @@
 
 //chassis follow angle PID
 //底盘旋转跟随PID
-#define CHASSIS_FOLLOW_GIMBAL_PID_KP 20.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_KP 25.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_KI 0.0f
-#define CHASSIS_FOLLOW_GIMBAL_PID_KD 10.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_KD 54.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 6.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 0.2f
 
@@ -150,7 +150,7 @@
 #define CHASSIS_FOLLOW_GIMBAL_DEADLINE 0.01f
 
 //底盘小陀螺速度值
-#define SPIN_SPEED 		  -15.0f
+#define SPIN_SPEED 		  -25.0f
 //底盘自动移动距离项差值系数
 #define AUTO_MOVE_K_DISTANCE_ERROR 1.0f
 //底盘自动移动最大输出速度 m/s

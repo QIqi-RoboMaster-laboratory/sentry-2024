@@ -93,15 +93,12 @@ void MX_FREERTOS_Init(void);
  * @retval int
  */                                        
 int main(void)
-
-
-  {
+{
     /* USER CODE BEGIN 1 */
 
     /* USER CODE END 1 */
 
     /* MCU Configuration--------------------------------------------------------*/
-
     /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
     HAL_Init();
 

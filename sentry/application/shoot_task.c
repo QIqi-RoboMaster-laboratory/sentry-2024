@@ -401,16 +401,13 @@ if (shoot_control_mode == SHOOT_RC_CONTROL)
 
 //								 if (fric_move.shoot_rc->rc.ch[4] > 100)
 //										{
-											
-//                // ÉèÖÃ·¢ÉäÄ£Ê½£¬¿ªÄ¦²ÁÂÖ£¬²¦µ¯ÅÌ
+                // ÉèÖÃ·¢ÉäÄ£Ê½£¬¿ªÄ¦²ÁÂÖ£¬²¦µ¯ÅÌ
 										if (fric_move.shoot_vision_control->shoot_command == SHOOT_ATTACK)
 											{
-												//HAL_Delay(50);
 										shoot_mode = SHOOT_BULLET;
-										}
-//										}
+											}
 											
-							      if (fric_move.shoot_rc->rc.ch[4] >100)
+							     else if (fric_move.shoot_rc->rc.ch[4] >100)
 										{
                     shoot_mode = SHOOT_BULLET;
 										}

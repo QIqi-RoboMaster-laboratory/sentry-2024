@@ -156,8 +156,8 @@ static void vision_task_feedback_update(vision_control_t* update)
     // 存放偏差时间
     queue_append_data(update->time_bias, update->vision_receive_point->interval_time);
     // 更新弹道计算的可变参数
-//    assign_solve_trajectory_param(&update->solve_trajectory, update->imu_absolution_angle.pitch, update->imu_absolution_angle.yaw, update->bullet_speed, queue_data_calc_average(update->time_bias) + TIME_MS_TO_S(ROBOT_TIMR_BIAS));
-	    assign_solve_trajectory_param(&update->solve_trajectory, update->imu_absolution_angle.pitch, update->imu_absolution_angle.yaw, update->bullet_speed, queue_data_calc_average(update->time_bias) + TIME_MS_TO_S(bias_1));
+    assign_solve_trajectory_param(&update->solve_trajectory, update->imu_absolution_angle.pitch, update->imu_absolution_angle.yaw, update->bullet_speed, queue_data_calc_average(update->time_bias) + TIME_MS_TO_S(ROBOT_TIMR_BIAS));
+//	    assign_solve_trajectory_param(&update->solve_trajectory, update->imu_absolution_angle.pitch, update->imu_absolution_angle.yaw, update->bullet_speed, queue_data_calc_average(update->time_bias) + TIME_MS_TO_S(bias_1));
 
     // 获取地图正方向
     update->auto_move.begin_yaw = get_yaw_positive_direction();
@@ -415,9 +415,13 @@ static void vision_data_process(vision_control_t* vision_data)
         // 计算机器人pitch轴与yaw轴角度
         vision_data->gimbal_vision_control.gimbal_pitch = calc_target_position_pitch_angle(&vision_data->solve_trajectory, sqrt(pow(vision_data->robot_gimbal_aim_vector.x, 2) + pow(vision_data->robot_gimbal_aim_vector.y, 2)) - vision_data->solve_trajectory.distance_static, vision_data->robot_gimbal_aim_vector.z - vision_data->solve_trajectory.z_static);
         vision_data->gimbal_vision_control.gimbal_yaw = atan2(vision_data->robot_gimbal_aim_vector.y, vision_data->robot_gimbal_aim_vector.x);
-// 修改成自瞄保持yaw轴瞄准中心点
-//vision_data->gimbal_vision_control.gimbal_yaw = calc_target_position_pitch_angle(&vision_data->solve_trajectory, sqrt(pow(vision_data->robot_gimbal_aim_vector.x, 2) + pow(vision_data->robot_gimbal_aim_vector.y, 2)) - vision_data->solve_trajectory.distance_static, vision_data->robot_gimbal_aim_vector.z + vision_data->solve_trajectory.z_static);
-        // 根据机器人模式赋值发送以及运动跟随命令
+				
+				if(vision_data->target_data.v_yaw<-1.5||vision_data->target_data.v_yaw>1.5)
+				{
+							// 修改成自瞄保持yaw轴瞄准中心点
+				vision_data->gimbal_vision_control.gimbal_yaw = calc_target_position_pitch_angle(&vision_data->solve_trajectory, sqrt(pow(vision_data->robot_gimbal_aim_vector.x, 2) + pow(vision_data->robot_gimbal_aim_vector.y, 2)) - vision_data->solve_trajectory.distance_static, vision_data->robot_gimbal_aim_vector.z + vision_data->solve_trajectory.z_static);
+				}
+// 根据机器人模式赋值发送以及运动跟随命令
         switch (vision_data->robot_mode)
         {
         case FOLLOW_PERSON_ENGINEER:
@@ -986,4 +990,5 @@ void queue_delete(queue_t* queue)
     free(queue);
     queue = NULL;
 }
+
 

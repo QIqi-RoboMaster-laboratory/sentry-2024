@@ -28,9 +28,11 @@
 #include "gimbal_task.h"
 #include "referee.h"
 #include "bsp_usart.h"
+#include <stdlib.h>
 fp32 chassis_yaw;
 fp32 sin_yaw;
-fp32 gaibian = 0.0f;
+
+	int random_num;
 extern ext_power_heat_data_t power_heat_data_t;
 extern ext_shoot_data_t shoot_data_t;
 
@@ -145,7 +147,7 @@ chassis_move_t chassis_move;       // 底盘运动数据
 
 fp32 kx = 1.f, ky = 1.f, kw = 1.f; // 速度转换的几个系数
 /*----------------------------------外部变量---------------------------*/
-
+extern gimbal_control_t gimbal_control;
 
 /**
   * @brief          底盘任务，间隔 CHASSIS_CONTROL_TIME_MS 2ms
@@ -180,16 +182,11 @@ void chassis_task(void const *pvParameters)
         //set chassis control mode
         //设置底盘控制模式
         chassis_set_mode(&chassis_move);
-//CAN_blue_robot_hp(game_robot_HP_t.blue_1_robot_HP, game_robot_HP_t.blue_3_robot_HP, game_robot_HP_t.blue_4_robot_HP, game_robot_HP_t.blue_base_HP);
-//					CAN_red_robot_hp(game_robot_HP_t.red_1_robot_HP, game_robot_HP_t.red_3_robot_HP, game_robot_HP_t.red_4_robot_HP, game_robot_HP_t.red_base_HP);
+			
         //whenmode changes, some data save
         //模式切换数据保存
         chassis_mode_change_control_transit(&chassis_move);
 //
-//					CAN_sentry_outpot_state(game_robot_HP_t.red_7_robot_HP,game_robot_HP_t.red_outpost_HP,game_robot_HP_t.blue_7_robot_HP,game_robot_HP_t.blue_outpost_HP);
-//CAN_shoot_data(power_heat_data_t.shooter_id1_17mm_cooling_heat, shoot_data_t.bullet_speed*1000.,game_state.game_progress, 0,robot_state.current_HP);
-//CAN_shoot_data(power_heat_data_t.shooter_id1_17mm_cooling_heat, shoot_data_t.bullet_speed*1000.,game_state.game_progress, 0,robot_state.current_HP);
-
         //chassis data update
         //底盘数据更新
   			chassis_feedback_update(&chassis_move);
@@ -213,13 +210,14 @@ void chassis_task(void const *pvParameters)
                 
    else
 	//发送控制电流
+	 {
        CAN_cmd_chassis(chassis_move.motor_chassis[0].give_current, chassis_move.motor_chassis[1].give_current,
-                       chassis_move.motor_chassis[2].give_current, chassis_move.motor_chassis[3].give_current);
+	                    chassis_move.motor_chassis[2].give_current, chassis_move.motor_chassis[3].give_current);
+	 }
 
 
 
-
-     }
+    }
         //os delay
         //系统延时
         vTaskDelay(CHASSIS_CONTROL_TIME_MS);
@@ -296,9 +294,9 @@ static void chassis_init(chassis_move_t *chassis_move_init)
     chassis_move_init->vy_min_speed = -NORMAL_MAX_CHASSIS_SPEED_Y;
 
     //初始化血量
-    chassis_move_init->chassis_auto.auto_HP.max_HP = chassis_move_init->chassis_auto.ext_game_robot_state_point->maximum_HP;
-    chassis_move_init->chassis_auto.auto_HP.cur_HP = chassis_move_init->chassis_auto.ext_game_robot_state_point->maximum_HP;
-    chassis_move_init->chassis_auto.auto_HP.last_HP = chassis_move_init->chassis_auto.ext_game_robot_state_point->maximum_HP;
+    chassis_move_init->chassis_auto.auto_HP.max_HP = chassis_move_init->chassis_auto.ext_game_robot_state_point->max_HP;
+    chassis_move_init->chassis_auto.auto_HP.cur_HP = chassis_move_init->chassis_auto.ext_game_robot_state_point->max_HP;
+    chassis_move_init->chassis_auto.auto_HP.last_HP = chassis_move_init->chassis_auto.ext_game_robot_state_point->max_HP;
 
     //初始化底盘自动移动控制器
     chassis_auto_move_controller_init(&chassis_move_init->chassis_auto.chassis_auto_move_controller, AUTO_MOVE_K_DISTANCE_ERROR, AUTO_MOVE_MAX_OUTPUT_SPEED, AUTO_MOVE_MIN_OUTPUT_SPEED);
@@ -436,8 +434,9 @@ void chassis_rc_to_control_vector(fp32 *vx_set, fp32 *vy_set, chassis_move_t *ch
 //    *vx_set += +chassis_move_rc_to_vector->vx_set_CANsend/1000;
 		if(vision_rx->vx!=0||vision_rx->vy!=0)
 	{ 
-		chassis_move_rc_to_vector->vx_set = vision_rx->vx*1000;
-    chassis_move_rc_to_vector->vy_set = -vision_rx->vy*1000;
+		 *vx_set += vision_rx->vx;
+    *vy_set += -vision_rx->vy;
+		
 	}
 	
     *vx_set += chassis_move_rc_to_vector->chassis_cmd_slow_set_vx.out;
@@ -606,8 +605,9 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
         // 小陀螺停止，就近对位
 //        if (chassis_move_control->mode_flag == 1)
 //        {
-//            Angle_Error_Compare(((gimbal_control.gimbal_yaw_motor.relative_angle / MOTOR_ECD_TO_RAD) + chassis_move_control->chassis_yaw_motor->frist_ecd), gimbal_control.gimbal_yaw_motor.frist_ecd, gimbal_control.gimbal_yaw_motor.last_zero_ecd);
-//        }
+//           	Angle_Error_Compare(((gimbal_control.gimbal_yaw_motor.relative_angle / MOTOR_ECD_TO_RAD) + chassis_move_control->chassis_yaw_motor->frist_ecd), gimbal_control.gimbal_yaw_motor.frist_ecd, gimbal_control.gimbal_yaw_motor.last_zero_ecd);
+//				}
+				
         relative_angle = (chassis_move_control->chassis_yaw_motor->relative_angle);
         //			relative_angle=chassis_move_control->chassis_yaw_motor->relative_angle-(chassis_move_control->chassis_yaw_motor->frist_ecd*Motor_Ecd_to_rad);
         // 旋转控制底盘速度方向，保证前进方向是云台方向，有利于运动平稳
@@ -617,19 +617,19 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
         sin_yaw = arm_sin_f32(-relative_angle);
         cos_yaw = arm_cos_f32(-relative_angle);
 
-        chassis_move_control->vx_set = cos_yaw * vx_set - sin_yaw * vy_set;
-        chassis_move_control->vy_set = sin_yaw * vx_set + cos_yaw * vy_set;
-        //底盘跟随云台死区
-        if (fabs(relative_angle) < CHASSIS_FOLLOW_GIMBAL_DEADLINE && chassis_move_control->vx_set == 0 && chassis_move_control->vy_set == 0)
-        {
-            //相对角度小于死区大小 并且 底盘无x y方向的移动速度，此时不移动
-            chassis_move_control->wz_set = 0;
-        }
-        else
-        {
+        chassis_move_control->vx_set = cos_yaw * vx_set + sin_yaw * vy_set;
+        chassis_move_control->vy_set = -sin_yaw * vx_set + cos_yaw * vy_set;
+//        //底盘跟随云台死区
+//        if (fabs(relative_angle) < CHASSIS_FOLLOW_GIMBAL_DEADLINE && chassis_move_control->vx_set == 0 && chassis_move_control->vy_set == 0)
+//        {
+//            //相对角度小于死区大小 并且 底盘无x y方向的移动速度，此时不移动
+//            chassis_move_control->wz_set = 0;
+//        }
+//        else
+//        {
             // 计算旋转PID角速度
             chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, chassis_move_control->chassis_yaw_motor->relative_angle, chassis_move_control->chassis_relative_angle_set);
-        }
+//        }
         // 速度限幅
         chassis_move_control->vx_set = fp32_constrain(chassis_move_control->vx_set, chassis_move_control->vx_min_speed, chassis_move_control->vx_max_speed);
         chassis_move_control->vy_set = fp32_constrain(chassis_move_control->vy_set, chassis_move_control->vy_min_speed, chassis_move_control->vy_max_speed);
@@ -647,10 +647,14 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
         cos_yaw = arm_cos_f32(-relative_angle);
         // 设置控制相对云台角度
         chassis_move_control->chassis_relative_angle_set = rad_format(angle_set);
-        chassis_move_control->vx_set = cos_yaw * vx_set - sin_yaw * vy_set;
-        chassis_move_control->vy_set = sin_yaw * vx_set + cos_yaw * vy_set;
-        chassis_move_control->wz_set = SPIN_SPEED;
+        chassis_move_control->vx_set = cos_yaw * vx_set + sin_yaw * vy_set;
+        chassis_move_control->vy_set = -sin_yaw * vx_set + cos_yaw * vy_set;
+				
+    // first_order_filter_cali(&chassis_move_rc_to_vector->chassis_cmd_slow_set_vx, );
+        chassis_move_control->wz_set = SPIN_SPEED + random_num;
         // 速度限幅
+				
+   
         chassis_move_control->vx_set = fp32_constrain(chassis_move_control->vx_set, chassis_move_control->vx_min_speed, chassis_move_control->vx_max_speed);
         chassis_move_control->vy_set = fp32_constrain(chassis_move_control->vy_set, chassis_move_control->vy_min_speed, chassis_move_control->vy_max_speed);
     }
@@ -698,10 +702,10 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
 static void chassis_vector_to_mecanum_wheel_speed(const fp32 vx_set, const fp32 vy_set, const fp32 wz_set, fp32 wheel_speed[4])
 {
 	//CHASSIS_WZ_SET_SCALE
-    wheel_speed[0] = -vx_set - vy_set + (CHASSIS_WZ_SET_SCALE - 1.180f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
-    wheel_speed[1] = vx_set - vy_set + (CHASSIS_WZ_SET_SCALE - 1.180f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
-    wheel_speed[2] = vx_set + vy_set + (-CHASSIS_WZ_SET_SCALE - 1.08f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
-    wheel_speed[3] = -vx_set + vy_set + (-CHASSIS_WZ_SET_SCALE - 1.08f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
+    wheel_speed[0] = -vx_set - vy_set + (CHASSIS_WZ_SET_SCALE - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
+    wheel_speed[1] = vx_set - vy_set + (CHASSIS_WZ_SET_SCALE - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
+    wheel_speed[2] = vx_set + vy_set + (-CHASSIS_WZ_SET_SCALE - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
+    wheel_speed[3] = -vx_set + vy_set + (-CHASSIS_WZ_SET_SCALE - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
 }
 
 
@@ -758,17 +762,7 @@ static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
 
     //calculate pid
 //    //计算pid
-//    for (i = 0; i < 4; i++)
-//    {
-//        PID_calc(&chassis_move_control_loop->motor_speed_pid[i], chassis_move_control_loop->motor_chassis[i].speed, chassis_move_control_loop->motor_chassis[i].speed_set);
-//        chassis_move_control_loop->power_control.speed[i] = chassis_move_control_loop->motor_chassis[i].speed;
-//        if (abs(chassis_move_control_loop->power_control.speed[i]) < chassis_move_control_loop->power_control.SPEED_MIN)
-//        {
-//            chassis_move_control_loop->power_control.speed[i] = chassis_move_control_loop->power_control.SPEED_MIN;
-//        }
-//				CHASSIC_MOTOR_POWER_CONTROL(&chassis_move);
-//    }
-//		
+		
 	for (i = 0; i < 4; i++)
 	{
 		chassis_move.motor_chassis[i].give_current = PID_calc(&chassis_move_control_loop->motor_speed_pid[i], chassis_move_control_loop->motor_chassis[i].speed, 
@@ -805,7 +799,7 @@ static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
 //            chassis_move_control_loop->motor_chassis[i].give_current = (int16_t)(chassis_move_control_loop->motor_speed_pid[i].out);
 //        }
 //    }
-//    chassis_move_control_loop->mode_flag = 0;
+    chassis_move_control_loop->mode_flag = 0;
 }
 
 
@@ -829,7 +823,7 @@ void CHASSIC_MOTOR_POWER_CONTROL(chassis_move_t *chassis_move)
 	chassis_move->power_control.POWER_MAX = 0; //最终底盘的最大功率
 	chassis_move->power_control.forecast_total_power = 0; // 预测总功率
 	PID_calc(&chassis_move->buffer_pid,power_heat_data_t.chassis_power_buffer,30); //使缓冲能量维持在一个稳定的范围,这里的PID没必要移植我的，用任意一个就行
-  max_power_limit = robot_state.chassis_power_limit;  //获得裁判系统的功率限制数值
+  max_power_limit =100;// robot_state.chassis_power_limit;  //获得裁判系统的功率限制数值
 	
 	input_power = max_power_limit - chassis_move->buffer_pid.out; //通过裁判系统的最大功率
 	chassis_move->power_control.POWER_MAX = input_power;
@@ -880,7 +874,8 @@ void CHASSIC_MOTOR_POWER_CONTROL(chassis_move_t *chassis_move)
 					chassis_move->motor_chassis[i].give_current = chassis_move->power_control.MAX_current[i];
 			}
 			
-		//	chassis_move->motor_chassis[3].give_current *= 0.5f;
+//chassis_move->motor_chassis[3].give_current *=0.2;
+			
 			
 		}
 	}
@@ -889,6 +884,43 @@ void CHASSIC_MOTOR_POWER_CONTROL(chassis_move_t *chassis_move)
 
 
 
+
+
+//// 就近对位角度处理，取劣弧
+//void Angle_Error_Compare(int now_angle, int zero_angle, int last_zero_angle)
+//{
+//    fp32 flag_angle[2] = {0};
+//    if (zero_angle > 4096)
+//    {
+//        flag_angle[0] = abs((now_angle - zero_angle));
+//        if (flag_angle[0] > 4096)
+//            flag_angle[0] = 8191 - zero_angle + now_angle;
+//        flag_angle[1] = abs((now_angle - last_zero_angle));
+//        if (flag_angle[1] > 4096)
+//            flag_angle[1] = 8191 - now_angle + last_zero_angle;
+//        if (flag_angle[0] > flag_angle[1])
+//        {
+//            zero_angle -= 4096;
+//            X_FLAG++;
+//            gimbal_control.gimbal_yaw_motor.frist_ecd = zero_angle;
+//        }
+//    }
+//    else if (zero_angle <= 4096)
+//    {
+//        flag_angle[0] = abs((now_angle - zero_angle));
+//        if (flag_angle[0] > 4096)
+//            flag_angle[0] = 8191 - now_angle + zero_angle;
+//        flag_angle[1] = abs((now_angle - last_zero_angle));
+//        if (flag_angle[1] > 4096)
+//            flag_angle[1] = 8191 - last_zero_angle + now_angle;
+//        if (flag_angle[0] > flag_angle[1])
+//        {
+//            zero_angle += 4096;
+//            X_FLAG++;
+//            gimbal_control.gimbal_yaw_motor.frist_ecd = zero_angle;
+//        }
+//    }
+//}
 void chassis_auto_move_controller_init(chassis_follow_auto_move_controller_t* controller, fp32 k_distance_error, fp32 max_out, fp32 min_out)
 {
     controller->k_distance_error = k_distance_error;
@@ -930,6 +962,10 @@ void chassis_auto_move_controller_calc(chassis_follow_auto_move_controller_t* co
     //赋值输出值
     controller->output = output;
 }
+
+
+
+
 
 
 

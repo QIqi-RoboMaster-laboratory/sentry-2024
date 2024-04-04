@@ -49,8 +49,11 @@
 #include "detect_task.h"
 #include "user_lib.h"
 #include "bsp_usart.h"
+#include "chassis_task.h"
 int scanflag=0;
 extern radar_txfifo_t radar_txfifo;
+extern chassis_move_t *chassis_move_mode;
+int b;
 #define int_abs(x) ((x) > 0 ? (x) : (-x))
 
 /**
@@ -158,7 +161,6 @@ fp32 Pitch_Set[8]={0};
 //云台初始化完毕标志位
 bool_t gimbal_init_finish_flag = 0;
 extern vision_rxfifo_t vision_rxfifo;
-
 extern vision_rxfifo_t *vision_rx;
 
 
@@ -292,7 +294,6 @@ bool_t gimbal_cmd_to_shoot_stop(void)
     }
 }
 
-
 /**
  * @brief          云台行为状态机设置.
  * @param[in]      gimbal_mode_set: 云台数据指针
@@ -364,73 +365,51 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
     }
     else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
-
-					if(game_state.game_progress!=4)
-					{
-						gimbal_behaviour =GIMBAL_AUTO_ATTACK;
-					}
-//			gimbal_behaviour =GIMBAL_AUTO_SCAN;    //比赛模式
+							gimbal_behaviour =GIMBAL_AUTO_ATTACK;
 			
-//				if(game_state.game_progress==4)
-//				{																					// 切换到云台自动模式
-////        // // 判断当前模式是否为自动移动模式
-////         if (judge_cur_mode_is_auto_move_mode())
-////         {
-////             //是自动移动模式
-//             gimbal_behaviour = GIMBAL_AUTO_MOVE;  //云台自动移动模式
-//         }
-//				if(radar_txfifo.header==0)
-//					{
-//							gimbal_behaviour =GIMBAL_AUTO_SCAN;
-//				
-//																							// 不是自动移动模式
-//																									// 根据视觉是否识别，自动控制模式
-//            if (judge_vision_appear_target())
-//             {
-//																											// 识别到目标
-//                gimbal_behaviour = GIMBAL_AUTO_ATTACK; // 云台自动袭击模式
-//             }
-//            else
-//             {
-//																											// 未识别到目标
-//               gimbal_behaviour = GIMBAL_AUTO_SCAN; // 云台自动扫描模式
-//             }
-//         
-//			}
-						if(game_state.game_progress==4)
-					{						
+						if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[0]))  //上场自动模式
+						{
+							//判断工控是否通信成功
 							if(vision_rx->header==0xA5)
-							{
-								 gimbal_behaviour = GIMBAL_RC;
-							}
-					else
-						{			
-								gimbal_behaviour = GIMBAL_AUTO_SCAN;
+								{
+								if(vision_rx->scan==0)
+									{
+										gimbal_behaviour =GIMBAL_RC;
+									}
+								if(vision_rx->scan==1)
+										{
+											gimbal_behaviour =GIMBAL_AUTO_SCAN;
+										if (judge_vision_appear_target())
+												{										// 识别到目标
+													gimbal_behaviour = GIMBAL_AUTO_ATTACK; // 云台自动袭击模式
+												}
+										else  
+												{
+													gimbal_behaviour = GIMBAL_AUTO_SCAN;
+												}
+										}
+								}
+										//如果通信失败，则扫描。
+								else
+									{
+										gimbal_behaviour =GIMBAL_AUTO_SCAN;
+										if (judge_vision_appear_target())
+												{										// 识别到目标
+													gimbal_behaviour = GIMBAL_AUTO_ATTACK; // 云台自动袭击模式
+												}
+										else  
+												{
+													gimbal_behaviour = GIMBAL_AUTO_SCAN;
+												}
+									}   
+						}
 								
-			     if (judge_vision_appear_target())
-             {
-																											// 识别到目标
-                gimbal_behaviour = GIMBAL_AUTO_ATTACK; // 云台自动袭击模式
-							 
-             }
-						 else  
-						 {
-									gimbal_behaviour = GIMBAL_AUTO_SCAN;
-						 
-						 }
-					 }
-         
-					}
-//		
-		
-        
-																									// 不是自动移动模式
-																									// 根据视觉是否识别，自动控制模式
+		}																							
            
          
 			 
 
-    }
+    
 	
     // 遥控器报错处理
     if (toe_is_error(DBUS_TOE))
@@ -583,7 +562,9 @@ static void gimbal_auto_scan_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *g
     scan_control_set(&auto_scan_AC_set_yaw, gimbal_control_set->gimbal_auto_scan.yaw_range, gimbal_control_set->gimbal_auto_scan.scan_yaw_period, gimbal_control_set->gimbal_auto_scan.scan_run_time);
     scan_control_set(&auto_scan_AC_set_pitch, gimbal_control_set->gimbal_auto_scan.pitch_range, gimbal_control_set->gimbal_auto_scan.scan_pitch_period, gimbal_control_set->gimbal_auto_scan.scan_run_time);
     // 赋值控制值  = 中心值 + 加上浮动函数
-    yaw_set_angle = auto_scan_AC_set_yaw + gimbal_control_set->gimbal_auto_scan.yaw_center_value;
+   yaw_set_angle = auto_scan_AC_set_yaw + gimbal_control_set->gimbal_auto_scan.yaw_center_value;
+		//gimbal_control_set->gimbal_auto_scan.yaw_center_value +=0.001f;
+		 //yaw_set_angle = gimbal_control_set->gimbal_auto_scan.yaw_center_value;
     pitch_set_angle = auto_scan_AC_set_pitch + gimbal_control_set->gimbal_auto_scan.pitch_center_value;
 
     // 一阶低通使数据平滑

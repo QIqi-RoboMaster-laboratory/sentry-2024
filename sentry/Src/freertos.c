@@ -165,6 +165,7 @@ void MX_FREERTOS_Init(void)
     vision_task_handle = osThreadCreate(osThread(VISION), NULL);
 
 
+	
 		osThreadDef(RADAR, radar_usart_task, osPriorityNormal, 0, 512);
 		radar_usart_handle = osThreadCreate(osThread(RADAR), NULL);
 

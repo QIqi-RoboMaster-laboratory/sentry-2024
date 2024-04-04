@@ -50,12 +50,14 @@
 #include "chassis_task.h"
 #include "arm_math.h"
 #include "gimbal_behaviour.h"
+#include "bsp_usart.h"
 extern ext_game_robot_state_t robot_state;
 extern ext_robot_hurt_t robot_hurt_t;
 fp32 curhp;
 fp32 lasthp;
 int hitflag=0;
 int htime=0;
+int a;
 
 //前哨站状态
 #define PERSON_OUTPOST_STATE(event) (event & (1 << PERSON_OUTPOST_STATE_BIT))
@@ -175,7 +177,7 @@ static void chassis_goback_control(fp32*vx_can_set, fp32 *vy_can_set, fp32 *wz_c
 //留意，这个底盘行为模式变量
 chassis_behaviour_e chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
 
-
+	   extern vision_rxfifo_t *vision_rx;
 
 /**
   * @brief          通过逻辑判断，赋值"chassis_behaviour_mode"成哪种模式
@@ -198,108 +200,71 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     else if (switch_is_mid(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {
         chassis_behaviour_mode = CHASSIS_FOLLOW_GIMBAL_YAW;
-	
-	
     }
 		else if (switch_is_up(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {
-		
-				
+		extern 	int random_num;
+				random_num=+10;
 					chassis_behaviour_mode = CHASSIS_SPIN;
+			
 		
-		
+			if(switch_is_up(chassis_move_mode->chassis_RC->rc.s[1]))    //自动模式，由导航工控决定一切。
+			{
+				
+								//判断导航工控是否链接								
+					if(vision_rx->header==0xA5)
+						{
+							if(vision_rx->spin==0)
+							{
+							chassis_behaviour_mode =CHASSIS_FOLLOW_GIMBAL_YAW ;
+							}
+						else if(vision_rx->spin==1)
+							{
+								random_num=+10;
+								chassis_behaviour_mode = CHASSIS_SPIN;
+							}
+						else if(vision_rx->spin==2)
+							{			
+							chassis_behaviour_mode = CHASSIS_SPIN;
+							}
+						}
+							//导航工控掉电，原地小陀螺。
+					else
+					{
+						
+						chassis_behaviour_mode = CHASSIS_SPIN;
+					}
+			}
     }
-
 
 		else
 		{
 		   chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
 		}
 		
-//    else if (switch_is_mid(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
-//    {
-//        // 遥控器中挡为遥控器控制模式，
 
-//        // 默认底盘跟随云台
-//        chassis_behaviour_mode = CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW;//CHASSIS_FOLLOW_GIMBAL_YAW;
-//    }
-//    else if (switch_is_up(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
-//    {
-//        // 上档为自动模式,底盘自动控制
-//        //  底盘原地不动 -- 哨兵掉血 小陀螺
-//        judge_chassis_auto_mode(chassis_move_mode);
 
-//        // 判断自动模式
-//        if (switch_is_down(chassis_move_mode->chassis_RC->rc.s[CHASSIS_AUTO_MODE]))
-//        {
-////            if (chassis_move_mode->chassis_auto.chassis_auto_mode == CHASSIS_ATTACK)
-////            {
-////                chassis_behaviour_mode = CHASSIS_NO_MOVE;
-////            }
-////            else if (chassis_move_mode->chassis_auto.chassis_auto_mode == CHASSIS_RUN)
-////            {
-////                chassis_behaviour_mode = CHASSIS_SPIN;
-////            }
+		
 
-//        }
-////        else if (switch_is_mid(chassis_move_mode->chassis_RC->rc.s[CHASSIS_AUTO_MODE]))
-//        {
-//            //判断是否为自动移动模式
-//            if (judge_cur_mode_is_auto_move_mode())
-//            {
-//                chassis_behaviour_mode = CHASSIS_AUTO_MOVE;
-//            }
-//            else
-//            {
-//                // 根据视觉底盘运动命令判断底盘是否移动
-//                if (chassis_move_mode->chassis_auto.chassis_vision_control_point->vision_control_chassis_mode == FOLLOW_TARGET)
-//                {
-//                    chassis_behaviour_mode = CHASSIS_AUTO_FOLLOW_TARGET;
-//                }
-//                else if (chassis_move_mode->chassis_auto.chassis_vision_control_point->vision_control_chassis_mode == UNFOLLOW_TARGET)
-//                {
-//                    // 若当前血量低于一定比例的最大血量，则开始小陀螺自保
-//                    if (chassis_move_mode->chassis_auto.auto_HP.cur_HP >= chassis_move_mode->chassis_auto.auto_HP.max_HP * HP_ALLOW_PROPORTION)
-//                    {
-//                        chassis_behaviour_mode = CHASSIS_NO_MOVE;
-//                    }
-//                    else
-//                    {
-//                        chassis_behaviour_mode = CHASSIS_SPIN;
-//                    }
-//                }
-//            }
-//        }
-//        else if (switch_is_up(chassis_move_mode->chassis_RC->rc.s[CHASSIS_AUTO_MODE]))
-//        {
-//            //原地小陀螺
-//            chassis_behaviour_mode = CHASSIS_SPIN;
-//        }
-//    }
-//    else if (toe_is_error(DBUS_TOE))
-//    {
-//        //无信号
-//        chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
-//    }
-//    else
-//    {
-//        chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
-//    }
-//    //when gimbal in some mode, such as init mode, chassis must's move
-//    //当云台在某些模式下，像初始化， 底盘不动
-//    if (gimbal_cmd_to_chassis_stop())
-//    {
-//        chassis_behaviour_mode = CHASSIS_NO_MOVE;
-//    }
 
     //防止底盘跟随云台，云台掉电底盘移动，云台电机掉线,底盘不移动
- /*    if (toe_is_error(YAW_GIMBAL_MOTOR_TOE) && toe_is_error(PITCH_GIMBAL_MOTOR_TOE))
+   if (toe_is_error(YAW_GIMBAL_MOTOR_TOE) && toe_is_error(PITCH_GIMBAL_MOTOR_TOE))
     {
-        chassis_behaviour_mode = CHASSIS_NO_MOVE;
+        chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
     }
- */
+ 	if (toe_is_error(YAW_GIMBAL_MOTOR_TOE) && toe_is_error(PITCH_GIMBAL_MOTOR_TOE))
+    {
+        chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
+    }    
+			//when gimbal in some mode, such as init mode, chassis must's move
+			//当云台在某些模式下，像初始化， 底盘不动
+	if (gimbal_cmd_to_chassis_stop())
+    {
+        chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
+    }
     //accord to beheviour mode, choose chassis control mode
     //根据行为模式选择一个底盘控制模式
+
     if (chassis_behaviour_mode == CHASSIS_ZERO_FORCE)
     {
         chassis_move_mode->chassis_mode = CHASSIS_VECTOR_RAW;
@@ -353,9 +318,9 @@ void judge_chassis_auto_mode(chassis_move_t* chassis_judge_auto_mode)
     //未被击打的时间
     static uint16_t not_hit_time = 0;
     //读取血量
-    chassis_judge_auto_mode->chassis_auto.auto_HP.max_HP = chassis_judge_auto_mode->chassis_auto.ext_game_robot_state_point->maximum_HP;
-    chassis_judge_auto_mode->chassis_auto.auto_HP.last_HP = chassis_judge_auto_mode->chassis_auto.auto_HP.cur_HP; 
-    chassis_judge_auto_mode->chassis_auto.auto_HP.cur_HP = chassis_judge_auto_mode->chassis_auto.ext_game_robot_state_point->current_HP;
+//    chassis_judge_auto_mode->chassis_auto.auto_HP.max_HP = chassis_judge_auto_mode->chassis_auto.ext_game_robot_state_point->maximum_HP;
+//    chassis_judge_auto_mode->chassis_auto.auto_HP.last_HP = chassis_judge_auto_mode->chassis_auto.auto_HP.cur_HP; 
+//    chassis_judge_auto_mode->chassis_auto.auto_HP.cur_HP = chassis_judge_auto_mode->chassis_auto.ext_game_robot_state_point->current_HP;
 
     //判断血量是否减少
     if ((chassis_judge_auto_mode->chassis_auto.auto_HP.cur_HP - chassis_judge_auto_mode->chassis_auto.auto_HP.last_HP) < 0)
@@ -585,7 +550,7 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
     //channel value and keyboard value change to speed set-point, in general
     //遥控器的通道值以及键盘按键 得出 一般情况下的速度设定值
     chassis_rc_to_control_vector(vx_set, vy_set, chassis_move_rc_to_vector);
-		*angle_set = -CHASSIS_WZ_RC_SEN * chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL];
+//		*angle_set = -CHASSIS_WZ_RC_SEN * chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL];
 
 }
 
@@ -617,7 +582,7 @@ static void chassis_infantry_follow_world_control(fp32 *vx_set, fp32 *vy_set, fp
     //channel value and keyboard value change to speed set-point, in general
     //遥控器的通道值以及键盘按键 得出 一般情况下的速度设定值
     chassis_rc_to_control_vector(vx_set, vy_set, chassis_move_rc_to_vector);
-		*angle_set = -CHASSIS_WZ_RC_SEN * chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL];
+//		*angle_set = -CHASSIS_WZ_RC_SEN * chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL];
 
 }
 
@@ -630,7 +595,7 @@ static void chassis_engineer_follow_chassis_yaw_control(fp32 *vx_set, fp32 *vy_s
 
     chassis_rc_to_control_vector(vx_set, vy_set, chassis_move_rc_to_vector);
 
-    *angle_set = rad_format(chassis_move_rc_to_vector->chassis_yaw_set - CHASSIS_ANGLE_Z_RC_SEN * chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL]);
+ //   *angle_set = rad_format(chassis_move_rc_to_vector->chassis_yaw_set - CHASSIS_ANGLE_Z_RC_SEN * chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL]);
 }
 
 /**
@@ -660,7 +625,7 @@ static void chassis_no_follow_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_s
     }
 
     chassis_rc_to_control_vector(vx_set, vy_set, chassis_move_rc_to_vector);
-    *wz_set = -CHASSIS_WZ_RC_SEN * chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL];
+ //   *wz_set = -CHASSIS_WZ_RC_SEN * chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL];
 }
 
 /**
@@ -690,7 +655,7 @@ static void chassis_open_set_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, c
 
     *vx_set = chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_X_CHANNEL] * CHASSIS_OPEN_RC_SCALE;
     *vy_set = -chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_Y_CHANNEL] * CHASSIS_OPEN_RC_SCALE;
-    *wz_set = -chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL] * CHASSIS_OPEN_RC_SCALE;
+//    *wz_set = -chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL] * CHASSIS_OPEN_RC_SCALE;
     return;
 }
 

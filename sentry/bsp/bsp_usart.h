@@ -1,23 +1,23 @@
 #ifndef BSP_USART_H
 #define BSP_USART_H
 #include "struct_typedef.h"
-#include "referee.h"
-#define VISION_RX_LEN_2 34u
-#define VISION_RX_LEN 17u
+
+#define VISION_RX_LEN_2  72u
+#define VISION_RX_LEN  36u
 typedef struct {
 	uint8_t header;
-//	uint8_t scan;
-//	uint8_t spin;
+	uint8_t scan;
+	uint8_t spin;
 	float  vx;
 	float  vy;
 	float  ang_z;
-//	uint8_t robot_id;
-//	uint16_t shooter1_limit;
-//	uint16_t chassis_power_limit;
-//	uint16_t shooter1_heatlimit;
-//	float chassis_power;
-//	uint16_t buffer_energry;
-//	uint8_t shooter_speed;
+	uint8_t robot_id;
+	uint16_t shooter1_barrel_heat_limit;
+	uint16_t chassis_power_limit;
+	uint16_t shooter1_17mm_1_barrel_heat;
+	float chassis_power;
+	uint16_t buffer_energry;
+	float  initial_speed;
 	float rubbish;
 	
 } vision_rxfifo_t;

@@ -76,7 +76,7 @@
 #define MOTOR_SPEED_TO_CHASSIS_SPEED_WZ 0.25f
 
 
-#define MOTOR_DISTANCE_TO_CENTER 0.2f
+#define MOTOR_DISTANCE_TO_CENTER 0.1f
 
 //chassis task control time  2ms
 //底盘任务控制间隔 2ms
@@ -115,7 +115,7 @@
 //底盘运动过程最大平移速度
 #define NORMAL_MAX_CHASSIS_SPEED_Y 15.0f
 
-#define CHASSIS_WZ_SET_SCALE 0.2375f//0.1375f
+#define CHASSIS_WZ_SET_SCALE 0.0f//0.1375f
 
 //when chassis is not set to move, swing max angle
 //摇摆原地不动摇摆最大角度(rad)
@@ -137,20 +137,20 @@
 #define CHASSIS_FOLLOW_GIMBAL_PID_KP 28.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_KI 0.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_KD 60.0f
-#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 6.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 24.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 0.2f
 
 // 底盘电机功率环PID
 #define M3505_MOTOR_POWER_PID_KP 1.0f
-#define M3505_MOTOR_POWER_PID_KI 0.1f
-#define M3505_MOTOR_POWER_PID_KD 0.f
+#define M3505_MOTOR_POWER_PID_KI 0.0f
+#define M3505_MOTOR_POWER_PID_KD 0.1f
 #define M3505_MOTOR_POWER_PID_MAX_OUT 15.0f
 #define M3505_MOTOR_POWER_PID_MAX_IOUT 10.0f
 //底盘跟随云台死区 rad
 #define CHASSIS_FOLLOW_GIMBAL_DEADLINE 0.01f
 
 //底盘小陀螺速度值
-#define SPIN_SPEED 		  -5.0f
+#define SPIN_SPEED 		  -25.0f
 //底盘自动移动距离项差值系数
 #define AUTO_MOVE_K_DISTANCE_ERROR 1.0f
 //底盘自动移动最大输出速度 m/s
@@ -288,6 +288,8 @@ typedef struct
 
     //视觉控制指针
     const chassis_vision_control_t* chassis_vision_control_point;
+	
+	
     //自动移动控制指针
     const auto_move_t* chassis_auto_move;
 
@@ -436,6 +438,11 @@ void chassis_auto_move_controller_init(chassis_follow_auto_move_controller_t* co
  * @param set_distance 设定的距离
  * @param current_distance 当前距离
  */
+ 
+ 
+ 
+
+void Angle_Error_Compare(int now_angle,int zero_angle,int last_zero_angle);
 void chassis_auto_move_controller_calc(chassis_follow_auto_move_controller_t* controller, fp32 set_distance, fp32 current_distance);
 extern void CHASSIC_MOTOR_POWER_CONTROL(chassis_move_t *chassis_motor);
 static void CHASSIC_MOTOR_PID_CONTROL(chassis_move_t *chassis_motor);

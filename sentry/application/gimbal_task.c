@@ -180,7 +180,7 @@ void gimbal_task(void const *pvParameters)
     // 等待陀螺仪任务更新陀螺仪数据
     // wait a time
     vTaskDelay(GIMBAL_TASK_INIT_TIME);
-
+  
         // gimbal init
         // 云台初始化
         gimbal_init(&gimbal_control);

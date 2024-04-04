@@ -190,7 +190,7 @@
 #define PITCH_SCAN_RANGE 0.250f
 
 //yaw轴扫描步长 rad/S
-#define YAW_SCAN_SPEED 1.2f
+#define YAW_SCAN_SPEED 1.0f
 //pitch轴扫描步长 rad/s
 #define PITCH_SCAN_SPEED 1.2f
 
@@ -205,8 +205,8 @@
 #define PITCH_FEED_FORWARD 0.95f
 
 //角度误差项系数
-#define K_YAW_ANGLE_ERROR 160000.0f
-#define K_PITCH_ANGLE_ERROR 168000.0f
+#define K_YAW_ANGLE_ERROR 186000.0f
+#define K_PITCH_ANGLE_ERROR 188000.0f
 
 
 //速度项系数

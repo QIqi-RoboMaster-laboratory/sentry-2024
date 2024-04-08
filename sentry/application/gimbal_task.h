@@ -206,12 +206,12 @@
 
 //角度误差项系数
 #define K_YAW_ANGLE_ERROR 186000.0f
-#define K_PITCH_ANGLE_ERROR 188000.0f
+#define K_PITCH_ANGLE_ERROR 182000.0f
 
 
 //速度项系数
 #define K_YAW_ANGLE_SPEED 24000.0f
-#define K_PITCH_ANGLE_SPEED 8800.0f
+#define K_PITCH_ANGLE_SPEED 9600.0f
 //最大最小输出
 #define YAW_MAX_OUT 32000.0f
 #define YAW_MIX_OUT -32000.0f

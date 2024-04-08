@@ -204,9 +204,7 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
 		else if (switch_is_up(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {
 		extern 	int random_num;
-				random_num=+10;
-					chassis_behaviour_mode = CHASSIS_SPIN;
-			
+				
 		
 			if(switch_is_up(chassis_move_mode->chassis_RC->rc.s[1]))    //自动模式，由导航工控决定一切。
 			{
@@ -220,25 +218,34 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
 							}
 						else if(vision_rx->spin==1)
 							{
-								random_num=+10;
+								random_num=20;
 								chassis_behaviour_mode = CHASSIS_SPIN;
 							}
 						else if(vision_rx->spin==2)
 							{			
+								random_num=0;
 							chassis_behaviour_mode = CHASSIS_SPIN;
 							}
 						}
 							//导航工控掉电，原地小陀螺。
 					else
 					{
-						
+						random_num=0;
 						chassis_behaviour_mode = CHASSIS_SPIN;
 					}
 			}
+			else
+			{
+					random_num=20;
+					chassis_behaviour_mode = CHASSIS_SPIN;
+			}
+			
+			
     }
 
 		else
 		{
+		
 		   chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
 		}
 		

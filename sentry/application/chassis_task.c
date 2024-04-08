@@ -874,7 +874,7 @@ void CHASSIC_MOTOR_POWER_CONTROL(chassis_move_t *chassis_move)
 					chassis_move->motor_chassis[i].give_current = chassis_move->power_control.MAX_current[i];
 			}
 			
-//chassis_move->motor_chassis[3].give_current *=0.2;
+chassis_move->motor_chassis[3].give_current *=0.25;
 			
 			
 		}

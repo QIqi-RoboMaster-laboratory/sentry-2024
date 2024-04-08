@@ -82,37 +82,24 @@
 #define CHASSIS_BEHAVIOUR_H
 #include "struct_typedef.h"
 #include "chassis_task.h"
-#include "detect_task.h"
 
 typedef enum
 {
-    CHASSIS_ZERO_FORCE,                  // chassis will be like no power,底盘无力, 跟没上电那样
-    CHASSIS_NO_MOVE,                     // chassis will be stop,底盘保持不动
-     CHASSIS_FOLLOW_WORLD,           // absoulet angle
-	
-		CHASSIS_FOLLOW_GIMBAL_YAW,           // chassis will follow gimbal, usually in infantry,正常步兵底盘跟随云台
-    CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW, // chassis will follow chassis yaw angle, usually in engineer,
-                                         // because chassis does have gyro sensor, its yaw angle is calculed by gyro in gimbal and gimbal motor angle,
-                            // if you have a gyro sensor in chassis, please updata yaw, pitch, roll angle in "chassis_feedback_update"  function
-                                         // 工程底盘角度控制底盘，由于底盘未有陀螺仪，故而角度是减去云台角度而得到，
-                                         // 如果有底盘陀螺仪请更新底盘的yaw，pitch，roll角度 在chassis_feedback_update函数中
-    CHASSIS_NO_FOLLOW_YAW,               // chassis does not follow angle, angle is open-loop,but wheels have closed-loop speed
-                                         // 底盘不跟随角度，角度是开环的，但轮子是有速度环
-    CHASSIS_OPEN,                        // the value of remote control will mulitiply a value, get current value that will be sent to can bus
-                                         //  遥控器的值乘以比例成电流值 直接发送到can总线上
-	CHASSIS_GOBACK,
-    CHASSIS_SPIN,
-	CHASSIS_WSPIN,
-    CHASSIS_RC,   // 底盘遥控器控制模式，默认为底盘跟随云台
-    CHASSIS_AUTO_FOLLOW_TARGET, // 底盘自动模式
-    CHASSIS_AUTO_MOVE,           //底盘自动移动
-
+  CHASSIS_ZERO_FORCE,                   //chassis will be like no power,底盘无力, 跟没上电那样
+	CHASSIS_BPIN,													//陀螺模式
+  CHASSIS_NO_MOVE,                      //chassis will be stop,底盘保持不动
+  CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW,   //底盘跟随云台
+  CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW,  //chassis will follow chassis yaw angle, usually in engineer,
+                                        //because chassis does have gyro sensor, its yaw angle is calculed by gyro in gimbal and gimbal motor angle,
+                                        //如果有底盘陀螺仪请更新底盘的yaw，pitch，roll角度 在chassis_feedback_update函数中
+  CHASSIS_NO_FOLLOW_YAW,                //chassis does not follow angle, angle is open-loop,but wheels have closed-loop speed
+                                        //底盘不跟随角度，角度是开环的，但轮子是有速度环
+  CHASSIS_OPEN                          //the value of remote control will mulitiply a value, get current value that will be sent to can bus
+                                        // 遥控器的值乘以比例成电流值 直接发送到can总线上
 } chassis_behaviour_e;
 
 #define CHASSIS_OPEN_RC_SCALE 10 // in CHASSIS_OPEN mode, multiply the value. 在chassis_open 模型下，遥控器乘以该比例发送到can上
 
-//安全时间, 大概一个数字1ms
-#define SAFE_TIME 15000
 
 
 /**
@@ -145,19 +132,7 @@ extern void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode);
   * @retval         none
   */
 
-extern void chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set,fp32 *wz_set, fp32 *angle_set, chassis_move_t *chassis_move_rc_to_vector,chassis_move_t *chassis_move_control);
-
-
-
-
-/**
- * @brief 根据血量判断底盘自动运行状态
- * 
- * @param chassis_judge_auto_mode 底盘结构体
- */
-void judge_chassis_auto_mode(chassis_move_t* chassis_judge_auto_mode);
-
-
-
+extern void chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set, chassis_move_t *chassis_move_rc_to_vector);
 
 #endif
+

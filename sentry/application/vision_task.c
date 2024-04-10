@@ -68,8 +68,7 @@ static vision_receive_t* get_vision_receive_point(void);
 vision_control_t vision_control = { 0 };
 // 视觉接收结构体
 vision_receive_t vision_receive = { 0 };
-uint16_t bias_1 = 20;
-fp32 target_z_k = 0.043;
+
 
 void vision_task(void const* pvParameters)
 {
@@ -157,7 +156,6 @@ static void vision_task_feedback_update(vision_control_t* update)
     queue_append_data(update->time_bias, update->vision_receive_point->interval_time);
     // 更新弹道计算的可变参数
     assign_solve_trajectory_param(&update->solve_trajectory, update->imu_absolution_angle.pitch, update->imu_absolution_angle.yaw, update->bullet_speed, queue_data_calc_average(update->time_bias) + TIME_MS_TO_S(ROBOT_TIMR_BIAS));
-//	    assign_solve_trajectory_param(&update->solve_trajectory, update->imu_absolution_angle.pitch, update->imu_absolution_angle.yaw, update->bullet_speed, queue_data_calc_average(update->time_bias) + TIME_MS_TO_S(bias_1));
 
     // 获取地图正方向
     update->auto_move.begin_yaw = get_yaw_positive_direction();

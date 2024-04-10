@@ -637,11 +637,12 @@ static void chassis_bpin_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, c
 				
 						*vx_set*=1.5f;//1.5f;
 						*vy_set*=1.5f;//1.5f;
-						*wz_set =25.0f;//3.5f;//10.0f;
+						*wz_set =15.0f;//3.5f;//10.0f;
 
 				
 		//ÍÓÂİÌáËÙ
-    if(vx_set==0&&vy_set==0){
+    if(vx_set==0&&vy_set==0)
+			{
 				*wz_set*=2.0f;
 		} 
 }

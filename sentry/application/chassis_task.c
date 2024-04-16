@@ -121,6 +121,8 @@ void chassis_task(void const *pvParameters)
 
     while (1)
     {
+			 extern double anglesin;
+			 anglesin += 0.0025;
         //设置底盘控制模式
         chassis_set_mode(&chassis_move);
         //模式切换数据保存

@@ -87,7 +87,9 @@
 
 #include "gimbal_behaviour.h"
 #include "referee.h"
-
+ double anglesin;
+ double sin_value;
+ int random_num ;
 /**
   * @brief          when chassis behaviour mode is CHASSIS_ZERO_FORCE, the function is called
   *                 and chassis control mode is raw. The raw chassis control mode means set value
@@ -634,12 +636,34 @@ static void chassis_bpin_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, c
     chassis_rc_to_control_vector(vx_set, vy_set, chassis_move_rc_to_vector);
 		//陀螺前进设定
 
-				
+//				double period = 5.0; // Period of the sine wave
+//    double range = PI; // Range of the sine wave
+//  
+//    double step = 2.0 * range / period;
+  sin_value = sin(anglesin);
+       
+   
+if(sin_value>0.7)
+{
+	
+  random_num = (rand() % 3) * 3;
+;
+}
+if (sin_value >= 0) 
+	{
+        sin_value = sin_value;
+       } 
+	else
+		{
+            sin_value = -sin_value ;
+        }
+//				
 						*vx_set*=1.5f;//1.5f;
 						*vy_set*=1.5f;//1.5f;
-						*wz_set =15.0f;//3.5f;//10.0f;
+						*wz_set =5.0f+5*sin_value+random_num;//10.0f;
 
-				
+	
+       
 		//陀螺提速
     if(vx_set==0&&vy_set==0)
 			{

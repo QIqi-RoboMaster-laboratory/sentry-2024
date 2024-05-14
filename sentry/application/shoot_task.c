@@ -64,7 +64,7 @@ static void shoot_mode_change_transit(void);
  * @param trigger_stuck 卡弹结构体
  * @return bool_t 返回1 卡弹 返回0 不卡弹
  */
-static bool_t judge_bullet_is_stuck(Shoot_Motor_t* trigger_stuck);
+static void trigger_motor_turn_back(void);
 
 /**
  * @brief  射击初始化
@@ -171,43 +171,37 @@ static void shoot_mode_change_transit(void)
 					stm32_step_shoot_pid_clear();
 		}
 }
-
-static bool_t judge_bullet_is_stuck(Shoot_Motor_t* trigger_stuck)
+/*							卡弹判断函数
+**				利用标志位通过时间进行状态判断
+*/
+static void trigger_motor_turn_back(void)
 {
-    //判断播弹电机电流值是否过大
-    if (abs(trigger_stuck->given_current) > STUCK_CURRENT)
-    {
-        //计数卡弹时间
-        trigger_motor.stuck_time++;
-        //判断是否卡弹时间过长
-        if (trigger_motor.stuck_time > STUCK_TIME)
-        {
-            //标志卡弹
-            trigger_stuck->stuck_state = STUCK;
-            //卡弹时间归零
-            trigger_motor.stuck_time = 0;
-        }
-        else
-        {
-            //卡弹时间归零
-            trigger_motor.stuck_time = 0;
-        }
-
-        //判断是否卡弹
-        if (trigger_motor.stuck_state == STUCK)
-        {
-            trigger_motor.reverse_time++;
-            if (trigger_motor.reverse_time > REVERSE_TIME)
+            //根据电流值和时间判断是否卡弹
+       if((trigger_motor.bulletspeed) < 5 && abs(trigger_motor.given_current) >7000)
             {
-                //标志不卡弹
-                trigger_motor.stuck_state = UNSTUCK;
-                //卡弹回拨时间归零
-                trigger_motor.reverse_time = 0;
+                    trigger_motor.stuck_time ++;
+                    if(trigger_motor.stuck_time > 400)
+                    {    
+                           trigger_motor.stuck_state = STUCK;
+                            trigger_motor.stuck_time = 0;
+                    }
             }
-        }
-    }
-
-    return trigger_motor.stuck_state == STUCK;
+            else
+            {
+                    trigger_motor.stuck_time = 0;
+            }
+            //卡弹回拨时间
+      if(trigger_motor.stuck_state ==STUCK)
+            {
+               trigger_motor.reverse_time ++;
+           if(trigger_motor.reverse_time > 120)
+               {
+                   trigger_motor.reverse_time = 0;
+                   trigger_motor.stuck_state = UNSTUCK;
+               }
+            }
+            
+          
 }
 
 /**
@@ -256,57 +250,7 @@ static void Shoot_Feedback_Update(void)
 static void shoot_set_control_mode(fric_move_t *fric_set_control)
 {
 
-    // 运行模式
 
-    // 判断初始化是否完成
-//   if (shoot_control_mode == SHOOT_INIT_CONTROL)
-//  {
-//       static uint32_t init_time = 0;
-       // 判断拨杆是否拨到下档
-//       if (switch_is_down(fric_set_control->shoot_rc->rc.s[SHOOT_CONTROL_CHANNEL]))
-//        {
-//           // 拨到下档停止初始化
-//           init_time = 0;
-//        }
-//       else
-//       {
-//            // 判断是否初始化完成
-////				 if (shoot_init_state == SHOOT_INIT_UNFINISH)
-////            {
-//////                // 初始化未完成
-
-//////                // 判断初始化时间是否过长
-////               if (init_time >= SHOOT_TASK_S_TO_MS(SHOOT_TASK_MAX_INIT_TIME))
-////                {
-////                    // 初始化时间过长不进行初始化，进入其他模式
-////                    init_time = 0;
-////                }
-////                else
-////                {
-////                    // 判断微动开关是否打开
-////                  if (BUTTEN_TRIG_PIN ==0/*PRESS*/)
-////                    {
-////                       // 按下
-////                        // 设置初始化完成
-////                        shoot_init_state = SHOOT_INIT_FINISH;
-////                        init_time = 0;
-////                        // 进入其他模式
-////                    }
-////                    else
-////                    {
-////                        // 初始化模式保持原状，初始化时间增加
-////                        init_time++;
-////                        return;
-////                    }
-////                }
-////            }
-////            else
-////            {
-////                // 进入其他模式
-////                init_time = 0;
-////            }
-////        }
-//   }
     // 根据遥控器开关设置发射控制模式
     if (switch_is_up(fric_set_control->shoot_rc->rc.s[SHOOT_CONTROL_CHANNEL]))
     {
@@ -333,21 +277,7 @@ static void shoot_set_control_mode(fric_move_t *fric_set_control)
         shoot_control_mode = SHOOT_RC_CONTROL;
     }
 
-    // 云台在某些模式下发射停止
-//    if (gimbal_cmd_to_shoot_stop())
-//    {
-//        shoot_control_mode = SHOOT_STOP_CONTROL;
-//    }
-
-    // 判断进入初始化模式
-//    static shoot_control_mode_e last_shoot_control_mode = SHOOT_STOP_CONTROL;
-//    if (shoot_control_mode != SHOOT_STOP_CONTROL && last_shoot_control_mode == SHOOT_STOP_CONTROL)
-//    {
-//        // 进入初始化模式
-//     shoot_control_mode = SHOOT_INIT_CONTROL;
-//    }
-//    last_shoot_control_mode = shoot_control_mode;
-}
+ }
 
 /**
  * @brief          射击模式设置
@@ -398,39 +328,28 @@ if (shoot_control_mode == SHOOT_RC_CONTROL)
                 shoot_mode = SHOOT_READY;
                 // 控制发射
 						
-
-//								 if (fric_move.shoot_rc->rc.ch[4] > 100)
-//										{
-                // 设置发射模式，开摩擦轮，拨弹盘
-										if (fric_move.shoot_vision_control->shoot_command == SHOOT_ATTACK)
-											{
+								if (fric_move.shoot_vision_control->shoot_command == SHOOT_ATTACK)
+										{
 										shoot_mode = SHOOT_BULLET;
-											}
-											
-							     else if (fric_move.shoot_rc->rc.ch[4] >100)
+										}		
+							 else if (fric_move.shoot_rc->rc.ch[4] >100)
 										{
                     shoot_mode = SHOOT_BULLET;
 										}
 											
-										else
+							else
 										{
                 // 其他状态摩擦轮一直开启
                 // 设置准备发射模式，开摩擦轮
 											shoot_mode = SHOOT_READY;
 										}
-
-
             }
             else
             {
                 shoot_mode = SHOOT_STOP;
             }
         }
-//        else if (shoot_control_mode == SHOOT_INIT_CONTROL)
-//        {
-//            // 此时哨兵初始化控制模式
-//            shoot_mode = SHOOT_INIT;
-//        }
+
         else if (shoot_control_mode == SHOOT_STOP_CONTROL)
         {
             shoot_mode = SHOOT_STOP;
@@ -486,47 +405,8 @@ void shoot_control_loop(void)
         fric_motor_mode = SHOOT_MOTOR_STOP;
         trigger_motor_mode = SHOOT_MOTOR_STOP;
     }
-		 else if (shoot_mode == SHOOT_FREADY)
-    {
-        //配置摩擦轮电机和拨弹盘电机停转
-        fric_motor_mode = SHOOT_MOTOR_STOP;
-        trigger_motor_mode = SHOOT_MOTOR_FRUN;
-    }
+	
 		
-//    else if (shoot_mode == SHOOT_INIT)
-//    {
-//       
-////        //判断是否初始化完成
-////        if(shoot_init_state == SHOOT_INIT_UNFINISH)
-////        {
-//            //初始化未完成
-//            //微动开关是否命中
-////            if (BUTTEN_TRIG_PIN == RELEASE)
-////            {
-////                shoot_init_state = SHOOT_INIT_UNFINISH;
-////                //未按下,配置拨弹盘转动,摩擦轮停转
-////                fric_motor_mode = SHOOT_MOTOR_STOP;
-////                trigger_motor_mode = SHOOT_MOTOR_RUN;
-//////            }
-////            else
-//////            {
-////                //按下
-////                shoot_init_state = SHOOT_INIT_FINISH;
-////                //电机停转
-////                fric_motor_mode = SHOOT_MOTOR_STOP;
-//////                trigger_motor_mode = SHOOT_MOTOR_STOP;
-////            }
-////        }
-////        else
-//        {
-//            shoot_init_state = SHOOT_INIT_FINISH;
-//            // 电机停转
-//            fric_motor_mode = SHOOT_MOTOR_STOP;
-//            trigger_motor_mode = SHOOT_MOTOR_STOP;
-//        }
-  //  }
-
-
     //根据电机模式配置电机转动速度
     switch (fric_motor_mode)
     {
@@ -550,9 +430,7 @@ void shoot_control_loop(void)
 
         trigger_motor.speed_set = TRIGGER_MOTOR_STOP_SPEED;
         break;
-		 case SHOOT_MOTOR_FRUN:
-        trigger_motor.speed_set = TRIGGER_MOTOR_FRUN_SPEED;
-        break;
+	
     }
  
     // pid计算
@@ -561,13 +439,16 @@ void shoot_control_loop(void)
 
     //发弹停止
     
+			trigger_motor_turn_back(); //判断是否卡弹
+		
+		//卡弹回拨
+		if(trigger_motor.stuck_state==STUCK)
+		{
+				trigger_motor.given_current = -60;
+	
+		}
+   
 
-    //判断是否卡弹
-    if (judge_bullet_is_stuck(&trigger_motor))
-    {
-        //回拨
-        trigger_motor.given_current = -5;
-    }
 }
 
 /**
@@ -608,4 +489,3 @@ bool_t shoot_control_vision_task(void)
         return 1;
     }
 }
-

@@ -11,14 +11,15 @@ frame_header_struct_t referee_send_header;
 ext_game_state_t game_state;
 ext_game_result_t game_result;
 ext_game_robot_HP_t game_robot_HP_t;
-
 ext_event_data_t field_event;
 ext_supply_projectile_action_t supply_projectile_action_t;
-ext_supply_projectile_booking_t supply_projectile_booking_t;
 ext_referee_warning_t referee_warning_t;
-
+ext_supply_projectile_booking_t supply_projectile_booking_t;
 
 ext_game_robot_state_t robot_state;
+
+ext_rfid_status_t  rfid_status_t;
+
 ext_power_heat_data_t power_heat_data_t;
 ext_game_robot_pos_t game_robot_pos_t;
 ext_buff_musk_t buff_musk_t;
@@ -28,7 +29,6 @@ ext_shoot_data_t shoot_data_t;
 ext_bullet_remaining_t bullet_remaining_t;
 ext_student_interactive_data_t student_interactive_data_t;
 
-ext_rfid_status_t  rfid_status_t;
 ext_robot_command_t robot_command_t;
 
 

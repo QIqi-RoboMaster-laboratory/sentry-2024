@@ -37,12 +37,12 @@
 #define SHOOT_TASK_MAX_INIT_TIME 10
 
 //摩擦轮电机转速
-#define FRIC_MOTOR_RUN_SPEED -3.08
+#define FRIC_MOTOR_RUN_SPEED -2.97
 //摩擦轮电机停止转速
 #define FRIC_MOTOR_STOP_SPEED 0
 
 //拨弹盘电机转速
-#define TRIGGER_MOTOR_RUN_SPEED -15.0
+#define TRIGGER_MOTOR_RUN_SPEED -12.0
 #define TRIGGER_MOTOR_FRUN_SPEED 10.0
 //拨弹盘电机停转
 #define TRIGGER_MOTOR_STOP_SPEED 0
@@ -126,7 +126,7 @@ typedef enum
 {
     SHOOT_MOTOR_RUN,  // 电机运行
     SHOOT_MOTOR_STOP, // 电机停止
-	SHOOT_MOTOR_FRUN, 
+ 
 } shoot_motor_control_mode_e;
 
 

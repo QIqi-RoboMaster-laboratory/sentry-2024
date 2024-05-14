@@ -96,6 +96,7 @@ typedef struct __attribute__((packed)) // 0x0104
 {
     uint8_t level;
     uint8_t foul_robot_id;
+	uint8_t count;
 } ext_referee_warning_t;
 
 typedef struct __attribute__((packed)) // 0x0201

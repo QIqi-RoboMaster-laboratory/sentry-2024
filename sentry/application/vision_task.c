@@ -18,7 +18,7 @@
 #include "CRC8_CRC16.h"
 #include "usbd_cdc_if.h"
 #include "arm_math.h"
-
+int key;
 
 extern Shoot_Motor_t trigger_motor; 
 // 视觉任务初始化
@@ -174,40 +174,56 @@ static void vision_set_robot_mode(vision_control_t* set_robot_mode)
 {
     
     //根据云台手命令判断机器人模式
-    switch (set_robot_mode->robot_command_point->commd_keyboard)
+//    switch (set_robot_mode->robot_command_point->commd_keyboard)
+//    {
+//    case FOLLOW_PERSON_ENGINEER_KEYBOARD:
+//        set_robot_mode->robot_mode = FOLLOW_PERSON_ENGINEER;
+//        break;
+//        
+//    case FOLLOW_PERSON_HERO_KEYBOARD:
+//        set_robot_mode->robot_mode = FOLLOW_PERSON_HERO;
+//        break;
+
+//    case FOLLOW_PERSON_INFANTRY_3_KEYBOARD:
+//        set_robot_mode->robot_mode = FOLLOW_PERSON_INFANTRY_3;
+//        break;
+
+//    case FOLLOW_PERSON_INFANTRY_4_KEYBOARD:
+//        set_robot_mode->robot_mode = FOLLOW_PERSON_INFANTRY_4;
+//        break;
+
+//    case FOLLOW_PERSON_INFANTRY_5_KEYBOARD:
+//        set_robot_mode->robot_mode = FOLLOW_PERSON_INFANTRY_5;
+//        break;
+
+//    case ATTACK_ENEMY_OUTPOST_KEYBOARD:
+//        set_robot_mode->robot_mode = ATTACK_ENEMY_OUTPOST;
+//        break;
+
+//    case ATTACK_ENEMY_ROBOT_KEYBOARD:
+//        set_robot_mode->robot_mode = ATTACK_ENEMY_ROBOT;
+//        break;
+//    
+//    case AUTO_MOVE_TARGET_POINT_KEYBOARD:
+//        // set_robot_mode->robot_mode = AUTO_MOVE_TARGET_POINT;
+//        break;
+//	
+//    default:
+//        set_robot_mode->robot_mode = ATTACK_ENEMY_ROBOT;
+//        break;
+//    } 
+
+    switch (key)
     {
-    case FOLLOW_PERSON_ENGINEER_KEYBOARD:
-        set_robot_mode->robot_mode = FOLLOW_PERSON_ENGINEER;
-        break;
-        
-    case FOLLOW_PERSON_HERO_KEYBOARD:
-        set_robot_mode->robot_mode = FOLLOW_PERSON_HERO;
-        break;
-
-    case FOLLOW_PERSON_INFANTRY_3_KEYBOARD:
-        set_robot_mode->robot_mode = FOLLOW_PERSON_INFANTRY_3;
-        break;
-
-    case FOLLOW_PERSON_INFANTRY_4_KEYBOARD:
-        set_robot_mode->robot_mode = FOLLOW_PERSON_INFANTRY_4;
-        break;
-
-    case FOLLOW_PERSON_INFANTRY_5_KEYBOARD:
-        set_robot_mode->robot_mode = FOLLOW_PERSON_INFANTRY_5;
-        break;
-
-    case ATTACK_ENEMY_OUTPOST_KEYBOARD:
+    
+    case 1:
         set_robot_mode->robot_mode = ATTACK_ENEMY_OUTPOST;
         break;
 
-    case ATTACK_ENEMY_ROBOT_KEYBOARD:
+    case 2:
         set_robot_mode->robot_mode = ATTACK_ENEMY_ROBOT;
         break;
-    
-    case AUTO_MOVE_TARGET_POINT_KEYBOARD:
-        // set_robot_mode->robot_mode = AUTO_MOVE_TARGET_POINT;
-        break;
-
+	
     default:
         set_robot_mode->robot_mode = ATTACK_ENEMY_ROBOT;
         break;
@@ -437,6 +453,7 @@ static void vision_data_process(vision_control_t* vision_data)
             }
             break;
         case ATTACK_ENEMY_OUTPOST:
+				
         case ATTACK_ENEMY_ROBOT:
             {
                 //设置判断发弹但不跟随

@@ -87,9 +87,12 @@
 
 #include "gimbal_behaviour.h"
 #include "referee.h"
+#include "bsp_usart.h"
  double anglesin;
- double sin_value;
- int random_num ;
+ double sin_value;//正弦变化
+ int random_num ;//随机数生成
+ int bin_offset;
+ 
 /**
   * @brief          when chassis behaviour mode is CHASSIS_ZERO_FORCE, the function is called
   *                 and chassis control mode is raw. The raw chassis control mode means set value
@@ -225,12 +228,10 @@ static void chassis_bpin_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, c
 extern int8_t QA;
 //就近对位标志位
 int8_t turn_flags;
-//尖角标志位
-int8_t sharp_angle;
 //highlight, the variable chassis behaviour mode 
 //留意，这个底盘行为模式变量
 chassis_behaviour_e chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
-
+extern vision_rxfifo_t *vision_rx;
 
 /**
   * @brief          logical judgement to assign "chassis_behaviour_mode" variable to which mode
@@ -260,6 +261,7 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
 		}
     //remote control  set chassis behaviour mode
     //遥控器设置模式
+		extern int bin_offset;
 		if(!switch_is_down(chassis_move_mode->chassis_RC->rc.s[1]))
 		{
 				if(switch_is_down(chassis_move_mode->chassis_RC->rc.s[0]))
@@ -272,29 +274,34 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
 				}
 				else if(switch_is_up(chassis_move_mode->chassis_RC->rc.s[0]))
 				{
-						chassis_behaviour_mode = CHASSIS_BPIN;
+					bin_offset=5;
+					chassis_behaviour_mode = CHASSIS_BPIN;
+					
+					if(switch_is_up(chassis_move_mode->chassis_RC->rc.s[1]))
+					{	
+							if(vision_rx->header!=0)
+							{
+								bin_offset=5;
+								chassis_behaviour_mode = CHASSIS_BPIN;
+								if(vision_rx->spin==1)
+								{
+									bin_offset=10;
+									chassis_behaviour_mode = CHASSIS_BPIN;
+								}
+								
+								
+							}
+				
+							else 
+							{
+								bin_offset=10;
+							chassis_behaviour_mode = CHASSIS_BPIN;
+							}
+					}		
 				}
 		}
-		else if(switch_is_down(chassis_move_mode->chassis_RC->rc.s[1]))
+	else
 		{
-				if(mode == 1)
-				{
-						chassis_behaviour_mode = CHASSIS_NO_FOLLOW_YAW;
-						if(chassis_move_mode->chassis_RC->key.v & KEY_PRESSED_OFFSET_SHIFT )
-						{
-								chassis_behaviour_mode = CHASSIS_BPIN;
-						}
-				}
-				else if(mode == 2)
-				{
-						chassis_behaviour_mode = CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW;
-											
-						if(chassis_move_mode->chassis_RC->key.v & KEY_PRESSED_OFFSET_SHIFT )
-						{
-								chassis_behaviour_mode = CHASSIS_BPIN;
-						}
-				}
-		else
 			chassis_behaviour_mode = CHASSIS_NO_MOVE;
 		}
 				//继电器控制云台电源
@@ -336,6 +343,10 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
         chassis_move_mode->chassis_mode = CHASSIS_VECTOR_RAW;
     }
     else if (chassis_behaviour_mode == CHASSIS_BPIN)
+    {
+        chassis_move_mode->chassis_mode = CHASSIS_VECTOR_BPIN;
+    }
+		 else if (chassis_behaviour_mode == CHASSIS_AUTO)
     {
         chassis_move_mode->chassis_mode = CHASSIS_VECTOR_BPIN;
     }
@@ -396,6 +407,7 @@ void chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set, 
     {
         chassis_bpin_yaw_control(vx_set, vy_set, angle_set, chassis_move_rc_to_vector);
     }
+		
 }
 
 /**
@@ -490,34 +502,42 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
 		static int16_t last_key_Q = 0;
 		fp32 angle_set_channel = 0;
 		//左右尖角
-		if(!last_key_Q && chassis_move_rc_to_vector->chassis_RC->key.v & KEY_PRESSED_OFFSET_Q)
-		{
-			QA=!QA;
-		}
-		
-		if(QA)
-		{
-			angle_set_channel = 0.75f;
-			sharp_angle = 1;
-		}
+	
 		//就近对位
-		else if(chassis_move_rc_to_vector->chassis_yaw_motor->relative_angle>1.74f)
-		{
-			angle_set_channel = 3.14f;
-			turn_flags = 1;	
-		}
-		else if(chassis_move_rc_to_vector->chassis_yaw_motor->relative_angle<-1.74f)
-		{
-			angle_set_channel = -3.14f;
-			turn_flags = 1;				
-		}	
-		else 
-		{
-			angle_set_channel = 0;
-			turn_flags = 0;
-			sharp_angle = 0;
-		}
-			last_key_Q = chassis_move_rc_to_vector->chassis_RC->key.v & KEY_PRESSED_OFFSET_Q;
+float angle = chassis_move_rc_to_vector->chassis_yaw_motor->relative_angle;
+if (angle > -0.79f&&angle < 0.79f)
+{
+    angle_set_channel = 0.0f;
+    turn_flags = 1;
+}
+else if (angle > 0.79f&& angle < 2.36f)
+{
+    angle_set_channel = 1.57f;
+    turn_flags = 1;
+}
+else if (angle > 2.36f)
+{
+    angle_set_channel = 3.14f;
+    turn_flags = 1;
+}
+else if (angle < -2.36f)
+{
+    angle_set_channel = -3.14f;
+    turn_flags = 1;
+}
+
+
+else if (angle < -0.79f&&angle> -2.36f)
+{
+    angle_set_channel = -1.57f;
+    turn_flags = 1;
+}
+
+else
+{
+    angle_set_channel = 0;
+    turn_flags = 0;
+}
 			*angle_set = angle_set_channel;
 }
 
@@ -636,31 +656,23 @@ static void chassis_bpin_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, c
     chassis_rc_to_control_vector(vx_set, vy_set, chassis_move_rc_to_vector);
 		//陀螺前进设定
 
-//				double period = 5.0; // Period of the sine wave
-//    double range = PI; // Range of the sine wave
-//  
-//    double step = 2.0 * range / period;
-  sin_value = sin(anglesin);
-       
-   
-if(sin_value>0.7)
-{
-	
-  random_num = (rand() % 3) * 3;
-;
-}
-if (sin_value >= 0) 
-	{
+			sin_value = sin(anglesin);
+		if(sin_value>0.7)
+		{
+		random_num = (rand() % 3) * 3;
+		}
+		if (sin_value >= 0) 
+		{
         sin_value = sin_value;
-       } 
+    } 
 	else
 		{
-            sin_value = -sin_value ;
-        }
-//				
+         sin_value = -sin_value ;
+     }
+				
 						*vx_set*=1.5f;//1.5f;
 						*vy_set*=1.5f;//1.5f;
-						*wz_set =5.0f+5*sin_value+random_num;//10.0f;
+						*wz_set =6.0f;//+5*sin_value-random_num+bin_offset ;//10.0f;
 
 	
        
@@ -670,3 +682,6 @@ if (sin_value >= 0)
 				*wz_set*=2.0f;
 		} 
 }
+
+
+

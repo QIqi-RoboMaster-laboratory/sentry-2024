@@ -96,7 +96,7 @@
 #define TEST_KEYBOARD KEY_PRESSED_OFFSET_R
 //rocker value deadband
 //遥控器输入死区，因为遥控器存在差异，摇杆在中间，其值不一定为零
-#define RC_DEADBAND   15
+#define RC_DEADBAND   25 //15
 
 
 #define YAW_RC_SEN    -0.000005f
@@ -155,13 +155,13 @@
 #define GIMBAL_PITCH_AUTO_SCAN_NUM 133.3f
 
 //云台pitch轴最大值相对角度  0x004D
-#define GIMBAL_PITCH_MAX_ENCODE  0x1860
+#define GIMBAL_PITCH_MAX_ENCODE  0x18B6//0x1860
 //云台pitch轴最小相对角
 #define GIMBAL_PITCH_MIN_ENCODE 0x1C10   
 //云台pitch轴中值
-#define GIMBAL_PITCH_OFFSET_ENCODE 0x1A09
+#define GIMBAL_PITCH_OFFSET_ENCODE 0x1A97//0x1A09
 //云台yaw轴中值
-#define GIMBAL_YAW_OFFSET_ENCODE 0x13D3
+#define GIMBAL_YAW_OFFSET_ENCODE 0x07D3
 //yaw轴后侧中值
 #define GIMBAL_YAW_LAST_OFFSET_ENCODE (((GIMBAL_YAW_OFFSET_ENCODE + HALF_ECD_RANGE) > ECD_RANGE) ? (GIMBAL_YAW_OFFSET_ENCODE + HALF_ECD_RANGE - ECD_RANGE) : (GIMBAL_YAW_OFFSET_ENCODE + HALF_ECD_RANGE))
 //云台yaw轴陀螺仪误差
@@ -187,12 +187,14 @@
 //yaw轴扫描范围，以中心为基础 半个范围
 #define YAW_SCAN_RANGE  PI
 //pitch轴扫描范围，以中心值为基础
-#define PITCH_SCAN_RANGE 0.250f
+#define PITCH_SCAN_RANGE 0.450f
 
 //yaw轴扫描步长 rad/S
 #define YAW_SCAN_SPEED 1.0f
 //pitch轴扫描步长 rad/s
-#define PITCH_SCAN_SPEED 1.2f
+#define PITCH_SCAN_SPEED 2.0f
+//yaw轴扫描速度
+#define YAW_SCAN_SPD  2.0f
 
 //yaw轴扫描周期
 #define YAW_SCAN_PERIOD (2 * YAW_SCAN_RANGE / YAW_SCAN_SPEED)

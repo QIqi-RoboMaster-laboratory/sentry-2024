@@ -91,6 +91,7 @@ typedef enum
   CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW,   //底盘跟随云台
   CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW,  //chassis will follow chassis yaw angle, usually in engineer,
                                         //because chassis does have gyro sensor, its yaw angle is calculed by gyro in gimbal and gimbal motor angle,
+	CHASSIS_AUTO,													//底盘自动		
                                         //如果有底盘陀螺仪请更新底盘的yaw，pitch，roll角度 在chassis_feedback_update函数中
   CHASSIS_NO_FOLLOW_YAW,                //chassis does not follow angle, angle is open-loop,but wheels have closed-loop speed
                                         //底盘不跟随角度，角度是开环的，但轮子是有速度环

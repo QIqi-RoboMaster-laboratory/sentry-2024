@@ -59,7 +59,7 @@
 
 //rocker value deadline
 //摇杆死区
-#define CHASSIS_RC_DEADLINE 50
+#define CHASSIS_RC_DEADLINE 15
 
 #define MOTOR_SPEED_TO_CHASSIS_SPEED_VX 0.25f
 #define MOTOR_SPEED_TO_CHASSIS_SPEED_VY 0.25f
@@ -137,13 +137,12 @@
 #define M3505_MOTOR_POWER_PID_MAX_OUT 15.0f
 #define M3505_MOTOR_POWER_PID_MAX_IOUT 10.0f
 
-// 角度补偿参数
-#define Power_120_AngleCompensation -0.3
-#define Power_100_AngleCompensation -0.15
-#define Power_80_AngleCompensation -0.15
-#define Power_70_AngleCompensation -0.25
-#define Power_60_AngleCompensation -0.25
-#define Power_50_AngleCompensation -0.25
+//底盘小陀螺速度值
+#define SPIN_SPEED -10
+
+
+
+
 typedef enum
 {
   CHASSIS_VECTOR_FOLLOW_GIMBAL_YAW,   //chassis will follow yaw gimbal motor relative angle.底盘会跟随云台相对角度
@@ -192,12 +191,33 @@ typedef struct
 	fp32 forecast_total_power; // 预测总功率
 } Power_Control;
 
+
+
+/*
+** 电机控制信息箱子
+*/
+typedef struct 
+{
+  float target_rotate_sum;      // 目标旋转总量
+  float current_rotate_sum;     // 当前旋转总量
+  float target_rotate_angle;    // 目标旋转角度  
+	float wheel_circumference;    // 轮胎周长
+  float total_distance;         // 总行驶距离
+  float current_distance;       // 当前行驶距离
+}motor_control_box;
+
+/*
+** 车轮里程计
+*/
+
+
 typedef struct
 {
   const RC_ctrl_t *chassis_RC;               //底盘使用的遥控器指针, the point to remote control
   const gimbal_motor_t *chassis_yaw_motor;   //will use the relative angle of yaw gimbal motor to calculate the euler angle.底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角.
   const gimbal_motor_t *chassis_pitch_motor; //will use the relative angle of pitch gimbal motor to calculate the euler angle.底盘使用到pitch云台电机的相对角度来计算底盘的欧拉角
-  const fp32 *chassis_INS_angle;             //the point to the euler angle of gyro sensor.获取陀螺仪解算出的欧拉角指针
+ // const fp32 *chassis_INS_angle;             //the point to the euler angle of gyro sensor.获取陀螺仪解算出的欧拉角指针
+	const INS_t* chassis_INS_point; 
   chassis_mode_e chassis_mode;               //state machine. 底盘控制状态机
   chassis_mode_e last_chassis_mode;          //last state machine.底盘上次控制状态机
   chassis_motor_t motor_chassis[4];          //chassis motor data.底盘电机数据
@@ -235,7 +255,16 @@ typedef struct
   int16_t chassis_power_MAX;    //裁判系统最大功率，双板通信数据
   int16_t key_C;
 	
+  motor_control_box motor_boxes[4];
+	
 } chassis_move_t;
+
+
+
+
+
+
+
 
 /**
   * @brief          chassis task, osDelay CHASSIS_CONTROL_TIME_MS (2ms) 

@@ -321,7 +321,6 @@ void chassis_rc_to_control_vector(fp32 *vx_set, fp32 *vy_set, chassis_move_t *ch
 
     vx_set_channel = vx_channel * CHASSIS_VX_RC_SEN ;
     vy_set_channel = vy_channel * -CHASSIS_VY_RC_SEN ;
-
  
     //一阶低通滤波代替斜波作为底盘速度输入
     first_order_filter_cali(&chassis_move_rc_to_vector->chassis_cmd_slow_set_vx, vx_set_channel);
@@ -484,8 +483,8 @@ static void chassis_vector_to_mecanum_wheel_speed(const fp32 vx_set, const fp32 
 
 static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
 {
-	chassis_move_control_loop->chassis_power_MAX = robot_state.chassis_power_limit;
-	chassis_move_control_loop->chassis_power_buffer = power_heat_data_t.chassis_power_buffer;
+	chassis_move_control_loop->chassis_power_MAX = 100;//robot_state.chassis_power_limit;
+	chassis_move_control_loop->chassis_power_buffer =power_heat_data_t.chassis_power_buffer;
 	 
 		chassis_move_control_loop->chassis_power_MAX = 100;
     fp32 max_vector = 0.0f, vector_rate = 0.0f;
@@ -543,7 +542,7 @@ static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
 	fp32 k2 = 1.23e-07;						 // 放大系数
 	fp32 k1 = 1.453e-07;					 // 放大系数
 	fp32 constant = 4.081f;  //3508电机的机械损耗
-	chassis_move_control_loop->power_control.POWER_MAX = 0; //最终底盘的最大功率
+	chassis_move_control_loop->power_control.POWER_MAX = 100; //最终底盘的最大功率
 	chassis_move_control_loop->power_control.forecast_total_power = 0; // 预测总功率
 	
 	PID_calc(&chassis_move_control_loop->buffer_pid, chassis_move_control_loop->chassis_power_buffer,15); //使缓冲能量维持在一个稳定的范围,这里的PID没必要移植我的，用任意一个就行

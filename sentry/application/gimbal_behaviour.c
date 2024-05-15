@@ -363,7 +363,7 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
         // 切换到遥控器控制模式
 			gimbal_behaviour =GIMBAL_RC;
     }
-    else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
+     else if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
 							gimbal_behaviour =GIMBAL_AUTO_ATTACK;
 			
@@ -374,11 +374,19 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
 								{
 								if(vision_rx->scan==0)
 									{
-										gimbal_behaviour =GIMBAL_RC;
+										gimbal_behaviour =GIMBAL_AUTO_SCAN;
+											if (judge_vision_appear_target())
+												{										// 识别到目标
+													gimbal_behaviour = GIMBAL_AUTO_ATTACK; // 云台自动袭击模式
+												}
+										else  
+												{
+													gimbal_behaviour = GIMBAL_AUTO_SCAN;
+												}
 									}
 								if(vision_rx->scan==1)
 										{
-											gimbal_behaviour =GIMBAL_AUTO_SCAN;
+											gimbal_behaviour =GIMBAL_RC;
 										if (judge_vision_appear_target())
 												{										// 识别到目标
 													gimbal_behaviour = GIMBAL_AUTO_ATTACK; // 云台自动袭击模式
@@ -404,6 +412,7 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
 									}   
 						}
 								
+
 		}																							
            
          
@@ -547,7 +556,7 @@ static void gimbal_auto_scan_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *g
     }
     else
     {
-        gimbal_control_set->gimbal_auto_scan.pitch_center_value = 0.10;
+        gimbal_control_set->gimbal_auto_scan.pitch_center_value = 0.08;
     }
     // 计算过去设定角度与当前角度之间的差值
     yaw_error = gimbal_control_set->gimbal_yaw_motor.absolute_angle_set - gimbal_control_set->gimbal_yaw_motor.absolute_angle;

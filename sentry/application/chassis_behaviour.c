@@ -262,8 +262,7 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     //remote control  set chassis behaviour mode
     //遥控器设置模式
 		extern int bin_offset;
-		if(!switch_is_down(chassis_move_mode->chassis_RC->rc.s[1]))
-		{
+
 				if(switch_is_down(chassis_move_mode->chassis_RC->rc.s[0]))
 				{
 						chassis_behaviour_mode = CHASSIS_NO_MOVE;
@@ -274,8 +273,13 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
 				}
 				else if(switch_is_up(chassis_move_mode->chassis_RC->rc.s[0]))
 				{
-					bin_offset=5;
+					bin_offset=0;
 					chassis_behaviour_mode = CHASSIS_BPIN;
+					if(chassis_move_mode->chassis_RC->rc.ch[4]<-600)
+					{
+								bin_offset=-10;
+					chassis_behaviour_mode = CHASSIS_BPIN;
+					}
 					
 					if(switch_is_up(chassis_move_mode->chassis_RC->rc.s[1]))
 					{	
@@ -285,21 +289,20 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
 								chassis_behaviour_mode = CHASSIS_BPIN;
 								if(vision_rx->spin==1)
 								{
-									bin_offset=10;
+									bin_offset=5;
 									chassis_behaviour_mode = CHASSIS_BPIN;
 								}
-								
+								if(vision_rx->spin==0)
+							{
+								bin_offset=5;
+							chassis_behaviour_mode = CHASSIS_BPIN;
+							}
 								
 							}
 				
-							else 
-							{
-								bin_offset=10;
-							chassis_behaviour_mode = CHASSIS_BPIN;
-							}
+							
 					}		
 				}
-		}
 	else
 		{
 			chassis_behaviour_mode = CHASSIS_NO_MOVE;
@@ -311,10 +314,10 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
 //		}
     //when gimbal in some mode, such as init mode, chassis must's move
     //当云台在某些模式下，像初始化， 底盘不动
-//    if (gimbal_cmd_to_chassis_stop())
-//    {
-//        chassis_behaviour_mode = CHASSIS_NO_MOVE;
-//    }
+    if (gimbal_cmd_to_chassis_stop())
+    {
+        chassis_behaviour_mode = CHASSIS_NO_MOVE;
+    }
 
     //accord to beheviour mode, choose chassis control mode
     //根据行为模式选择一个底盘控制模式
@@ -597,17 +600,8 @@ static void chassis_no_follow_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_s
     {
         return;
     }
-		fp32 wz_set_channel = 0;
-		if(chassis_move_rc_to_vector->chassis_RC->key.v & KEY_PRESSED_OFFSET_Q)
-		{
-				wz_set_channel = 5.0f;
-		}
-		else if(chassis_move_rc_to_vector->chassis_RC->key.v & KEY_PRESSED_OFFSET_E)
-		{
-				wz_set_channel = -5.0f;
-		}
     chassis_rc_to_control_vector(vx_set, vy_set, chassis_move_rc_to_vector);
-    *wz_set = -CHASSIS_WZ_RC_SEN * chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL] + wz_set_channel;
+    *wz_set = -CHASSIS_WZ_RC_SEN * chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL];
 }
 
 /**
@@ -672,7 +666,7 @@ static void chassis_bpin_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, c
 				
 						*vx_set*=1.5f;//1.5f;
 						*vy_set*=1.5f;//1.5f;
-						*wz_set =6.0f;//+5*sin_value-random_num+bin_offset ;//10.0f;
+						*wz_set =6.0f+bin_offset;//+5*sin_value-random_num+bin_offset ;//10.0f;
 
 	
        

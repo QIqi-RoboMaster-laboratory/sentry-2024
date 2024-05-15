@@ -161,7 +161,7 @@
 //云台pitch轴中值
 #define GIMBAL_PITCH_OFFSET_ENCODE 0x1A97//0x1A09
 //云台yaw轴中值
-#define GIMBAL_YAW_OFFSET_ENCODE 0x07D3
+#define GIMBAL_YAW_OFFSET_ENCODE 0x1FBE
 //yaw轴后侧中值
 #define GIMBAL_YAW_LAST_OFFSET_ENCODE (((GIMBAL_YAW_OFFSET_ENCODE + HALF_ECD_RANGE) > ECD_RANGE) ? (GIMBAL_YAW_OFFSET_ENCODE + HALF_ECD_RANGE - ECD_RANGE) : (GIMBAL_YAW_OFFSET_ENCODE + HALF_ECD_RANGE))
 //云台yaw轴陀螺仪误差
@@ -187,12 +187,12 @@
 //yaw轴扫描范围，以中心为基础 半个范围
 #define YAW_SCAN_RANGE  PI
 //pitch轴扫描范围，以中心值为基础
-#define PITCH_SCAN_RANGE 0.450f
+#define PITCH_SCAN_RANGE 0.45f
 
 //yaw轴扫描步长 rad/S
 #define YAW_SCAN_SPEED 1.0f
 //pitch轴扫描步长 rad/s
-#define PITCH_SCAN_SPEED 2.0f
+#define PITCH_SCAN_SPEED 1.2f
 //yaw轴扫描速度
 #define YAW_SCAN_SPD  2.0f
 

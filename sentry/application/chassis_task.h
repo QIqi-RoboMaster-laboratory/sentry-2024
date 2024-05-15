@@ -39,7 +39,7 @@
 
 //in some mode, can use remote control to control rotation speed
 //在特殊模式下，可以通过遥控器控制旋转
-#define CHASSIS_WZ_CHANNEL 2
+#define CHASSIS_WZ_CHANNEL 4
 
 //rocker value (max 660) change to vertial speed (m/s) 
 //遥控器前进摇杆（max 660）转化成车体前进速度（m/s）的比例
@@ -59,14 +59,14 @@
 
 //rocker value deadline
 //摇杆死区
-#define CHASSIS_RC_DEADLINE 15
+#define CHASSIS_RC_DEADLINE 50
 
 #define MOTOR_SPEED_TO_CHASSIS_SPEED_VX 0.25f
 #define MOTOR_SPEED_TO_CHASSIS_SPEED_VY 0.25f
 #define MOTOR_SPEED_TO_CHASSIS_SPEED_WZ 0.25f
 
 
-#define MOTOR_DISTANCE_TO_CENTER 0.32f
+#define MOTOR_DISTANCE_TO_CENTER 0.2f
 
 //chassis task control time  2ms
 //底盘任务控制间隔 2ms

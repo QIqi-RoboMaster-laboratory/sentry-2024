@@ -64,7 +64,7 @@ void radar_usart_task(void const *pvParameters)
 	while (1)
     {
 			error_usarttime++;
-			if(error_usarttime>3)
+			if(error_usarttime>25)
 			{
 		memset(&vision_rxfifo, 0, sizeof(vision_rxfifo));
 		
@@ -79,36 +79,36 @@ power_heat_data_t.shooter_id1_17mm_cooling_heat=vision_rx->shooter1_17mm_1_barre
 power_heat_data_t.chassis_power_buffer=vision_rx->buffer_energry;
 shoot_data_t.bullet_speed=vision_rx->initial_speed;
         // 创建一个radar_txfifo_t结构体变量
-     extern   radar_txfifo_t radar_txfifo;
-        
-        // 设置雷达数据的各个字段值
-        radar_txfifo.header = 0x5A;
-		
-//			radar_txfifo.stage_remain_time+=1;
+//     extern   radar_txfifo_t radar_txfifo;
+//        
+//        // 设置雷达数据的各个字段值
+//        radar_txfifo.header = 0x5A;
+//		
+////			radar_txfifo.stage_remain_time+=1;
 
-			radar_txfifo.game_progress = (game_state.game_progress) & 0x0F;
-			radar_txfifo.cur_hp=(uint8_t)((robot_state.remain_HP/100)+1);
-			radar_txfifo .remain_time=(uint8_t)(game_state.stage_remain_time/2);
-//			radar_txfifo.stage_remain_time=135;
-//	radar_txfifo.stage_remain_time = game_state.stage_remain_time;
-//        radar_txfifo.blue_1_robot_HP = game_robot_HP_t.blue_1_robot_HP;
-//        radar_txfifo.blue_3_robot_HP = game_robot_HP_t.blue_3_robot_HP;
-//        radar_txfifo.blue_4_robot_HP = game_robot_HP_t.blue_4_robot_HP;
-//			 radar_txfifo.blue_7_robot_HP = 0;
-//			
-//        radar_txfifo.red_1_robot_HP = game_robot_HP_t.red_1_robot_HP;
-//        radar_txfifo.red_3_robot_HP = game_robot_HP_t.red_3_robot_HP;
-//        radar_txfifo.red_4_robot_HP = game_robot_HP_t.red_4_robot_HP;
-//        radar_txfifo.red_7_robot_HP = 600;// game_robot_HP_t.red_7_robot_HP;
-//      if(robot_state.remain_HP /)
-//			{
-//					radar_txfifo.pose=2;
-//			
-//			}
-//			if(game_state.stage_remain_time<=270)
-//			 {
-//						radar_txfifo.pose=2;
-//			 }
+//			radar_txfifo.game_progress = (game_state.game_progress) & 0x0F;
+//			radar_txfifo.cur_hp=(uint8_t)((robot_state.remain_HP/100)+1);
+//			radar_txfifo .remain_time=(uint8_t)(game_state.stage_remain_time/2);
+////			radar_txfifo.stage_remain_time=135;
+////	radar_txfifo.stage_remain_time = game_state.stage_remain_time;
+////        radar_txfifo.blue_1_robot_HP = game_robot_HP_t.blue_1_robot_HP;
+////        radar_txfifo.blue_3_robot_HP = game_robot_HP_t.blue_3_robot_HP;
+////        radar_txfifo.blue_4_robot_HP = game_robot_HP_t.blue_4_robot_HP;
+////			 radar_txfifo.blue_7_robot_HP = 0;
+////			
+////        radar_txfifo.red_1_robot_HP = game_robot_HP_t.red_1_robot_HP;
+////        radar_txfifo.red_3_robot_HP = game_robot_HP_t.red_3_robot_HP;
+////        radar_txfifo.red_4_robot_HP = game_robot_HP_t.red_4_robot_HP;
+////        radar_txfifo.red_7_robot_HP = 600;// game_robot_HP_t.red_7_robot_HP;
+////      if(robot_state.remain_HP /)
+////			{
+////					radar_txfifo.pose=2;
+////			
+////			}
+////			if(game_state.stage_remain_time<=270)
+////			 {
+////						radar_txfifo.pose=2;
+////			 }
 
         
         // 创建一个发送缓冲区

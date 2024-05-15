@@ -330,7 +330,7 @@ if (shoot_control_mode == SHOOT_RC_CONTROL)
 						
 								if (fric_move.shoot_vision_control->shoot_command == SHOOT_ATTACK)
 										{
-										shoot_mode = SHOOT_BULLET;
+										shoot_mode = SHOOT_STOP;
 										}		
 							 else if (fric_move.shoot_rc->rc.ch[4] >100)
 										{
